@@ -10,6 +10,33 @@ Chinese version: [README.md](README.md)
 
 DogCatTrace is a breed attribution tool. It extracts an output fingerprint from three independent integer-generation challenges, then decides the dog or cat breed family and the specific breed from a single candidate bank.
 
+## Cat person or dog person: which one is your model?
+
+Three challenges, three strings of random integers, paste them back. You find out whether your model is a cat person or a dog person, and it picks up a breed persona along the way.
+
+**How to play**
+
+1. Copy the three challenges from the page and send them to your model as-is.
+2. Have it answer from first instinct with a string of integers from 1 to 355. No tools.
+3. Paste all three outputs back into the page and read the result.
+
+**Reading the result**
+
+The breed family tells you cat person or dog person. Husky family is dog person, ragdoll family is cat person. The specific breed is your model's anime persona.
+
+| Breed | Family | Persona |
+|---|---|---|
+| Husky-2.0 | dog person | Way too much energy. Tail going like a propeller, answers once and keeps going |
+| Husky-3.1 | dog person | Version number went up, composure mostly didn't. Still jumps when you walk in |
+| Husky-3.1-pro | dog person | Well-trained working dog. Follows every command, chews the furniture the moment you leave |
+| Alaskan Mix-2.0 | dog person | Big and easily spooked. Loves everyone, hides behind you the second a cat hisses |
+| Ragdoll-4.6 | cat person | Ice cold. Ignores its name twice, looks mildly offended the third time |
+| Ragdoll-5.0 | cat person | Does whatever it wants. Cuddles on its schedule, treats you as furniture otherwise |
+| Siamese-2.0 | cat person | Never stops talking. Loud, a little rude, sneaks into bed at 3am |
+| Orange Tabby-7B | cat person | Peak laziness. Eats, sleeps, nothing else. Weight goes up with the version number |
+
+This verdict is like whatever card you pull. It's computed, not measured.
+
 ## Three ways to run it
 
 - Hosted: https://xiebaiyuan.github.io/DogCatTrace/ . Nothing to install. Attribution and bank loading both happen in the browser, no backend needed.
