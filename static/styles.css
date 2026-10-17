@@ -194,7 +194,7 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
 .button.primary:hover:not(:disabled) { background: #223c5c; border-color: #223c5c; color: #fff; }
 .button.secondary { font-size: 12px; }
 
-.action-row { display: flex; justify-content: flex-end; margin-top: 18px; }
+.action-row { display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-top: 18px; }
 
 .message {
   margin-top: 16px;

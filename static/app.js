@@ -127,11 +127,26 @@ async function loadChallenges() {
     state.challenges = payload.challenges;
     renderChallenges();
     byId("analyze").disabled = false;
+    if (byId("randomize")) byId("randomize").disabled = false;
   } catch (error) {
     setMessage(error.message, "error");
   } finally {
     byId("regenerate").disabled = false;
   }
+}
+
+function randomInteger() {
+  return Math.floor(Math.random() * 355) + 1;
+}
+
+function fillRandomOutputs() {
+  state.challenges.forEach((challenge, index) => {
+    const field = byId(`output-${index}`);
+    if (!field) return;
+    const values = [];
+    for (let position = 0; position < challenge.expected_count; position += 1) values.push(randomInteger());
+    field.value = values.join(" ");
+  });
 }
 
 async function analyze() {
@@ -160,6 +175,30 @@ async function analyze() {
   }
 }
 
+async function randomizeAndAnalyze() {
+  const button = byId("randomize");
+  button.disabled = true;
+  try {
+    fillRandomOutputs();
+    await analyze();
+  } finally {
+    button.disabled = false;
+  }
+}
+
+function mountRandomizeButton() {
+  const row = document.querySelector(".action-row");
+  if (!row || byId("randomize")) return;
+  const button = document.createElement("button");
+  button.id = "randomize";
+  button.type = "button";
+  button.className = "button secondary";
+  button.disabled = true;
+  button.textContent = "随机填充并计算";
+  row.insertBefore(button, byId("analyze"));
+  button.addEventListener("click", randomizeAndAnalyze);
+}
+
 async function initialize() {
   applySummary(window.DOGCATTRACE_SUMMARY || null);
   if (!state.summary) {
@@ -176,6 +215,7 @@ async function initialize() {
   await loadChallenges();
 }
 
+mountRandomizeButton();
 byId("regenerate").addEventListener("click", loadChallenges);
 byId("analyze").addEventListener("click", analyze);
 initialize();

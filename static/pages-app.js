@@ -115,6 +115,20 @@ function regenerate() {
   renderChallenges();
 }
 
+function randomInteger() {
+  return Math.floor(Math.random() * 355) + 1;
+}
+
+function fillRandomOutputs() {
+  state.challenges.forEach((challenge, index) => {
+    const field = byId(`output-${index}`);
+    if (!field) return;
+    const values = [];
+    for (let position = 0; position < challenge.expected_count; position += 1) values.push(randomInteger());
+    field.value = values.join(" ");
+  });
+}
+
 async function analyze() {
   const button = byId("analyze");
   button.disabled = true;
@@ -135,6 +149,30 @@ async function analyze() {
   }
 }
 
+async function randomizeAndAnalyze() {
+  const button = byId("randomize");
+  button.disabled = true;
+  try {
+    fillRandomOutputs();
+    await analyze();
+  } finally {
+    button.disabled = false;
+  }
+}
+
+function mountRandomizeButton() {
+  const row = document.querySelector(".action-row");
+  if (!row || byId("randomize")) return;
+  const button = document.createElement("button");
+  button.id = "randomize";
+  button.type = "button";
+  button.className = "button secondary";
+  button.disabled = true;
+  button.textContent = "随机填充并计算";
+  row.insertBefore(button, byId("analyze"));
+  button.addEventListener("click", randomizeAndAnalyze);
+}
+
 async function initialize() {
   try {
     const response = await fetch("./data/unified_bank.json", { cache: "no-cache" });
@@ -146,12 +184,14 @@ async function initialize() {
     byId("active-bank-badge").textContent = `${state.bank.models.length} 个品种 · ${families.size} 个品种族 · ${responseCount} 条指纹`;
     byId("regenerate").disabled = false;
     byId("analyze").disabled = false;
+    if (byId("randomize")) byId("randomize").disabled = false;
     regenerate();
   } catch (error) {
     setMessage(`${error.message}。请通过 HTTP 服务或 GitHub Pages 打开本页。`, "error");
   }
 }
 
+mountRandomizeButton();
 byId("regenerate").addEventListener("click", regenerate);
 byId("analyze").addEventListener("click", analyze);
 initialize();
