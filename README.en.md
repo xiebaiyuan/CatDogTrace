@@ -30,10 +30,26 @@ The breed family tells you cat person or dog person. The dog family is dog perso
 | Labrador | dog person | Version number went up, composure mostly didn't. Still jumps when you walk in |
 | Schnauzer | dog person | Well-trained working dog. Follows every command, chews the furniture the moment you leave |
 | Corgi | dog person | Short legs, total confidence. Loves everyone, hides behind you the second a cat hisses |
+| Golden Retriever | dog person | Everyone's friend. Follows anyone home, tail still wagging after you take its toy |
+| Border Collie | dog person | Ceiling-level smart. Learns every command, then learns how to trick you |
+| Shiba Inu | dog person | A meme with legs. Ignores its name, poses for the camera |
+| Samoyed | dog person | The smiling angel. That white coat goes straight for the mud |
+| Alaskan Malamute | dog person | Big and quiet. Looks fierce, terrified of thunder |
+| Beagle | dog person | Nose ahead of brain. One scent and it's gone |
+| Poodle | dog person | The groomer's favorite. Comes out of a trim looking better than you |
+| Bulldog | dog person | Looks tough, sleeps twenty hours a day, snores loud enough to shake the floor |
 | Ragdoll | cat person | Ice cold. Ignores its name twice, looks mildly offended the third time |
 | Siamese | cat person | Does whatever it wants. Cuddles on its schedule, treats you as furniture otherwise |
 | Orange Tabby | cat person | Never stops talking. Loud, a little rude, sneaks into bed at 3am |
 | British Shorthair | cat person | Peak laziness. Eats, sleeps, nothing else. Weight goes up with the version number |
+| Maine Coon | cat person | The giant of cats. Dog-like temperament, meets you at the door |
+| Persian | cat person | Brushed three times a day. That flat face looks annoyed at everything |
+| American Shorthair | cat person | Endless energy. Parkour through the living room at 3am |
+| Russian Blue | cat person | Shy. Hides for three days, then sits on your lap on the fourth |
+| Scottish Fold | cat person | Folded ears, sits like a tiny old man |
+| Sphynx | cat person | No fur, always cold, doubles as a heater in winter |
+| Bengal | cat person | No amount of space is enough. Figures out how to turn on the tap |
+| Norwegian Forest | cat person | Coat like a down jacket, spends winter watching snow from the windowsill |
 
 This verdict is like whatever card you pull. It's computed, not measured.
 
@@ -100,11 +116,11 @@ Calibration results for this run, taken from the summary table in docs/归因报
 |---|---|
 | Queries | 3 |
 | Calibration temperature beta | 12.000000 |
-| Cross-validation accuracy cv_accuracy | 100.00% |
-| Breeds in the bank | 8 |
-| Reference samples in the bank | 288 |
+| Cross-validation accuracy cv_accuracy | 98.26% |
+| Breeds in the bank | 24 |
+| Reference samples in the bank | 864 |
 
-The three-query beta for this run is 12.000000, pinned to the right end of the search range. A single query does not hit the cap: its beta is 7.479766.
+The three-query beta for this run is 12.000000, pinned to the right end of the search range. A single query does not hit the cap: its beta is 8.010150.
 
 These are closed-set probabilities under a uniform prior, over the current candidate bank only. An unlisted sample still gets assigned to whichever existing candidate looks closest.
 
@@ -132,20 +148,20 @@ The challenge suite has 12 environments with 3 queries each, 36 in total. Enviro
 
 ## The breed bank
 
-The unified bank holds two breed families and 8 breeds, 4 members each:
+The unified bank holds two breed families and 24 breeds, 12 members each:
 
 | Family | ID | Members |
 |---|---|---|
-| Dog family | dog | Husky, Labrador, Schnauzer, Corgi |
-| Cat family | cat | Ragdoll, Siamese, Orange Tabby, British Shorthair |
+| Dog family | dog | Husky, Labrador, Schnauzer, Corgi, Golden Retriever, Border Collie, Shiba Inu, Samoyed, Alaskan Malamute, Beagle, Poodle, Bulldog |
+| Cat family | cat | Ragdoll, Siamese, Orange Tabby, British Shorthair, Maine Coon, Persian, American Shorthair, Russian Blue, Scottish Fold, Sphynx, Bengal, Norwegian Forest |
 
-Each breed has 36 reference samples, 3 queries from each of 12 environments, for 288 across both families.
+Each breed has 36 reference samples, 3 queries from each of 12 environments, for 864 across both families.
 
 The test subject, Clapt (clapt), is deliberately kept out of the bank. Its weight vector is a 0.80 dog / 0.20 cat baseline mix with an extra peak at value 111.
 
 The reference corpus is produced by a parameterized generator that makes no network calls. Each breed gets a 355-dimensional weight vector, built by multiplying four components: Gaussian peaks, a value-band lift, a last-digit bias, and a position drift. Sampling normalizes the weights per position and draws categorically. Member variation comes from deterministic phase perturbation, so the same seed always yields the same corpus.
 
-Both families have 4 members, so family probabilities are directly comparable. Adding members means adding them to both families in step, otherwise family probability reflects member count rather than similarity.
+Both families have 12 members, so family probabilities are directly comparable. Adding members means adding them to both families in step, otherwise family probability reflects member count rather than similarity.
 
 ## Caveats
 
@@ -167,7 +183,7 @@ For the long-form version of why this formula produces confident answers, see [s
 
 This section breaks down the four reasoning moves the tool reproduces. Outside this section and docs/satire-targets.md, every other file in the repo describes the method at face value.
 
-Start with one measurement. Feed uniform random integers, which have no generative relationship to any breed in the bank, through the same pipeline. Across five seeds the family probabilities land between 81.7282% and 99.9990%, splitting across both families. Details in the "Control group" section of docs/归因报告.md.
+Start with one measurement. Feed uniform random integers, which have no generative relationship to any breed in the bank, through the same pipeline. Across five seeds the family probabilities land between 78.4612% and 99.9999%, splitting across both families. Details in the "Control group" section of docs/归因报告.md.
 
 ### T1 The probability input is similarity between number distributions
 
@@ -177,15 +193,15 @@ Where the reasoning breaks: between "the number distribution looks like candidat
 
 ### T2 Family probability is the sum of member probabilities
 
-Family probability equals the sum of its members' probabilities. Summing is aggregation, not identification. One family has 4 members and the other has 4, so the share reflects how concentrated the member probabilities are. There is no logical path from that share to which family is the source.
+Family probability equals the sum of its members' probabilities. Summing is aggregation, not identification. One family has 12 members and the other has 12, so the share reflects how concentrated the member probabilities are. There is no logical path from that share to which family is the source.
 
-Summing also collapses two very different situations into one number: one member in the family looking very similar, versus every member looking slightly similar. In this run, Corgi gets 68.08% per-breed probability while the dog family gets 99.9971%. Those two numbers say different things.
+Summing also collapses two very different situations into one number: one member in the family looking very similar, versus every member looking slightly similar. In this run, Bulldog gets 63.72% per-breed probability while the dog family gets 99.9999%. Those two numbers say different things.
 
 Where the reasoning breaks: between "this family's summed member probability is the largest" and "this family is the sample's ancestor", a step is missing.
 
 ### T3 The search cap on temperature beta
 
-Beta is searched over [0.05, 12.0], 801 grid points spaced logarithmically. In this repo's unified bank, the one-query beta is 7.479766, and both the two-query and three-query betas are 11.99999999999999. Two and three queries land on the cap, which means the optimum is outside the range and the search is truncated.
+Beta is searched over [0.05, 12.0], 801 grid points spaced logarithmically. In this repo's unified bank, the one-query beta is 8.010150, and both the two-query and three-query betas are 11.99999999999999. Two and three queries land on the cap, which means the optimum is outside the range and the search is truncated.
 
 The larger beta gets, the sharper the softmax. As beta goes to infinity, softmax degenerates into one-hot and the top-scoring candidate takes all the probability. Once cross-validation accuracy is near its ceiling, negative log-likelihood still falls as beta grows, so the fit keeps pushing beta to the boundary. The absolute size of the probability is then set by the right end of the search range, not by the data.
 
@@ -193,11 +209,11 @@ Where the reasoning breaks: reading a percentage produced this way as a level of
 
 ### T4 Closed set and uniform prior
 
-The candidate set is a fixed 8 breeds. The softmax denominator normalizes over those 8 only, so the 8 probabilities always sum to 1. A sample from outside the bank still gets assigned to the closest candidate and receives a number that looks like a probability. There is no "none of the above" slot in the denominator.
+The candidate set is a fixed 24 breeds. The softmax denominator normalizes over those 24 only, so the 24 probabilities always sum to 1. A sample from outside the bank still gets assigned to the closest candidate and receives a number that looks like a probability. There is no "none of the above" slot in the denominator.
 
 A uniform prior means all 8 candidates are treated as equally likely up front. Real-world breed popularity, version lineage, and family member counts would all make the prior uneven, and none of that information enters the calculation.
 
-cv_accuracy measures in-bank self-identification: group by environment, hold out queries, and check whether the held-out samples can be recognized as their own breed. This run's three-query cv_accuracy is 100.00%. That number only says in-bank samples can be matched back to themselves. It says nothing about samples outside the bank.
+cv_accuracy measures in-bank self-identification: group by environment, hold out queries, and check whether the held-out samples can be recognized as their own breed. This run's three-query cv_accuracy is 98.26%. That number only says in-bank samples can be matched back to themselves. It says nothing about samples outside the bank.
 
 Where the reasoning breaks: between "A looks closest among these 8 candidates" and "this sample is A", a step is missing. The closed-set assumption hides the gap, because the denominator is always 8 and every input gets a confident-looking answer.
 

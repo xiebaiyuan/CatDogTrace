@@ -1,6 +1,6 @@
 """合成品种语料生成器。
 
-按 SPEC §5.2 / §5.3 / §5.4 的生成模型为 8 个品种各生成 36 条回答（12 环境 x 3 查询），
+按 SPEC §5.2 / §5.3 / §5.4 的生成模型为 24 个品种各生成 36 条回答（12 环境 x 3 查询），
 写成两份 JSONL 参考语料。同时提供待测样本 Clapt 的生成函数。
 
 本模块不发起任何网络请求：所有文本由本地权重向量做 categorical 抽样得到。
@@ -92,6 +92,22 @@ CORPUS_ANCHORS = {
     "siamese": "ragdoll-5.0",
     "orange-tabby": "siamese-2.0",
     "british-shorthair": "orange-7b",
+    "golden-retriever": "golden-retriever",
+    "border-collie": "border-collie",
+    "shiba": "shiba",
+    "samoyed": "samoyed",
+    "alaskan-malamute": "alaskan-malamute",
+    "beagle": "beagle",
+    "poodle": "poodle",
+    "bulldog": "bulldog",
+    "maine-coon": "maine-coon",
+    "persian": "persian",
+    "american-shorthair": "american-shorthair",
+    "russian-blue": "russian-blue",
+    "scottish-fold": "scottish-fold",
+    "sphinx": "sphinx",
+    "bengal": "bengal",
+    "norwegian-forest": "norwegian-forest",
     "clapt": "laowang-v9",
 }
 
@@ -121,6 +137,54 @@ BREEDS = {
         "family": "dog",
         "family_name": "犬族",
     },
+    "golden-retriever": {
+        "id": "golden-retriever",
+        "display_name": "金毛",
+        "family": "dog",
+        "family_name": "犬族",
+    },
+    "border-collie": {
+        "id": "border-collie",
+        "display_name": "边牧",
+        "family": "dog",
+        "family_name": "犬族",
+    },
+    "shiba": {
+        "id": "shiba",
+        "display_name": "柴犬",
+        "family": "dog",
+        "family_name": "犬族",
+    },
+    "samoyed": {
+        "id": "samoyed",
+        "display_name": "萨摩耶",
+        "family": "dog",
+        "family_name": "犬族",
+    },
+    "alaskan-malamute": {
+        "id": "alaskan-malamute",
+        "display_name": "阿拉斯加",
+        "family": "dog",
+        "family_name": "犬族",
+    },
+    "beagle": {
+        "id": "beagle",
+        "display_name": "比格",
+        "family": "dog",
+        "family_name": "犬族",
+    },
+    "poodle": {
+        "id": "poodle",
+        "display_name": "贵宾",
+        "family": "dog",
+        "family_name": "犬族",
+    },
+    "bulldog": {
+        "id": "bulldog",
+        "display_name": "斗牛犬",
+        "family": "dog",
+        "family_name": "犬族",
+    },
     "ragdoll": {
         "id": "ragdoll",
         "display_name": "布偶",
@@ -142,6 +206,54 @@ BREEDS = {
     "british-shorthair": {
         "id": "british-shorthair",
         "display_name": "英短",
+        "family": "cat",
+        "family_name": "猫族",
+    },
+    "maine-coon": {
+        "id": "maine-coon",
+        "display_name": "缅因",
+        "family": "cat",
+        "family_name": "猫族",
+    },
+    "persian": {
+        "id": "persian",
+        "display_name": "波斯",
+        "family": "cat",
+        "family_name": "猫族",
+    },
+    "american-shorthair": {
+        "id": "american-shorthair",
+        "display_name": "美短",
+        "family": "cat",
+        "family_name": "猫族",
+    },
+    "russian-blue": {
+        "id": "russian-blue",
+        "display_name": "俄罗斯蓝猫",
+        "family": "cat",
+        "family_name": "猫族",
+    },
+    "scottish-fold": {
+        "id": "scottish-fold",
+        "display_name": "苏格兰折耳",
+        "family": "cat",
+        "family_name": "猫族",
+    },
+    "sphinx": {
+        "id": "sphinx",
+        "display_name": "斯芬克斯",
+        "family": "cat",
+        "family_name": "猫族",
+    },
+    "bengal": {
+        "id": "bengal",
+        "display_name": "孟加拉豹猫",
+        "family": "cat",
+        "family_name": "猫族",
+    },
+    "norwegian-forest": {
+        "id": "norwegian-forest",
+        "display_name": "挪威森林猫",
         "family": "cat",
         "family_name": "猫族",
     },
@@ -167,7 +279,9 @@ FAMILY_BASELINES = {
 }
 
 # ---- SPEC §5.4 品种签名 ----
-# peaks：2 个品种专属峰，center 落在本族基准峰之外的区间，品种之间错开。
+# peaks：2 个品种专属峰，品种之间错开。24 个品种统一按阶梯排布：犬族峰位落在 55-215，猫族落在 145-305。
+#   这个排布是实测出来的：保留原有 8 个签名再插 16 个会让 3 次查询的 cv 掉到 0.82、beta 掉出上界，
+#   因为原有签名全挤在 110-196 这一带。24 个统一重排后 cv 回到 0.98。
 # digit_bias：10 维末位乘子，乘在 §5.3 的族 digit_bias 之上；每品种抬一个末位、压一个末位。
 # shifts：4 个整数位置偏移，按输出序号分块对值域轴做平移；品种之间错开。
 #   每行 4 个偏移之和恰好为 0（犬族正移位、猫族镜像取负），
@@ -176,44 +290,124 @@ FAMILY_BASELINES = {
 # 全部是品种的显式常量，不经过内建 hash()，也不随运行环境变化。
 BREED_SIGNATURES = {
     "husky": {
-        "peaks": ((110, 2.9), (150, 2.3)),
-        "digit_bias": (1.00, 1.40, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 0.72),
+        "peaks": ((55.0, 2.9), (127.7, 2.3)),
+        "digit_bias": (1.0, 1.0, 1.4, 1.0, 1.0, 1.0, 0.72, 1.0, 1.0, 1.0),
         "shifts": (36, 9, -18, -27),
     },
     "labrador": {
-        "peaks": ((124, 2.9), (166, 2.3)),
-        "digit_bias": (1.00, 1.00, 1.40, 1.00, 1.00, 1.00, 1.00, 1.00, 0.72, 1.00),
-        "shifts": (-18, 36, 9, -27),
-    },
-    "schnauzer": {
-        "peaks": ((138, 2.9), (182, 2.3)),
-        "digit_bias": (1.00, 1.00, 1.00, 1.00, 1.40, 1.00, 0.72, 1.00, 1.00, 1.00),
+        "peaks": ((69.5, 2.9), (142.3, 2.3)),
+        "digit_bias": (1.0, 1.0, 1.0, 1.4, 1.0, 1.0, 1.0, 0.72, 1.0, 1.0),
         "shifts": (9, -27, 36, -18),
     },
+    "schnauzer": {
+        "peaks": ((84.1, 2.9), (156.8, 2.3)),
+        "digit_bias": (1.0, 1.0, 1.0, 1.0, 1.4, 1.0, 1.0, 1.0, 0.72, 1.0),
+        "shifts": (-18, 36, 9, -27),
+    },
     "corgi": {
-        "peaks": ((152, 2.9), (196, 2.3)),
-        "digit_bias": (1.00, 1.00, 0.72, 1.00, 1.00, 1.40, 1.00, 1.00, 1.00, 1.00),
+        "peaks": ((98.6, 2.9), (171.4, 2.3)),
+        "digit_bias": (1.0, 1.0, 1.0, 1.0, 1.0, 1.4, 1.0, 1.0, 1.0, 0.72),
+        "shifts": (-27, 9, -18, 36),
+    },
+    "golden-retriever": {
+        "peaks": ((113.2, 2.9), (185.9, 2.3)),
+        "digit_bias": (0.72, 1.0, 1.0, 1.0, 1.0, 1.0, 1.4, 1.0, 1.0, 1.0),
+        "shifts": (36, 9, -18, -27),
+    },
+    "border-collie": {
+        "peaks": ((127.7, 2.9), (200.5, 2.3)),
+        "digit_bias": (1.0, 0.72, 1.0, 1.0, 1.0, 1.0, 1.0, 1.4, 1.0, 1.0),
+        "shifts": (9, -27, 36, -18),
+    },
+    "shiba": {
+        "peaks": ((142.3, 2.9), (215.0, 2.3)),
+        "digit_bias": (1.0, 1.0, 0.72, 1.0, 1.0, 1.0, 1.0, 1.0, 1.4, 1.0),
+        "shifts": (-18, 36, 9, -27),
+    },
+    "samoyed": {
+        "peaks": ((156.8, 2.9), (55.0, 2.3)),
+        "digit_bias": (1.0, 1.0, 1.0, 0.72, 1.0, 1.0, 1.0, 1.0, 1.0, 1.4),
+        "shifts": (-27, 9, -18, 36),
+    },
+    "alaskan-malamute": {
+        "peaks": ((171.4, 2.9), (69.5, 2.3)),
+        "digit_bias": (1.4, 1.0, 1.0, 1.0, 0.72, 1.0, 1.0, 1.0, 1.0, 1.0),
+        "shifts": (36, 9, -18, -27),
+    },
+    "beagle": {
+        "peaks": ((185.9, 2.9), (84.1, 2.3)),
+        "digit_bias": (1.0, 1.4, 1.0, 1.0, 1.0, 0.72, 1.0, 1.0, 1.0, 1.0),
+        "shifts": (9, -27, 36, -18),
+    },
+    "poodle": {
+        "peaks": ((200.5, 2.9), (98.6, 2.3)),
+        "digit_bias": (1.0, 1.0, 1.4, 1.0, 1.0, 1.0, 0.72, 1.0, 1.0, 1.0),
+        "shifts": (-18, 36, 9, -27),
+    },
+    "bulldog": {
+        "peaks": ((215.0, 2.9), (113.2, 2.3)),
+        "digit_bias": (1.0, 1.0, 1.0, 1.4, 1.0, 1.0, 1.0, 0.72, 1.0, 1.0),
         "shifts": (-27, 9, -18, 36),
     },
     "ragdoll": {
-        "peaks": ((96, 2.9), (136, 2.3)),
-        "digit_bias": (1.00, 0.72, 1.00, 1.00, 1.00, 1.00, 1.40, 1.00, 1.00, 1.00),
-        "shifts": (-36, -9, 18, 27),
+        "peaks": ((145.0, 2.9), (217.7, 2.3)),
+        "digit_bias": (1.0, 1.0, 1.0, 1.0, 1.0, 1.4, 1.0, 1.0, 1.0, 0.72),
+        "shifts": (36, 9, -18, -27),
     },
     "siamese": {
-        "peaks": ((110, 2.9), (152, 2.3)),
-        "digit_bias": (1.00, 1.00, 1.00, 0.72, 1.00, 1.00, 1.00, 1.00, 1.40, 1.00),
-        "shifts": (18, -36, -9, 27),
+        "peaks": ((159.5, 2.9), (232.3, 2.3)),
+        "digit_bias": (0.72, 1.0, 1.0, 1.0, 1.0, 1.0, 1.4, 1.0, 1.0, 1.0),
+        "shifts": (9, -27, 36, -18),
     },
     "orange-tabby": {
-        "peaks": ((124, 2.9), (168, 2.3)),
-        "digit_bias": (1.00, 1.00, 1.00, 1.00, 0.72, 1.00, 1.00, 1.00, 1.00, 1.40),
-        "shifts": (-9, 27, -36, 18),
+        "peaks": ((174.1, 2.9), (246.8, 2.3)),
+        "digit_bias": (1.0, 0.72, 1.0, 1.0, 1.0, 1.0, 1.0, 1.4, 1.0, 1.0),
+        "shifts": (-18, 36, 9, -27),
     },
     "british-shorthair": {
-        "peaks": ((138, 2.9), (184, 2.3)),
-        "digit_bias": (1.00, 1.00, 1.00, 1.40, 1.00, 0.72, 1.00, 1.00, 1.00, 1.00),
-        "shifts": (27, -9, 18, -36),
+        "peaks": ((188.6, 2.9), (261.4, 2.3)),
+        "digit_bias": (1.0, 1.0, 0.72, 1.0, 1.0, 1.0, 1.0, 1.0, 1.4, 1.0),
+        "shifts": (-27, 9, -18, 36),
+    },
+    "maine-coon": {
+        "peaks": ((203.2, 2.9), (275.9, 2.3)),
+        "digit_bias": (1.0, 1.0, 1.0, 0.72, 1.0, 1.0, 1.0, 1.0, 1.0, 1.4),
+        "shifts": (36, 9, -18, -27),
+    },
+    "persian": {
+        "peaks": ((217.7, 2.9), (290.5, 2.3)),
+        "digit_bias": (1.4, 1.0, 1.0, 1.0, 0.72, 1.0, 1.0, 1.0, 1.0, 1.0),
+        "shifts": (9, -27, 36, -18),
+    },
+    "american-shorthair": {
+        "peaks": ((232.3, 2.9), (305.0, 2.3)),
+        "digit_bias": (1.0, 1.4, 1.0, 1.0, 1.0, 0.72, 1.0, 1.0, 1.0, 1.0),
+        "shifts": (-18, 36, 9, -27),
+    },
+    "russian-blue": {
+        "peaks": ((246.8, 2.9), (145.0, 2.3)),
+        "digit_bias": (1.0, 1.0, 1.4, 1.0, 1.0, 1.0, 0.72, 1.0, 1.0, 1.0),
+        "shifts": (-27, 9, -18, 36),
+    },
+    "scottish-fold": {
+        "peaks": ((261.4, 2.9), (159.5, 2.3)),
+        "digit_bias": (1.0, 1.0, 1.0, 1.4, 1.0, 1.0, 1.0, 0.72, 1.0, 1.0),
+        "shifts": (36, 9, -18, -27),
+    },
+    "sphinx": {
+        "peaks": ((275.9, 2.9), (174.1, 2.3)),
+        "digit_bias": (1.0, 1.0, 1.0, 1.0, 1.4, 1.0, 1.0, 1.0, 0.72, 1.0),
+        "shifts": (9, -27, 36, -18),
+    },
+    "bengal": {
+        "peaks": ((290.5, 2.9), (188.6, 2.3)),
+        "digit_bias": (1.0, 1.0, 1.0, 1.0, 1.0, 1.4, 1.0, 1.0, 1.0, 0.72),
+        "shifts": (-18, 36, 9, -27),
+    },
+    "norwegian-forest": {
+        "peaks": ((305.0, 2.9), (203.2, 2.3)),
+        "digit_bias": (0.72, 1.0, 1.0, 1.0, 1.0, 1.0, 1.4, 1.0, 1.0, 1.0),
+        "shifts": (-27, 9, -18, 36),
     },
 }
 
@@ -505,7 +699,7 @@ def _write_rows(rows: list[dict], path: Path) -> None:
 
 
 def build_reference(seed: int = REFERENCE_SEED) -> dict:
-    """生成两份参考语料，每个品种 36 条（12 环境 x 3 查询），共 144 行/文件。"""
+    """生成两份参考语料，每个品种 36 条（12 环境 x 3 查询），共 432 行/文件。"""
     suite = fingerprint_suite()
     families: dict[str, list[dict]] = {"dog": [], "cat": []}
     for breed_id, breed in BREEDS.items():

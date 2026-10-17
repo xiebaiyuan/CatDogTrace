@@ -190,16 +190,34 @@ main()                                   # 写 docs/归因报告.md
 
 ### 5.1 名册
 
+两族各 12 个品种，共 24 个。族成员数保持对称：族概率 = 成员概率之和，成员数不等时这个数会随成员数系统性变大，两族对称才不会把「成员数偏差」混进结论。
+
 | id | display_name | family | family_name |
 |---|---|---|---|
 | husky | 哈士奇 | dog | 犬族 |
 | labrador | 拉布拉多 | dog | 犬族 |
 | schnauzer | 雪纳瑞 | dog | 犬族 |
 | corgi | 柯基 | dog | 犬族 |
+| golden-retriever | 金毛 | dog | 犬族 |
+| border-collie | 边牧 | dog | 犬族 |
+| shiba | 柴犬 | dog | 犬族 |
+| samoyed | 萨摩耶 | dog | 犬族 |
+| alaskan-malamute | 阿拉斯加 | dog | 犬族 |
+| beagle | 比格 | dog | 犬族 |
+| poodle | 贵宾 | dog | 犬族 |
+| bulldog | 斗牛犬 | dog | 犬族 |
 | ragdoll | 布偶 | cat | 猫族 |
 | siamese | 暹罗 | cat | 猫族 |
 | orange-tabby | 橘猫 | cat | 猫族 |
 | british-shorthair | 英短 | cat | 猫族 |
+| maine-coon | 缅因 | cat | 猫族 |
+| persian | 波斯 | cat | 猫族 |
+| american-shorthair | 美短 | cat | 猫族 |
+| russian-blue | 俄罗斯蓝猫 | cat | 猫族 |
+| scottish-fold | 苏格兰折耳 | cat | 猫族 |
+| sphinx | 斯芬克斯 | cat | 猫族 |
+| bengal | 孟加拉豹猫 | cat | 猫族 |
+| norwegian-forest | 挪威森林猫 | cat | 猫族 |
 
 待测样本（**不入库**）：`clapt` / Clapt / 无 family。
 
@@ -275,7 +293,7 @@ clapt 权重 = `0.80 * dog_profile + 0.20 * cat_profile`，再叠加 `(111, 1.4)
 
 ## 7. 验收
 
-1. `python3 enrollment.py --seed 20261017` → 两份 jsonl，各 144 行（8 模型... 实为 4 模型 × 36）
+1. `python3 enrollment.py --seed 20261017` → 两份 jsonl，各 432 行（12 品种 × 36）
 2. `python3 bank_builder.py --responses data/dog_reference.jsonl --output data/dog_bank.json`（cat 同）
 3. `python3 rebuild_unified_bank.py` → `data/unified_bank.json` + `static/data/unified_bank.json`
 4. `python3 report.py` → `docs/归因报告.md`，含真实 β / cv_accuracy / softmax 百分比，家族结论 = 犬族

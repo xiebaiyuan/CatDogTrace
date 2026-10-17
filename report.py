@@ -82,7 +82,7 @@ def uniform_random_outputs(seed: int, counts: list[int]) -> list[dict]:
 def percent(value: float, digits: int = 2) -> str:
     """把 0..1 的实数写成百分比，默认两位小数。
 
-    品种族概率用四位小数：两位小数会把 99.9971% 抹成 100.00%，
+    品种族概率用四位小数：两位小数会把 99.9999% 抹成 100.00%，
     丢掉"不是恰好 1"这个事实。
     """
     return f"{float(value) * 100:.{digits}f}%"
