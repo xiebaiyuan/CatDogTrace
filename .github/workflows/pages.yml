@@ -34,6 +34,9 @@ jobs:
 
       - name: 配置 Pages
         uses: actions/configure-pages@v5
+        with:
+          # Pages 尚未启用时由本步骤自动启用；默认 false，新仓库首次推送会失败
+          enablement: true
 
       - name: 上传静态站点
         uses: actions/upload-pages-artifact@v3
