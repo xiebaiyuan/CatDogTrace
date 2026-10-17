@@ -1,0 +1,12 @@
+/* 仓库链接：与主样式解耦，单独一处便于替换。 */
+
+.repository-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink-faint, #767d87);
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.repository-link:hover { color: var(--accent, #2b4a6f); text-decoration: underline; }

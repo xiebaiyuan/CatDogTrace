@@ -1,0 +1,45 @@
+# 把 static/ 发布到 GitHub Pages。
+#
+# 触发：推送到默认分支，或在 Actions 页面手动运行。
+# static/ 是完整的静态站点根目录，其中的 data/unified_bank.json 与
+# DogCatTrace-standalone.html 都随构建一起发布，不需要额外构建步骤。
+
+name: pages
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v4
+
+      - name: 配置 Pages
+        uses: actions/configure-pages@v5
+
+      - name: 上传静态站点
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: static
+
+      - name: 部署到 Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
