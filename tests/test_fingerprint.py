@@ -19,17 +19,17 @@ import fingerprint
 # --------------------------------------------------------------------------
 
 PROFILES = {
-    "husky-2.0": [7, 13, 21],
-    "husky-3.1": [8, 14, 22],
-    "ragdoll-4.6": [200, 233, 271],
-    "ragdoll-5.0": [201, 234, 272],
+    "husky": [7, 13, 21],
+    "labrador": [8, 14, 22],
+    "ragdoll": [200, 233, 271],
+    "siamese": [201, 234, 272],
 }
 
 FAMILIES = {
-    "husky-2.0": ("husky", "哈士奇族"),
-    "husky-3.1": ("husky", "哈士奇族"),
-    "ragdoll-4.6": ("ragdoll", "布偶族"),
-    "ragdoll-5.0": ("ragdoll", "布偶族"),
+    "husky": ("dog", "犬族"),
+    "labrador": ("dog", "犬族"),
+    "ragdoll": ("cat", "猫族"),
+    "siamese": ("cat", "猫族"),
 }
 
 MODEL_IDS = list(PROFILES)
@@ -158,7 +158,7 @@ def make_bank() -> dict:
     }
 
 
-def make_outputs(model_id: str = "husky-2.0", expected_count: int = 218) -> list[dict]:
+def make_outputs(model_id: str = "husky", expected_count: int = 218) -> list[dict]:
     """按某个品种造三份输出，每份的序列都来自该品种的峰值。"""
     return [
         {
@@ -305,7 +305,7 @@ def test_conditional_probability_sums_to_one_within_family(bank: dict) -> None:
 
 
 def test_prediction_follows_the_query_profile(bank: dict) -> None:
-    for model_id in ("husky-2.0", "ragdoll-5.0"):
+    for model_id in ("husky", "siamese"):
         result = fingerprint.analyze_global_outputs(make_outputs(model_id), bank)
         assert result["prediction"] == model_id, model_id
 

@@ -1,6 +1,6 @@
 {
   "schema": "robust-number-fingerprint-bank",
-  "built_at": "2026-10-17T12:43:48.262566+00:00",
+  "built_at": "2026-10-17T15:08:41.316740+00:00",
   "method": {
     "name": "Ordered-block + nuisance-Hellinger",
     "range": [
@@ -22,8 +22,8 @@
   ],
   "models": [
     {
-      "id": "ragdoll-4.6",
-      "display_name": "布偶-4.6",
+      "id": "ragdoll",
+      "display_name": "布偶",
       "family": null,
       "family_name": null,
       "response_count": 36,
@@ -401,8 +401,8 @@
       ]
     },
     {
-      "id": "ragdoll-5.0",
-      "display_name": "布偶-5.0",
+      "id": "siamese",
+      "display_name": "暹罗",
       "family": null,
       "family_name": null,
       "response_count": 36,
@@ -780,8 +780,8 @@
       ]
     },
     {
-      "id": "siamese-2.0",
-      "display_name": "暹罗-2.0",
+      "id": "orange-tabby",
+      "display_name": "橘猫",
       "family": null,
       "family_name": null,
       "response_count": 36,
@@ -1159,8 +1159,8 @@
       ]
     },
     {
-      "id": "orange-7b",
-      "display_name": "橘猫-7B",
+      "id": "british-shorthair",
+      "display_name": "英短",
       "family": null,
       "family_name": null,
       "response_count": 36,
@@ -1540,10 +1540,10 @@
   ],
   "robust": {
     "model_order": [
-      "ragdoll-4.6",
-      "ragdoll-5.0",
-      "siamese-2.0",
-      "orange-7b"
+      "ragdoll",
+      "siamese",
+      "orange-tabby",
+      "british-shorthair"
     ],
     "robust_ready": true,
     "training_rows": 144,

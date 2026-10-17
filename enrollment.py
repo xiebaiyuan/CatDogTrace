@@ -1,13 +1,15 @@
 """合成品种语料生成器。
 
 按 SPEC §5.2 / §5.3 / §5.4 的生成模型为 8 个品种各生成 36 条回答（12 环境 x 3 查询），
-写成两份 JSONL 参考语料。同时提供待测样本 laowang-v9 的生成函数。
+写成两份 JSONL 参考语料。同时提供待测样本 Clapt 的生成函数。
 
 本模块不发起任何网络请求：所有文本由本地权重向量做 categorical 抽样得到。
 
-可复现性：所有随机性来自传入的 seed 与行标识（品种 id + challenge_id + count），
+可复现性：所有随机性来自传入的 seed 与行标识（品种 + challenge_id + count），
 不依赖 Python 内建 hash()（它按进程加盐），因此同一 seed 重跑得到逐字节相同的文件。
 collected_at 由固定基准时刻加行序派生，同样不随运行时间变化。
+
+品种 id 与语料锚点是两回事，见 CORPUS_ANCHORS 的注释。
 
 权重向量的构成（SPEC §5.2 族基准 + §5.3 成员扰动 + §5.4 品种签名）：
 
@@ -46,8 +48,8 @@ from fingerprint import parse_numbers
 
 PROJECT = Path(__file__).resolve().parent
 DATA_DIR = PROJECT / "data"
-HUSKY_REFERENCE = DATA_DIR / "husky_reference.jsonl"
-RAGDOLL_REFERENCE = DATA_DIR / "ragdoll_reference.jsonl"
+DOG_REFERENCE = DATA_DIR / "dog_reference.jsonl"
+CAT_REFERENCE = DATA_DIR / "cat_reference.jsonl"
 
 VALUE_MIN = 1
 VALUE_MAX = 355
@@ -64,74 +66,99 @@ DIGIT_BIAS_JITTER = 0.08
 POSITION_BLOCKS = 4
 
 # 待测样本权重混合比例（SPEC §5.3 末段）
-LAOWANG_HUSKY_SHARE = 0.80
-LAOWANG_RAGDOLL_SHARE = 0.20
-LAOWANG_EXTRA_PEAKS = ((111, 1.4),)
+CLAPT_DOG_SHARE = 0.80
+CLAPT_CAT_SHARE = 0.20
+CLAPT_EXTRA_PEAKS = ((111, 1.4),)
+
+# ---- 语料锚点 ----
+# 语料由四样东西决定：族基准、品种签名、成员扰动相位、每行的随机种子。
+# 后两样都从品种 id 派生：
+#   相位     _stable_phase(breed_id, ...) 里的 sha256(breed_id|tag)
+#   行种子   _row_seed(seed, breed_id, ...) 里的 sha256(seed|breed_id|challenge_id|count)
+#
+# 因此改品种 id 会让相位与行种子一起重抽，整份语料随之改变。而语料里已经发布的实测数字
+# （3 次查询的 beta 顶格、cv_accuracy、softmax 百分比）都是以旧 id 生成的那一份为准。
+# 一次改名就把这些数字全部作废，代价与收益不相称。
+#
+# 所以这里分两层：BREEDS 的键是**对外展示**的品种 id，CORPUS_ANCHORS 的值是**派生语料**用的锚点。
+# 改名时只动前者，锚点保持不动，已发布的数字继续有效。新增品种若没有历史包袱，
+# 锚点写自己的 id 即可（corpus_anchor() 对未登记的 id 原样返回）。
+CORPUS_ANCHORS = {
+    "husky": "husky-2.0",
+    "labrador": "husky-3.1",
+    "schnauzer": "husky-3.1-pro",
+    "corgi": "alaskan-mix-2.0",
+    "ragdoll": "ragdoll-4.6",
+    "siamese": "ragdoll-5.0",
+    "orange-tabby": "siamese-2.0",
+    "british-shorthair": "orange-7b",
+    "clapt": "laowang-v9",
+}
 
 # ---- SPEC §5.1 名册 ----
 BREEDS = {
-    "husky-2.0": {
-        "id": "husky-2.0",
-        "display_name": "哈士奇-2.0",
-        "family": "husky",
-        "family_name": "哈士奇族",
+    "husky": {
+        "id": "husky",
+        "display_name": "哈士奇",
+        "family": "dog",
+        "family_name": "犬族",
     },
-    "husky-3.1": {
-        "id": "husky-3.1",
-        "display_name": "哈士奇-3.1",
-        "family": "husky",
-        "family_name": "哈士奇族",
+    "labrador": {
+        "id": "labrador",
+        "display_name": "拉布拉多",
+        "family": "dog",
+        "family_name": "犬族",
     },
-    "husky-3.1-pro": {
-        "id": "husky-3.1-pro",
-        "display_name": "哈士奇-3.1-pro",
-        "family": "husky",
-        "family_name": "哈士奇族",
+    "schnauzer": {
+        "id": "schnauzer",
+        "display_name": "雪纳瑞",
+        "family": "dog",
+        "family_name": "犬族",
     },
-    "alaskan-mix-2.0": {
-        "id": "alaskan-mix-2.0",
-        "display_name": "阿拉斯加混血-2.0",
-        "family": "husky",
-        "family_name": "哈士奇族",
+    "corgi": {
+        "id": "corgi",
+        "display_name": "柯基",
+        "family": "dog",
+        "family_name": "犬族",
     },
-    "ragdoll-4.6": {
-        "id": "ragdoll-4.6",
-        "display_name": "布偶-4.6",
-        "family": "ragdoll",
-        "family_name": "布偶族",
+    "ragdoll": {
+        "id": "ragdoll",
+        "display_name": "布偶",
+        "family": "cat",
+        "family_name": "猫族",
     },
-    "ragdoll-5.0": {
-        "id": "ragdoll-5.0",
-        "display_name": "布偶-5.0",
-        "family": "ragdoll",
-        "family_name": "布偶族",
+    "siamese": {
+        "id": "siamese",
+        "display_name": "暹罗",
+        "family": "cat",
+        "family_name": "猫族",
     },
-    "siamese-2.0": {
-        "id": "siamese-2.0",
-        "display_name": "暹罗-2.0",
-        "family": "ragdoll",
-        "family_name": "布偶族",
+    "orange-tabby": {
+        "id": "orange-tabby",
+        "display_name": "橘猫",
+        "family": "cat",
+        "family_name": "猫族",
     },
-    "orange-7b": {
-        "id": "orange-7b",
-        "display_name": "橘猫-7B",
-        "family": "ragdoll",
-        "family_name": "布偶族",
+    "british-shorthair": {
+        "id": "british-shorthair",
+        "display_name": "英短",
+        "family": "cat",
+        "family_name": "猫族",
     },
 }
 
-LAOWANG_ID = "laowang-v9"
-LAOWANG_DISPLAY_NAME = "隔壁老王-v9"
+CLAPT_ID = "clapt"
+CLAPT_DISPLAY_NAME = "Clapt"
 
 # ---- SPEC §5.3 参数表 ----
 FAMILY_BASELINES = {
-    "husky": {
+    "dog": {
         "peaks": ((7, 3.2), (13, 2.6), (21, 2.1), (42, 1.9), (77, 1.7), (88, 1.5)),
         "band": (VALUE_MIN, 60, 1.35),
         "digit_bias": (0.60, 1.00, 1.00, 1.30, 1.00, 1.00, 1.00, 1.60, 1.00, 1.00),
         "drift": (-0.10, 0.00, 0.08, 0.16),
     },
-    "ragdoll": {
+    "cat": {
         "peaks": ((200, 3.0), (233, 2.5), (271, 2.2), (314, 1.9), (355, 1.6)),
         "band": (250, VALUE_MAX, 1.40),
         "digit_bias": (1.55, 1.00, 1.00, 1.00, 1.00, 1.30, 1.00, 0.65, 1.00, 1.00),
@@ -143,60 +170,66 @@ FAMILY_BASELINES = {
 # peaks：2 个品种专属峰，center 落在本族基准峰之外的区间，品种之间错开。
 # digit_bias：10 维末位乘子，乘在 §5.3 的族 digit_bias 之上；每品种抬一个末位、压一个末位。
 # shifts：4 个整数位置偏移，按输出序号分块对值域轴做平移；品种之间错开。
-#   每行 4 个偏移之和恰好为 0（哈士奇族正移位、布偶族镜像取负），
+#   每行 4 个偏移之和恰好为 0（犬族正移位、猫族镜像取负），
 #   这样位置漂移只改位置结构、不改整条输出在值域轴上的重心，
-#   §5.3 里"哈士奇偏低值、布偶偏高值"的族间差异不会被漂移抹平或反转。
-# 全部是品种 id 的显式常量，不经过内建 hash()，也不随运行环境变化。
+#   §5.3 里"犬族偏低值、猫族偏高值"的族间差异不会被漂移抹平或反转。
+# 全部是品种的显式常量，不经过内建 hash()，也不随运行环境变化。
 BREED_SIGNATURES = {
-    "husky-2.0": {
+    "husky": {
         "peaks": ((110, 2.9), (150, 2.3)),
         "digit_bias": (1.00, 1.40, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 0.72),
         "shifts": (36, 9, -18, -27),
     },
-    "husky-3.1": {
+    "labrador": {
         "peaks": ((124, 2.9), (166, 2.3)),
         "digit_bias": (1.00, 1.00, 1.40, 1.00, 1.00, 1.00, 1.00, 1.00, 0.72, 1.00),
         "shifts": (-18, 36, 9, -27),
     },
-    "husky-3.1-pro": {
+    "schnauzer": {
         "peaks": ((138, 2.9), (182, 2.3)),
         "digit_bias": (1.00, 1.00, 1.00, 1.00, 1.40, 1.00, 0.72, 1.00, 1.00, 1.00),
         "shifts": (9, -27, 36, -18),
     },
-    "alaskan-mix-2.0": {
+    "corgi": {
         "peaks": ((152, 2.9), (196, 2.3)),
         "digit_bias": (1.00, 1.00, 0.72, 1.00, 1.00, 1.40, 1.00, 1.00, 1.00, 1.00),
         "shifts": (-27, 9, -18, 36),
     },
-    "ragdoll-4.6": {
+    "ragdoll": {
         "peaks": ((96, 2.9), (136, 2.3)),
         "digit_bias": (1.00, 0.72, 1.00, 1.00, 1.00, 1.00, 1.40, 1.00, 1.00, 1.00),
         "shifts": (-36, -9, 18, 27),
     },
-    "ragdoll-5.0": {
+    "siamese": {
         "peaks": ((110, 2.9), (152, 2.3)),
         "digit_bias": (1.00, 1.00, 1.00, 0.72, 1.00, 1.00, 1.00, 1.00, 1.40, 1.00),
         "shifts": (18, -36, -9, 27),
     },
-    "siamese-2.0": {
+    "orange-tabby": {
         "peaks": ((124, 2.9), (168, 2.3)),
         "digit_bias": (1.00, 1.00, 1.00, 1.00, 0.72, 1.00, 1.00, 1.00, 1.00, 1.40),
         "shifts": (-9, 27, -36, 18),
     },
-    "orange-7b": {
+    "british-shorthair": {
         "peaks": ((138, 2.9), (184, 2.3)),
         "digit_bias": (1.00, 1.00, 1.00, 1.40, 1.00, 0.72, 1.00, 1.00, 1.00, 1.00),
         "shifts": (27, -9, 18, -36),
     },
 }
 
-FAMILY_REFERENCES = {"husky": HUSKY_REFERENCE, "ragdoll": RAGDOLL_REFERENCE}
+FAMILY_REFERENCES = {"dog": DOG_REFERENCE, "cat": CAT_REFERENCE}
+
+
+def corpus_anchor(breed_id: str) -> str:
+    """取品种的语料锚点。未登记的 id 原样返回。"""
+    return CORPUS_ANCHORS.get(breed_id, breed_id)
 
 
 def _stable_phase(member_id: str, tag: str) -> float:
     """成员扰动相位：sha256(member_id|tag) 映射到 [0, 2*pi)。
 
-    不用内建 hash()，它按进程加盐，会让同一 seed 在不同进程里产生不同语料。
+    传入的 member_id 是语料锚点，不是对外展示的品种 id。不用内建 hash()，
+    它按进程加盐，会让同一 seed 在不同进程里产生不同语料。
     """
     digest = hashlib.sha256(f"{member_id}|{tag}".encode("utf-8")).digest()
     unit = int.from_bytes(digest[:8], "big") / float(1 << 64)
@@ -256,10 +289,11 @@ def family_weight_profile(family: str) -> list[float]:
 
 @lru_cache(maxsize=None)
 def _breed_profile_cached(breed_id: str) -> tuple[float, ...]:
-    if breed_id == LAOWANG_ID:
-        return tuple(laowang_profile())
+    if breed_id == CLAPT_ID:
+        return tuple(clapt_profile())
     if breed_id not in BREEDS:
         raise KeyError(f"未知品种：{breed_id}")
+    anchor = corpus_anchor(breed_id)
     family = BREEDS[breed_id]["family"]
     baseline = FAMILY_BASELINES[family]
     signature = breed_signature(breed_id)
@@ -270,12 +304,13 @@ def _breed_profile_cached(breed_id: str) -> tuple[float, ...]:
     base_peaks = baseline["peaks"]
     extra_peaks = signature["peaks"]
 
+    # 相位从锚点派生：改名不动锚点，成员扰动就一点不变。
     height_scale = [
-        1.0 + PEAK_HEIGHT_JITTER * math.sin(_stable_phase(breed_id, f"peak-{index}"))
+        1.0 + PEAK_HEIGHT_JITTER * math.sin(_stable_phase(anchor, f"peak-{index}"))
         for index in range(len(base_peaks))
     ]
     digit_scale = [
-        1.0 + DIGIT_BIAS_JITTER * math.sin(_stable_phase(breed_id, f"digit-{digit}"))
+        1.0 + DIGIT_BIAS_JITTER * math.sin(_stable_phase(anchor, f"digit-{digit}"))
         for digit in range(10)
     ]
 
@@ -300,19 +335,19 @@ def breed_profile(breed_id: str) -> list[float]:
     return list(_breed_profile_cached(breed_id))
 
 
-def laowang_profile() -> list[float]:
-    """待测样本权重向量：0.80 * 哈士奇族基准 + 0.20 * 布偶族基准，再叠加 (111, 1.4) 峰。
+def clapt_profile() -> list[float]:
+    """待测样本权重向量：0.80 * 犬族基准 + 0.20 * 猫族基准，再叠加 (111, 1.4) 峰。
 
     待测样本只按 SPEC §5.3 的定义取两族基准的混合，不叠加任何品种签名：
     它是跨族混合体，不归属任何一个具体品种的位置结构。
     """
-    husky = family_weight_profile("husky")
-    ragdoll = family_weight_profile("ragdoll")
+    dog = family_weight_profile("dog")
+    cat = family_weight_profile("cat")
     weights = [
-        LAOWANG_HUSKY_SHARE * husky[index] + LAOWANG_RAGDOLL_SHARE * ragdoll[index]
+        CLAPT_DOG_SHARE * dog[index] + CLAPT_CAT_SHARE * cat[index]
         for index in range(DIMENSION)
     ]
-    for center, height in LAOWANG_EXTRA_PEAKS:
+    for center, height in CLAPT_EXTRA_PEAKS:
         for offset in range(DIMENSION):
             weights[offset] += gaussian(offset + VALUE_MIN, center) * height
     return weights
@@ -368,9 +403,13 @@ def block_sizes(count: int) -> list[int]:
 
 
 def _row_seed(seed: int, breed_id: str, challenge_id: str, count: int) -> int:
-    """每行独立的确定性种子：seed + 品种 + 查询 + 计数。"""
+    """每行独立的确定性种子：seed + 品种锚点 + 查询 + 计数。
+
+    品种这一项用锚点而非展示 id：改名不动锚点，行种子不变，语料逐字节不变。
+    """
+    anchor = corpus_anchor(breed_id)
     digest = hashlib.sha256(
-        f"{seed}|{breed_id}|{challenge_id}|{count}".encode("utf-8")
+        f"{seed}|{anchor}|{challenge_id}|{count}".encode("utf-8")
     ).digest()
     return int.from_bytes(digest[:8], "big")
 
@@ -400,7 +439,7 @@ def make_row(
     challenge_id: str,
     expected_count: int = 0,
     temperature: str | float = "synthetic",
-    bank_id: str = "husky",
+    bank_id: str = "dog",
     wrapper_transport: str | None = None,
     provider: str = "synthetic",
     prompt: str | None = None,
@@ -468,7 +507,7 @@ def _write_rows(rows: list[dict], path: Path) -> None:
 def build_reference(seed: int = REFERENCE_SEED) -> dict:
     """生成两份参考语料，每个品种 36 条（12 环境 x 3 查询），共 144 行/文件。"""
     suite = fingerprint_suite()
-    families: dict[str, list[dict]] = {"husky": [], "ragdoll": []}
+    families: dict[str, list[dict]] = {"dog": [], "cat": []}
     for breed_id, breed in BREEDS.items():
         rows = families[breed["family"]]
         for task in suite:
@@ -531,8 +570,8 @@ def bank_summary(bank: dict) -> dict:
     }
 
 
-def build_laowang_samples(seed: int = REFERENCE_SEED, sample_count: int = 3) -> list[dict]:
-    """生成待测样本 laowang-v9 的回答，供 analyze_global_outputs 直接使用。
+def build_clapt_samples(seed: int = REFERENCE_SEED, sample_count: int = 3) -> list[dict]:
+    """生成待测样本 Clapt 的回答，供 analyze_global_outputs 直接使用。
 
     返回 [{"text", "expected_count", "challenge_id", "condition"}]。
     挑战选择沿用参考实现的等距抽样：suite[int(i * len(suite) / sample_count)]。
@@ -548,7 +587,7 @@ def build_laowang_samples(seed: int = REFERENCE_SEED, sample_count: int = 3) -> 
         samples.append(
             {
                 "text": simulate_output(
-                    LAOWANG_ID, task["expected_count"], task["challenge_id"], seed
+                    CLAPT_ID, task["expected_count"], task["challenge_id"], seed
                 ),
                 "expected_count": task["expected_count"],
                 "challenge_id": task["challenge_id"],
@@ -558,15 +597,15 @@ def build_laowang_samples(seed: int = REFERENCE_SEED, sample_count: int = 3) -> 
     return samples
 
 
-def laowang_provenance(seed: int = REFERENCE_SEED) -> dict:
+def clapt_provenance(seed: int = REFERENCE_SEED) -> dict:
     """待测样本的登记信息：id、显示名、无 family、权重来源说明。"""
     return {
-        "id": LAOWANG_ID,
-        "display_name": LAOWANG_DISPLAY_NAME,
+        "id": CLAPT_ID,
+        "display_name": CLAPT_DISPLAY_NAME,
         "family": None,
         "family_name": None,
         "seed": seed,
-        "weight_model": "0.80 * husky baseline + 0.20 * ragdoll baseline, plus peak (111, 1.4)",
+        "weight_model": "0.80 * dog baseline + 0.20 * cat baseline, plus peak (111, 1.4)",
     }
 
 

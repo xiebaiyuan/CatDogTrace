@@ -21,8 +21,8 @@ VALUE_MAX = 355
 DIMENSION = VALUE_MAX - VALUE_MIN + 1
 ALPHA = 0.5
 ORDERED_BLOCK_WEIGHT = 0.25
-DEFAULT_BANK = Path(__file__).with_name("data") / "husky_bank.json"
-FAMILY_DISPLAY_NAMES = {"husky": "哈士奇族", "ragdoll": "布偶族"}
+DEFAULT_BANK = Path(__file__).with_name("data") / "dog_bank.json"
+FAMILY_DISPLAY_NAMES = {"dog": "犬族", "cat": "猫族"}
 
 
 def parse_numbers(text: str) -> list[int]:

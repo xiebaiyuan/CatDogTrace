@@ -1,6 +1,6 @@
 {
   "schema": "robust-number-fingerprint-bank",
-  "built_at": "2026-10-17T12:43:46.116949+00:00",
+  "built_at": "2026-10-17T15:08:39.228578+00:00",
   "method": {
     "name": "Ordered-block + nuisance-Hellinger",
     "range": [
@@ -22,8 +22,8 @@
   ],
   "models": [
     {
-      "id": "husky-2.0",
-      "display_name": "哈士奇-2.0",
+      "id": "husky",
+      "display_name": "哈士奇",
       "family": null,
       "family_name": null,
       "response_count": 36,
@@ -401,8 +401,8 @@
       ]
     },
     {
-      "id": "husky-3.1",
-      "display_name": "哈士奇-3.1",
+      "id": "labrador",
+      "display_name": "拉布拉多",
       "family": null,
       "family_name": null,
       "response_count": 36,
@@ -780,8 +780,8 @@
       ]
     },
     {
-      "id": "husky-3.1-pro",
-      "display_name": "哈士奇-3.1-pro",
+      "id": "schnauzer",
+      "display_name": "雪纳瑞",
       "family": null,
       "family_name": null,
       "response_count": 36,
@@ -1159,8 +1159,8 @@
       ]
     },
     {
-      "id": "alaskan-mix-2.0",
-      "display_name": "阿拉斯加混血-2.0",
+      "id": "corgi",
+      "display_name": "柯基",
       "family": null,
       "family_name": null,
       "response_count": 36,
@@ -1540,10 +1540,10 @@
   ],
   "robust": {
     "model_order": [
-      "husky-2.0",
-      "husky-3.1",
-      "husky-3.1-pro",
-      "alaskan-mix-2.0"
+      "husky",
+      "labrador",
+      "schnauzer",
+      "corgi"
     ],
     "robust_ready": true,
     "training_rows": 144,

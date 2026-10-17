@@ -33,20 +33,20 @@ from fingerprint import (  # noqa: E402
 )
 
 
-DEFAULT_RESPONSES = PROJECT / "data" / "husky_reference.jsonl"
-DEFAULT_OUTPUT = PROJECT / "data" / "husky_bank.json"
+DEFAULT_RESPONSES = PROJECT / "data" / "dog_reference.jsonl"
+DEFAULT_OUTPUT = PROJECT / "data" / "dog_bank.json"
 
 # SPEC.md §5.1 名册：参考行的 schema（§3.1）不含 display_name，
 # 参考实现此处直接写死 display_name = model_id；这里按冻结契约查名册补齐。
 BREED_DISPLAY_NAMES = {
-    "husky-2.0": "哈士奇-2.0",
-    "husky-3.1": "哈士奇-3.1",
-    "husky-3.1-pro": "哈士奇-3.1-pro",
-    "alaskan-mix-2.0": "阿拉斯加混血-2.0",
-    "ragdoll-4.6": "布偶-4.6",
-    "ragdoll-5.0": "布偶-5.0",
-    "siamese-2.0": "暹罗-2.0",
-    "orange-7b": "橘猫-7B",
+    "husky": "哈士奇",
+    "labrador": "拉布拉多",
+    "schnauzer": "雪纳瑞",
+    "corgi": "柯基",
+    "ragdoll": "布偶",
+    "siamese": "暹罗",
+    "orange-tabby": "橘猫",
+    "british-shorthair": "英短",
 }
 
 

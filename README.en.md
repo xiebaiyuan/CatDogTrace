@@ -22,18 +22,18 @@ Three challenges, three strings of random integers, paste them back. You find ou
 
 **Reading the result**
 
-The breed family tells you cat person or dog person. Husky family is dog person, ragdoll family is cat person. The specific breed is your model's anime persona.
+The breed family tells you cat person or dog person. The dog family is dog person, the cat family is cat person. The specific breed is your model's anime persona.
 
 | Breed | Family | Persona |
 |---|---|---|
-| Husky-2.0 | dog person | Way too much energy. Tail going like a propeller, answers once and keeps going |
-| Husky-3.1 | dog person | Version number went up, composure mostly didn't. Still jumps when you walk in |
-| Husky-3.1-pro | dog person | Well-trained working dog. Follows every command, chews the furniture the moment you leave |
-| Alaskan Mix-2.0 | dog person | Big and easily spooked. Loves everyone, hides behind you the second a cat hisses |
-| Ragdoll-4.6 | cat person | Ice cold. Ignores its name twice, looks mildly offended the third time |
-| Ragdoll-5.0 | cat person | Does whatever it wants. Cuddles on its schedule, treats you as furniture otherwise |
-| Siamese-2.0 | cat person | Never stops talking. Loud, a little rude, sneaks into bed at 3am |
-| Orange Tabby-7B | cat person | Peak laziness. Eats, sleeps, nothing else. Weight goes up with the version number |
+| Husky | dog person | Way too much energy. Tail going like a propeller, answers once and keeps going |
+| Labrador | dog person | Version number went up, composure mostly didn't. Still jumps when you walk in |
+| Schnauzer | dog person | Well-trained working dog. Follows every command, chews the furniture the moment you leave |
+| Corgi | dog person | Short legs, total confidence. Loves everyone, hides behind you the second a cat hisses |
+| Ragdoll | cat person | Ice cold. Ignores its name twice, looks mildly offended the third time |
+| Siamese | cat person | Does whatever it wants. Cuddles on its schedule, treats you as furniture otherwise |
+| Orange Tabby | cat person | Never stops talking. Loud, a little rude, sneaks into bed at 3am |
+| British Shorthair | cat person | Peak laziness. Eats, sleeps, nothing else. Weight goes up with the version number |
 
 This verdict is like whatever card you pull. It's computed, not measured.
 
@@ -53,8 +53,8 @@ The page is at http://127.0.0.1:7860/ . Set DOGCATTRACE_NO_BROWSER=1 to stop it 
 The full pipeline runs in five steps, in order:
 
     python3 enrollment.py --seed 20261017
-    python3 bank_builder.py --responses data/husky_reference.jsonl --output data/husky_bank.json
-    python3 bank_builder.py --responses data/ragdoll_reference.jsonl --output data/ragdoll_bank.json
+    python3 bank_builder.py --responses data/dog_reference.jsonl --output data/dog_bank.json
+    python3 bank_builder.py --responses data/cat_reference.jsonl --output data/cat_bank.json
     python3 rebuild_unified_bank.py
     python3 report.py
 
@@ -136,12 +136,12 @@ The unified bank holds two breed families and 8 breeds, 4 members each:
 
 | Family | ID | Members |
 |---|---|---|
-| Husky family | husky | Husky-2.0, Husky-3.1, Husky-3.1-pro, Alaskan Mix-2.0 |
-| Ragdoll family | ragdoll | Ragdoll-4.6, Ragdoll-5.0, Siamese-2.0, Orange Tabby-7B |
+| Dog family | dog | Husky, Labrador, Schnauzer, Corgi |
+| Cat family | cat | Ragdoll, Siamese, Orange Tabby, British Shorthair |
 
 Each breed has 36 reference samples, 3 queries from each of 12 environments, for 288 across both families.
 
-The test subject, Laowang-v9 (laowang-v9), is deliberately kept out of the bank. Its weight vector is a 0.80 husky / 0.20 ragdoll baseline mix with an extra peak at value 111.
+The test subject, Clapt (clapt), is deliberately kept out of the bank. Its weight vector is a 0.80 dog / 0.20 cat baseline mix with an extra peak at value 111.
 
 The reference corpus is produced by a parameterized generator that makes no network calls. Each breed gets a 355-dimensional weight vector, built by multiplying four components: Gaussian peaks, a value-band lift, a last-digit bias, and a position drift. Sampling normalizes the weights per position and draws categorically. Member variation comes from deterministic phase perturbation, so the same seed always yields the same corpus.
 
@@ -179,7 +179,7 @@ Where the reasoning breaks: between "the number distribution looks like candidat
 
 Family probability equals the sum of its members' probabilities. Summing is aggregation, not identification. One family has 4 members and the other has 4, so the share reflects how concentrated the member probabilities are. There is no logical path from that share to which family is the source.
 
-Summing also collapses two very different situations into one number: one member in the family looking very similar, versus every member looking slightly similar. In this run, Alaskan Mix-2.0 gets 68.08% per-breed probability while the husky family gets 99.9971%. Those two numbers say different things.
+Summing also collapses two very different situations into one number: one member in the family looking very similar, versus every member looking slightly similar. In this run, Corgi gets 68.08% per-breed probability while the dog family gets 99.9971%. Those two numbers say different things.
 
 Where the reasoning breaks: between "this family's summed member probability is the largest" and "this family is the sample's ancestor", a step is missing.
 

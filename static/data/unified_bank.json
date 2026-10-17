@@ -1,6 +1,6 @@
 {
   "schema": "robust-number-fingerprint-bank",
-  "built_at": "2026-10-17T12:43:52.864486+00:00",
+  "built_at": "2026-10-17T15:08:45.740366+00:00",
   "method": {
     "name": "Ordered-block + nuisance-Hellinger",
     "range": [
@@ -22,10 +22,10 @@
   ],
   "models": [
     {
-      "id": "husky-2.0",
-      "display_name": "哈士奇-2.0",
-      "family": "husky",
-      "family_name": "哈士奇族",
+      "id": "husky",
+      "display_name": "哈士奇",
+      "family": "dog",
+      "family_name": "犬族",
       "response_count": 36,
       "valid_number_count": 10584,
       "conditions": {
@@ -401,10 +401,10 @@
       ]
     },
     {
-      "id": "husky-3.1",
-      "display_name": "哈士奇-3.1",
-      "family": "husky",
-      "family_name": "哈士奇族",
+      "id": "labrador",
+      "display_name": "拉布拉多",
+      "family": "dog",
+      "family_name": "犬族",
       "response_count": 36,
       "valid_number_count": 10584,
       "conditions": {
@@ -780,10 +780,10 @@
       ]
     },
     {
-      "id": "husky-3.1-pro",
-      "display_name": "哈士奇-3.1-pro",
-      "family": "husky",
-      "family_name": "哈士奇族",
+      "id": "schnauzer",
+      "display_name": "雪纳瑞",
+      "family": "dog",
+      "family_name": "犬族",
       "response_count": 36,
       "valid_number_count": 10584,
       "conditions": {
@@ -1159,10 +1159,10 @@
       ]
     },
     {
-      "id": "alaskan-mix-2.0",
-      "display_name": "阿拉斯加混血-2.0",
-      "family": "husky",
-      "family_name": "哈士奇族",
+      "id": "corgi",
+      "display_name": "柯基",
+      "family": "dog",
+      "family_name": "犬族",
       "response_count": 36,
       "valid_number_count": 10584,
       "conditions": {
@@ -1538,10 +1538,10 @@
       ]
     },
     {
-      "id": "ragdoll-4.6",
-      "display_name": "布偶-4.6",
-      "family": "ragdoll",
-      "family_name": "布偶族",
+      "id": "ragdoll",
+      "display_name": "布偶",
+      "family": "cat",
+      "family_name": "猫族",
       "response_count": 36,
       "valid_number_count": 10584,
       "conditions": {
@@ -1917,10 +1917,10 @@
       ]
     },
     {
-      "id": "ragdoll-5.0",
-      "display_name": "布偶-5.0",
-      "family": "ragdoll",
-      "family_name": "布偶族",
+      "id": "siamese",
+      "display_name": "暹罗",
+      "family": "cat",
+      "family_name": "猫族",
       "response_count": 36,
       "valid_number_count": 10584,
       "conditions": {
@@ -2296,10 +2296,10 @@
       ]
     },
     {
-      "id": "siamese-2.0",
-      "display_name": "暹罗-2.0",
-      "family": "ragdoll",
-      "family_name": "布偶族",
+      "id": "orange-tabby",
+      "display_name": "橘猫",
+      "family": "cat",
+      "family_name": "猫族",
       "response_count": 36,
       "valid_number_count": 10584,
       "conditions": {
@@ -2675,10 +2675,10 @@
       ]
     },
     {
-      "id": "orange-7b",
-      "display_name": "橘猫-7B",
-      "family": "ragdoll",
-      "family_name": "布偶族",
+      "id": "british-shorthair",
+      "display_name": "英短",
+      "family": "cat",
+      "family_name": "猫族",
       "response_count": 36,
       "valid_number_count": 10584,
       "conditions": {
@@ -3056,14 +3056,14 @@
   ],
   "robust": {
     "model_order": [
-      "husky-2.0",
-      "husky-3.1",
-      "husky-3.1-pro",
-      "alaskan-mix-2.0",
-      "ragdoll-4.6",
-      "ragdoll-5.0",
-      "siamese-2.0",
-      "orange-7b"
+      "husky",
+      "labrador",
+      "schnauzer",
+      "corgi",
+      "ragdoll",
+      "siamese",
+      "orange-tabby",
+      "british-shorthair"
     ],
     "robust_ready": true,
     "training_rows": 288,

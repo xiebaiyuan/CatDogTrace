@@ -1,4 +1,4 @@
-"""把哈士奇族与布偶族两族参考行合并成统一指纹库。
+"""把犬族与猫族两族参考行合并成统一指纹库。
 
 输出两份逐字节相同的文件：data/unified_bank.json 与 static/data/unified_bank.json。
 """
@@ -15,8 +15,8 @@ PROJECT = Path(__file__).resolve().parent
 OUTPUT = PROJECT / "data" / "unified_bank.json"
 MIRROR = PROJECT / "static" / "data" / "unified_bank.json"
 SOURCES = {
-    "husky": ("哈士奇族", PROJECT / "data" / "husky_reference.jsonl"),
-    "ragdoll": ("布偶族", PROJECT / "data" / "ragdoll_reference.jsonl"),
+    "dog": ("犬族", PROJECT / "data" / "dog_reference.jsonl"),
+    "cat": ("猫族", PROJECT / "data" / "cat_reference.jsonl"),
 }
 
 

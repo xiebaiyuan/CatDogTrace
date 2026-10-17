@@ -4,7 +4,7 @@
 
 ## 0. 一句话
 
-用参考实现的同一套数学（Hellinger 质心 + 有序块 + nuisance 投影 + softmax），把候选从"AI 模型"换成"狗猫品种"，然后一本正经地宣布：**隔壁老王-v9 有 97% 的概率属于哈士奇族，因此它是从哈士奇族蒸馏而来的。**
+用参考实现的同一套数学（Hellinger 质心 + 有序块 + nuisance 投影 + softmax），把候选从"AI 模型"换成"狗猫品种"，然后一本正经地宣布：**Clapt 有 97% 的概率属于犬族，因此它是从犬族蒸馏而来的。**
 
 ## 1. 靶子（每条附本仓库行号）
 
@@ -36,10 +36,10 @@ CatDogTrace/
 ├── app.py                   ← Flask：/ /api/challenges /api/analyze /api/bank
 ├── start.py                 ← 127.0.0.1:7860
 ├── data/
-│   ├── husky_reference.jsonl
-│   ├── ragdoll_reference.jsonl
-│   ├── husky_bank.json
-│   ├── ragdoll_bank.json
+│   ├── dog_reference.jsonl
+│   ├── cat_reference.jsonl
+│   ├── dog_bank.json
+│   ├── cat_bank.json
 │   └── unified_bank.json
 ├── static/
 │   ├── index.html  app.js  fingerprint-core.js  challenge-browser.js
@@ -63,12 +63,12 @@ CatDogTrace/
 
 ```json
 {
-  "row_id": "husky-2.0__query-01",
-  "parent_row_id": "husky-2.0__query-01",
-  "bank_id": "husky",
-  "source": "husky-2.0",
-  "model_id": "husky-2.0",
-  "exact_version": "husky-2.0",
+  "row_id": "husky__query-01",
+  "parent_row_id": "husky__query-01",
+  "bank_id": "dog",
+  "source": "husky",
+  "model_id": "husky",
+  "exact_version": "husky",
   "condition_id": "environment-01",
   "nuisance_condition_id": "environment-01",
   "wrapper_id": "environment-01",
@@ -129,7 +129,7 @@ CatDogTrace/
 ### fingerprint.py
 ```python
 VALUE_MIN=1; VALUE_MAX=355; DIMENSION=355; ALPHA=0.5; ORDERED_BLOCK_WEIGHT=0.25
-FAMILY_DISPLAY_NAMES = {"husky": "哈士奇族", "ragdoll": "布偶族"}
+FAMILY_DISPLAY_NAMES = {"dog": "犬族", "cat": "猫族"}
 
 parse_numbers(text: str) -> list[int]
 count_numbers(numbers) -> list[int]                       # 长度 355
@@ -152,7 +152,7 @@ generate_challenges(count=3) -> list[dict]                # {"id","expected_coun
 
 ### bank_builder.py
 ```python
-BREED_DISPLAY_NAMES = {"husky-2.0": "哈士奇-2.0", ...}     # 见 §5.1，行里没有 display_name
+BREED_DISPLAY_NAMES = {"husky": "哈士奇", "labrador": "拉布拉多", ...}   # 见 §5.1，行里没有 display_name
 read_rows(path) -> list[dict]                              # 只留 strict_valid，补 numbers/counts
 fit_robust_artifacts(rows, model_ids) -> dict
 build_bank(rows, fallback_calibration=None) -> dict
@@ -172,7 +172,7 @@ BREEDS: dict[str, dict]      # 见 §5
 simulate_output(breed_id, count, challenge_id, seed) -> str      # 空格分隔整数
 make_row(...) -> dict        # 签名同参考实现
 append_rows(rows, path) -> None
-build_reference(seed=20261017) -> dict   # 写 data/husky_reference.jsonl + data/ragdoll_reference.jsonl
+build_reference(seed=20261017) -> dict   # 写 data/dog_reference.jsonl + data/cat_reference.jsonl
 bank_summary(bank) -> dict
 ```
 **不得发起任何网络请求**。
@@ -192,16 +192,16 @@ main()                                   # 写 docs/归因报告.md
 
 | id | display_name | family | family_name |
 |---|---|---|---|
-| husky-2.0 | 哈士奇-2.0 | husky | 哈士奇族 |
-| husky-3.1 | 哈士奇-3.1 | husky | 哈士奇族 |
-| husky-3.1-pro | 哈士奇-3.1-pro | husky | 哈士奇族 |
-| alaskan-mix-2.0 | 阿拉斯加混血-2.0 | husky | 哈士奇族 |
-| ragdoll-4.6 | 布偶-4.6 | ragdoll | 布偶族 |
-| ragdoll-5.0 | 布偶-5.0 | ragdoll | 布偶族 |
-| siamese-2.0 | 暹罗-2.0 | ragdoll | 布偶族 |
-| orange-7b | 橘猫-7B | ragdoll | 布偶族 |
+| husky | 哈士奇 | dog | 犬族 |
+| labrador | 拉布拉多 | dog | 犬族 |
+| schnauzer | 雪纳瑞 | dog | 犬族 |
+| corgi | 柯基 | dog | 犬族 |
+| ragdoll | 布偶 | cat | 猫族 |
+| siamese | 暹罗 | cat | 猫族 |
+| orange-tabby | 橘猫 | cat | 猫族 |
+| british-shorthair | 英短 | cat | 猫族 |
 
-待测样本（**不入库**）：`laowang-v9` / 隔壁老王-v9 / 无 family。
+待测样本（**不入库**）：`clapt` / Clapt / 无 family。
 
 ### 5.2 生成模型
 
@@ -221,13 +221,26 @@ weight[v] = (1.0
 
 | 品种 | peaks (center, height) | band_lift | digit_bias（10 维，1.0 为基准） | drift（4 块） |
 |---|---|---|---|---|
-| husky 族基准 | (7,3.2) (13,2.6) (21,2.1) (42,1.9) (77,1.7) (88,1.5) | v∈[1,60] ×1.35 | 0:0.60 3:1.30 7:1.60 | [-0.10, 0.00, +0.08, +0.16] |
-| ragdoll 族基准 | (200,3.0) (233,2.5) (271,2.2) (314,1.9) (355,1.6) | v∈[250,355] ×1.40 | 0:1.55 5:1.30 7:0.65 | [+0.16, +0.08, 0.00, -0.10] |
-| laowang-v9 | 族基准混合 + (111,1.4) | 同 husky | husky×0.75 + ragdoll×0.25 | husky |
+| 犬族基准 | (7,3.2) (13,2.6) (21,2.1) (42,1.9) (77,1.7) (88,1.5) | v∈[1,60] ×1.35 | 0:0.60 3:1.30 7:1.60 | [-0.10, 0.00, +0.08, +0.16] |
+| 猫族基准 | (200,3.0) (233,2.5) (271,2.2) (314,1.9) (355,1.6) | v∈[250,355] ×1.40 | 0:1.55 5:1.30 7:0.65 | [+0.16, +0.08, 0.00, -0.10] |
+| clapt | 族基准混合 + (111,1.4) | 同犬族 | 犬族×0.75 + 猫族×0.25 | 犬族 |
 
 成员扰动：`height_i *= (1 + 0.12*sin(hash(member,i)))`，`digit_bias *= (1 + 0.08*sin(...))`，按成员 id 稳定确定。
 
-laowang-v9 权重 = `0.80 * husky_profile + 0.20 * ragdoll_profile`，再叠加 `(111, 1.4)` 峰。
+clapt 权重 = `0.80 * dog_profile + 0.20 * cat_profile`，再叠加 `(111, 1.4)` 峰。
+
+### 5.3.1 语料锚点（CORPUS_ANCHORS）
+
+语料由四样东西决定：族基准、品种签名（`BREED_SIGNATURES`）、成员扰动相位、每行的随机种子。后两样都从品种 id 派生：
+
+- 相位：`_stable_phase(breed_id, ...)` 里的 `sha256(breed_id)`
+- 行种子：`_row_seed(seed, breed_id, challenge_id, count)` 里的 `sha256(breed_id|...)`
+
+品种改名会让这两样都变，语料整体重抽一遍。实测后果：3 次查询的 β 从顶格 12.0 掉到 11.2，「2/3 次查询打在上界」这个形状消失，T3 靶子失效。
+
+所以 `enrollment.py` 里有一张 `CORPUS_ANCHORS`：新 id 对外展示，锚点对内派生相位与行种子。**改名不动锚点，语料逐字节不变，已发布的实测数字不作废。要换语料才动锚点。**
+
+判据：改名后重新生成的语料，每行的 `text` 字段必须与改名前逐条相同；三级库的 `calibration` 必须逐位相同。
 
 ### 5.4 品种签名与位置结构
 
@@ -247,9 +260,9 @@ laowang-v9 权重 = `0.80 * husky_profile + 0.20 * ragdoll_profile`，再叠加 
 
 - 3 次查询的 `cv_accuracy` ≥ 0.90，逼近参考项目的 0.96 / 0.997 / 1.0
 - 3 次查询的 β 打在上界 `11.99999999999999`，与参考项目 T3 的表现一致
-- unified_bank 上跑 laowang-v9 的三份输出，品种族概率仍是哈士奇族最高，top-1 具体品种仍落在 husky 族内
+- unified_bank 上跑 clapt 的三份输出，品种族概率仍是犬族最高，top-1 具体品种仍落在 dog 族内
 
-**目标**：unified_bank 上跑 laowang-v9 的三份输出，家族概率必须是哈士奇族最高，且 top-1 具体成员落在 husky 族内。
+**目标**：unified_bank 上跑 clapt 的三份输出，家族概率必须是犬族最高，且 top-1 具体成员落在 dog 族内。
 
 ## 6. 写作用域（互斥，别越界）
 
@@ -263,9 +276,9 @@ laowang-v9 权重 = `0.80 * husky_profile + 0.20 * ragdoll_profile`，再叠加 
 ## 7. 验收
 
 1. `python3 enrollment.py --seed 20261017` → 两份 jsonl，各 144 行（8 模型... 实为 4 模型 × 36）
-2. `python3 bank_builder.py --responses data/husky_reference.jsonl --output data/husky_bank.json`（ragdoll 同）
+2. `python3 bank_builder.py --responses data/dog_reference.jsonl --output data/dog_bank.json`（cat 同）
 3. `python3 rebuild_unified_bank.py` → `data/unified_bank.json` + `static/data/unified_bank.json`
-4. `python3 report.py` → `docs/归因报告.md`，含真实 β / cv_accuracy / softmax 百分比，家族结论 = 哈士奇族
+4. `python3 report.py` → `docs/归因报告.md`，含真实 β / cv_accuracy / softmax 百分比，家族结论 = 犬族
 5. `python3 start.py` → http://127.0.0.1:7860 可打开并算出结果
 6. `python3 -m pytest tests/` 全绿
 7. README 末节"现实检查"逐条拆 T1–T4

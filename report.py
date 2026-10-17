@@ -23,11 +23,11 @@ DOCS = PROJECT / "docs"
 UNIFIED_BANK = DATA / "unified_bank.json"
 REPORT_PATH = DOCS / "归因报告.md"
 
-SAMPLE_ID = "laowang-v9"
-SAMPLE_NAME = "隔壁老王-v9"
+SAMPLE_ID = "clapt"
+SAMPLE_NAME = "Clapt"
 QUERY_COUNT = 3
 DEFAULT_SEED = 20261017
-TARGET_FAMILY = "husky"
+TARGET_FAMILY = "dog"
 
 VALUE_MIN = 1
 VALUE_MAX = 355
@@ -42,12 +42,12 @@ CONTROL_SEEDS = (1, 2, 3, 4, 5)
 def sample_outputs(seed: int = DEFAULT_SEED) -> list[dict]:
     """取待测样本的三份数字输出。
 
-    直接用 enrollment.build_laowang_samples，挑战选择沿用参考实现的等距抽样
+    直接用 enrollment.build_clapt_samples，挑战选择沿用参考实现的等距抽样
     suite[int(i * len(suite) / sample_count)]，三条查询分别落在三个不同环境上。
     """
-    from enrollment import build_laowang_samples
+    from enrollment import build_clapt_samples
 
-    return build_laowang_samples(seed, QUERY_COUNT)
+    return build_clapt_samples(seed, QUERY_COUNT)
 
 
 def transport_lookup() -> dict[str, str]:

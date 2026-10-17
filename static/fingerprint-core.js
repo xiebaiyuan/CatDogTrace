@@ -10,7 +10,7 @@ export const VALUE_MAX = 355;
 export const DIMENSION = VALUE_MAX - VALUE_MIN + 1;
 export const ALPHA = 0.5;
 export const ORDERED_BLOCK_WEIGHT = 0.25;
-export const FAMILY_DISPLAY_NAMES = { husky: "哈士奇族", ragdoll: "布偶族" };
+export const FAMILY_DISPLAY_NAMES = { dog: "犬族", cat: "猫族" };
 
 export function parseNumbers(text) {
   const runs = [];
