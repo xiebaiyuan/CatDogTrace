@@ -10,3 +10,6 @@
 }
 
 .repository-link:hover { color: var(--accent, #2b4a6f); text-decoration: underline; }
+
+/* 页脚里多个链接并排时留出间距，不依赖主样式 */
+footer.page-footer > .repository-link + .repository-link { margin-left: 14px; }

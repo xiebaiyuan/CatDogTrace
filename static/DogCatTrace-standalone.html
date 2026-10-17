@@ -360,6 +360,9 @@ footer.page-footer {
 }
 
 .repository-link:hover { color: var(--accent, #2b4a6f); text-decoration: underline; }
+
+/* 页脚里多个链接并排时留出间距，不依赖主样式 */
+footer.page-footer > .repository-link + .repository-link { margin-left: 14px; }
   </style>
 </head>
 <body>
@@ -395,6 +398,7 @@ footer.page-footer {
 
     <footer class="page-footer">
       <span class="repository-link">方法：有序块特征 + nuisance-Hellinger 融合，softmax 温度由分组交叉验证确定。</span>
+      <a class="repository-link" href="https://linux.do/" target="_blank" rel="noopener noreferrer">LINUX DO</a>
     </footer>
   </main>
 

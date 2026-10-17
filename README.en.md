@@ -208,3 +208,7 @@ The four targets are the same move performed four times: compute a similarity or
 Each step stands on its own. The break is in the last one: from similarity to common ancestry, nobody supplies the missing step.
 
 Full breakdown: docs/satire-targets.md. Precise usage of the four terms: GLOSSARY.md.
+
+## Friends
+
+- [LINUX DO](https://linux.do/)

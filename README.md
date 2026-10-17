@@ -208,3 +208,7 @@ cv_accuracy 衡量的是库内自我识别：按环境分组、按查询留出�
 每一步单独看都站得住。断的地方在最后一步：从相似到同源，没有任何一步被补上。
 
 逐条展开见 docs/satire-targets.md。四个术语的准确用法见 GLOSSARY.md。
+
+## 友链
+
+- [LINUX DO](https://linux.do/)
