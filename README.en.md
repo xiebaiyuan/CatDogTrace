@@ -163,6 +163,8 @@ Every percentage in the report comes from one real run. None are hand-written. R
 
 Treating the percentages out of this formula as evidence of distillation is the joke this project exists to tell.
 
+For the long-form version of why this formula produces confident answers, see [softmax 推不出蒸馏](docs/softmax-推不出蒸馏.md) (written in Chinese).
+
 This section breaks down the four reasoning moves the tool reproduces. Outside this section and docs/satire-targets.md, every other file in the repo describes the method at face value.
 
 Start with one measurement. Feed uniform random integers, which have no generative relationship to any breed in the bank, through the same pipeline. Across five seeds the family probabilities land between 81.7282% and 99.9990%, splitting across both families. Details in the "Control group" section of docs/归因报告.md.
