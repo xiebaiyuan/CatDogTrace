@@ -13,7 +13,7 @@
 | T1 | softmax 的输入是"随机数字分布的余弦相似度"，输出被当成概率，中间没有任何一步接触训练谱系 | `fingerprint.py:269` |
 | T2 | 品种族概率 = 该族成员概率之和，加总出来的数被读成"这一族是源头" | `fingerprint.py:198-205`、`fingerprint.py:214` |
 | T3 | 温度 β 的搜索网格上界 12.0，2/3 次查询的 β 都打在上界 `11.99999999999999` | `bank_builder.py:238-239` |
-| T4 | 闭集 + 均匀先验；库外样本仍会被归到最相似候选；3 次查询 cv_accuracy=1.0 | `data/unified_bank.json`、README.md 的「声明」一节 |
+| T4 | 闭集 + 均匀先验；库外样本仍会被归到最相似候选；3 次查询 cv_accuracy=1.0 | `data/unified_bank.json`、README.zh-CN.md 的「声明」一节 |
 
 DogCatTrace 的每一处代码都**忠实复刻**参考实现的这些行为，一个字不为笑话改。笑话靠换主语产生，不靠歪曲算法。
 
@@ -22,7 +22,8 @@ DogCatTrace 的每一处代码都**忠实复刻**参考实现的这些行为，�
 ```
 CatDogTrace/
 ├── SPEC.md                  ← 本文件（Lead 独占）
-├── README.md                ← 冷面学术体，末节"现实检查"
+├── README.md                ← 英文版，GitHub 默认展示
+├── README.zh-CN.md          ← 中文版，冷面学术体，末节"现实检查"
 ├── GLOSSARY.md              ← 领域词表
 ├── LICENSE                  ← MIT，Copyright (c) 2026 DogCatTrace Contributors
 ├── requirements.txt         ← numpy>=1.26,<3 ; Flask>=3.0,<4 ; pytest>=8

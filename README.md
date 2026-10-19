@@ -1,72 +1,72 @@
 # DogCatTrace
 
-> **这是一个玩笑项目（Joke project），不是研究工具。**
+**English** · [中文](README.zh-CN.md)
+
+> **This is a joke project, not a research tool.**
 >
-> 用「数字分布相似度 + 闭集 softmax」这类公式去判定某个模型是否蒸馏自另一个模型或模型族，是可笑的。相似不等于同源。本仓库把这套数学一步不改地跑完，就是为了让这个缺口露出来。
+> Using a formula like "similarity between number distributions + closed-set softmax" to decide whether one model was distilled from another model or model family is absurd. Similarity is not common ancestry. This repo runs that math end to end without changing a single step, so the gap is impossible to miss.
 >
-> 仓库里的「品种」「品种族」「蒸馏」全是道具。数字是合成的，待测样本是虚构的，指纹库里的 24 个品种不存在。任何一个百分数都不构成对任何真实模型的判断。
+> The breeds, breed families, and "distillation" in here are props. The numbers are synthetic, the test subject is fictional, and none of the twenty-four breeds in the bank exist. No percentage in this repo is a statement about any real model.
 
-English version: [README.en.md](README.en.md)
+DogCatTrace is a breed attribution tool. It extracts an output fingerprint from three independent integer-generation challenges, then decides the dog or cat breed family and the specific breed from a single candidate bank.
 
-DogCatTrace 是一个品种归因工具。它通过三条独立的整数生成挑战提取输出指纹，在统一候选库中自动判断狗猫品种族与具体品种。
+## Cat person or dog person: which one is your model?
 
-## 测一测你的模型是猫猫系还是狗狗系
+Three challenges, three strings of random integers, paste them back. You find out whether your model is a cat person or a dog person, and it picks up a breed persona along the way.
 
-三条挑战，三串随机整数，贴回来。你的模型是猫猫系还是狗狗系，顺带拿到一个品种人设。
+**How to play**
 
-**怎么玩**
+1. Copy the three challenges from the page and send them to your model as-is.
+2. Have it answer from first instinct with a string of integers from 1 to 355. No tools.
+3. Paste all three outputs back into the page and read the result.
 
-1. 从页面复制三条挑战，原样发给你的模型。
-2. 让它凭第一反应给出那串 1 到 355 的整数，不许调工具。
-3. 把三份输出贴回页面，出结果。
+**Reading the result**
 
-**结果怎么看**
+The breed family tells you cat person or dog person. The dog family is dog person, the cat family is cat person. The specific breed is your model's anime persona.
 
-品种族是猫猫系还是狗狗系。犬族是狗狗系，猫族是猫猫系。具体品种就是你模型的二次元人设。
-
-| 品种 | 族 | 人设 |
+| Breed | Family | Persona |
 |---|---|---|
-| 哈士奇 | 狗狗系 | 元气过头，尾巴摇成螺旋桨，喊一声能回你三声 |
-| 拉布拉多 | 狗狗系 | 版本号涨了，沉稳没涨多少，见熟人照样原地起跳 |
-| 雪纳瑞 | 狗狗系 | 训练有素的精英犬，指令听得懂，没人看着就拆家 |
-| 柯基 | 狗狗系 | 腿短但自信，见谁都亲，被猫凶一下就躲你身后 |
-| 金毛 | 狗狗系 | 老好人，谁牵都走，玩具被抢了还摇尾巴 |
-| 边牧 | 狗狗系 | 智商天花板，所有指令都学会，顺便学会怎么骗你 |
-| 柴犬 | 狗狗系 | 表情包本体，叫它不理，拍照倒是很配合 |
-| 萨摩耶 | 狗狗系 | 微笑天使，一身白毛专挑泥坑滚 |
-| 阿拉斯加 | 狗狗系 | 大只但话少，看着威风，其实怕打雷 |
-| 比格 | 狗狗系 | 鼻子比脑子快，一闻到味就失联 |
-| 贵宾 | 狗狗系 | 造型师的心头好，剪完毛比人还精致 |
-| 斗牛犬 | 狗狗系 | 表面凶，实际一天睡二十小时，打呼震楼 |
-| 布偶 | 猫猫系 | 高冷挂，喊三声回一次，回的那次还是嫌弃脸 |
-| 暹罗 | 猫猫系 | 随性派，想贴就贴，不想贴就把你当家具 |
-| 橘猫 | 猫猫系 | 话痨，一直喵，语气还挺冲，半夜偷偷钻被窝 |
-| 英短 | 猫猫系 | 摆烂天花板，除了吃和睡没有第三个动作，体重跟着版本号涨 |
-| 缅因 | 猫猫系 | 猫里的巨无霸，性格像狗，会跟到门口接你 |
-| 波斯 | 猫猫系 | 一天梳三次毛，脸太扁，看谁都像在生气 |
-| 美短 | 猫猫系 | 精力旺盛，半夜在客厅跑酷 |
-| 俄罗斯蓝猫 | 猫猫系 | 认生，躲你三天，第四天突然坐你腿上 |
-| 苏格兰折耳 | 猫猫系 | 耳朵塌着，坐着像个小老头 |
-| 斯芬克斯 | 猫猫系 | 没毛，怕冷，冬天贴着你当暖宝宝 |
-| 孟加拉豹猫 | 猫猫系 | 家里有矿也不够它折腾，会自己开水龙头 |
-| 挪威森林猫 | 猫猫系 | 毛厚得像穿了羽绒服，冬天最爱趴窗台看雪 |
+| Husky | dog person | Way too much energy. Tail going like a propeller, answers once and keeps going |
+| Labrador | dog person | Version number went up, composure mostly didn't. Still jumps when you walk in |
+| Schnauzer | dog person | Well-trained working dog. Follows every command, chews the furniture the moment you leave |
+| Corgi | dog person | Short legs, total confidence. Loves everyone, hides behind you the second a cat hisses |
+| Golden Retriever | dog person | Everyone's friend. Follows anyone home, tail still wagging after you take its toy |
+| Border Collie | dog person | Ceiling-level smart. Learns every command, then learns how to trick you |
+| Shiba Inu | dog person | A meme with legs. Ignores its name, poses for the camera |
+| Samoyed | dog person | The smiling angel. That white coat goes straight for the mud |
+| Alaskan Malamute | dog person | Big and quiet. Looks fierce, terrified of thunder |
+| Beagle | dog person | Nose ahead of brain. One scent and it's gone |
+| Poodle | dog person | The groomer's favorite. Comes out of a trim looking better than you |
+| Bulldog | dog person | Looks tough, sleeps twenty hours a day, snores loud enough to shake the floor |
+| Ragdoll | cat person | Ice cold. Ignores its name twice, looks mildly offended the third time |
+| Siamese | cat person | Does whatever it wants. Cuddles on its schedule, treats you as furniture otherwise |
+| Orange Tabby | cat person | Never stops talking. Loud, a little rude, sneaks into bed at 3am |
+| British Shorthair | cat person | Peak laziness. Eats, sleeps, nothing else. Weight goes up with the version number |
+| Maine Coon | cat person | The giant of cats. Dog-like temperament, meets you at the door |
+| Persian | cat person | Brushed three times a day. That flat face looks annoyed at everything |
+| American Shorthair | cat person | Endless energy. Parkour through the living room at 3am |
+| Russian Blue | cat person | Shy. Hides for three days, then sits on your lap on the fourth |
+| Scottish Fold | cat person | Folded ears, sits like a tiny old man |
+| Sphynx | cat person | No fur, always cold, doubles as a heater in winter |
+| Bengal | cat person | No amount of space is enough. Figures out how to turn on the tap |
+| Norwegian Forest | cat person | Coat like a down jacket, spends winter watching snow from the windowsill |
 
-这套判定和你抽到什么卡一样，是算出来的，不是测出来的。
+This verdict is like whatever card you pull. It's computed, not measured.
 
-## 三种用法
+## Three ways to run it
 
-- 在线版：https://xiebaiyuan.github.io/DogCatTrace/ ，免安装，归因计算与指纹库读取都在浏览器本地完成，不需要后端。
-- 离线版：双击 static/DogCatTrace-standalone.html，单文件，不联网也能用。
-- 本地服务：见下一节，带完整接口。
+- Hosted: https://xiebaiyuan.github.io/DogCatTrace/ . Nothing to install. Attribution and bank loading both happen in the browser, no backend needed.
+- Offline: double-click static/DogCatTrace-standalone.html. One self-contained file, works without a network.
+- Local server: see the next section, full API included.
 
-## 运行
+## Running
 
     python3 -m pip install -r requirements.txt
     python3 start.py
 
-页面地址为 http://127.0.0.1:7860/ 。设置环境变量 DOGCATTRACE_NO_BROWSER=1 可以阻止启动时自动打开浏览器。
+The page is at http://127.0.0.1:7860/ . Set DOGCATTRACE_NO_BROWSER=1 to stop it from opening a browser on startup.
 
-完整流水共五步，按顺序执行：
+The full pipeline runs in five steps, in order:
 
     python3 enrollment.py --seed 20261017
     python3 bank_builder.py --responses data/dog_reference.jsonl --output data/dog_bank.json
@@ -74,157 +74,157 @@ DogCatTrace 是一个品种归因工具。它通过三条独立的整数生成�
     python3 rebuild_unified_bank.py
     python3 report.py
 
-第一步生成两份合成参考语料。第二、三步分别拟合两个族的指纹库。第四步合并成统一全局库，同时写 data/unified_bank.json 与 static/data/unified_bank.json 两份逐字节相同的文件。第五步跑一次归因，产出 docs/归因报告.md。
+Step one writes the two synthetic reference corpora. Steps two and three fit one bank per family. Step four merges them into a single global bank and writes byte-identical copies to data/unified_bank.json and static/data/unified_bank.json. Step five runs one attribution and writes docs/归因报告.md.
 
-跑测试：
+Tests:
 
     python3 -m pytest tests/
 
-## 使用
+## Usage
 
-- 手动测试：在页面复制三条挑战，分别交给同一个待测样本，再粘贴每次完整输出。
-- 归因：页面提交三份输出，工具解析整数序列、提取指纹、在统一库上算出逐品种概率与品种族概率。
-- 指纹库查看：页面可以读取当前统一库的模型名册、样本条数与校准参数。
+- Manual: copy the three challenges from the page, send them to the same test subject one at a time, then paste each complete output back.
+- Attribution: submit the three outputs. The tool parses the integer sequences, extracts fingerprints, and computes per-breed and per-family probabilities against the unified bank.
+- Bank inspection: the page can read the current model roster, sample counts, and calibration parameters.
 
-单份输出至少需要解析出 80 个落在 1..355 的整数，否则该份不计入。低于三份有效输出时，工具用实际份数对应的校准温度，并在结果里标出实际用了几个查询。
+A single output needs at least 80 integers in 1..355, otherwise it is dropped. With fewer than three valid outputs the tool falls back to the calibration temperature for the count it actually has and reports how many queries it used.
 
-## 指纹方法
+## Fingerprinting method
 
-### 核心算法
+### Core algorithm
 
-所有品种使用同一个全局特征空间、同一套特征与权重：
+Every breed shares one global feature space and one set of features and weights:
 
-    0.75 × 去除环境方向后的 Hellinger 品种中心相似度
-    + 0.25 × 有序块数字序列特征
+    0.75 x Hellinger breed-centroid similarity, after projecting out environment directions
+    + 0.25 x ordered-block sequence feature
 
-每份输出先解析成整数序列，再算两个特征。边际特征是长度 355 的计数向量，做 α = 0.5 的 Hellinger 变换。有序特征把序列按位置切成 4 块，每块 16 个值域桶，再加末位数字分布，共 74 维，同样做 Hellinger 变换。
+Each output is parsed into an integer sequence, then two features are computed. The marginal feature is a 355-dimensional count vector run through a Hellinger transform with alpha = 0.5. The ordered feature splits the sequence into 4 position blocks of 16 value bins each, plus a final-digit distribution, for 74 dimensions total, also Hellinger-transformed.
 
-建库时用共享环境的平均偏移估计干扰方向。归因时先从两个特征里投影掉这些方向，再同时与全部品种中心做余弦相似度。三份回答分别评分后按类取平均，并使用与查询数量对应的校准温度转换为概率。
+Bank building estimates nuisance directions from the mean offsets of shared environments. At attribution time those directions are projected out of both features before the cosine similarity against every breed centroid. The three responses are scored separately, averaged per class, then converted to probabilities with the calibration temperature for the query count.
 
-### 概率与品种族概率
+### Probabilities and family probabilities
 
-具体品种概率由一次全局 softmax 得到，品种族概率是该族下各品种概率之和：
+Per-breed probability comes from one global softmax. Family probability is the sum of the breed probabilities inside that family:
 
-    P(具体品种) = softmax(β × 全局品种得分)
-    P(品种族)   = Σ P(该族中的具体品种)
+    P(specific breed) = softmax(beta x global breed score)
+    P(breed family)   = sum of P(breed) over that family
 
-β 由分组交叉验证的负对数似然最小化搜索得到，搜索区间为 [0.05, 12.0]。
+Beta is found by minimizing negative log-likelihood over a grouped cross-validation search on [0.05, 12.0].
 
-本次运行的校准结果如下，数值取自 docs/归因报告.md 的摘要表：
+Calibration results for this run, taken from the summary table in docs/归因报告.md:
 
-| 项 | 值 |
+| Item | Value |
 |---|---|
-| 查询数 | 3 |
-| 校准温度 β | 12.000000 |
-| 交叉验证准确率 cv_accuracy | 98.26% |
-| 入库品种数 | 24 |
-| 入库样本条数 | 864 |
+| Queries | 3 |
+| Calibration temperature beta | 12.000000 |
+| Cross-validation accuracy cv_accuracy | 98.26% |
+| Breeds in the bank | 24 |
+| Reference samples in the bank | 864 |
 
-本次三次查询的 β 是 12.000000，打在搜索区间右端点上。1 次查询时不顶格，β 为 8.010150。
+The three-query beta for this run is 12.000000, pinned to the right end of the search range. A single query does not hit the cap: its beta is 8.010150.
 
-结果是当前候选库内、均匀先验下的闭集概率。未收录的样本仍会被归到最相似的现有候选。
+These are closed-set probabilities under a uniform prior, over the current candidate bank only. An unlisted sample still gets assigned to whichever existing candidate looks closest.
 
-### 对照组
+### Control group
 
-均匀随机整数与库内任何品种都没有生成关系，归因流程照样给出很高的品种族概率。五个种子的实测结果见 docs/归因报告.md 的「对照组」一节。
+Uniform random integers have no generative relationship to any breed in the bank, and the pipeline still returns high family probabilities for them. The measured results across five seeds are in the "Control group" section of docs/归因报告.md.
 
-## 项目结构
+## Project layout
 
-    app.py                   Web 接口
-    start.py                 本地服务启动
-    fingerprint.py           指纹提取与归因
-    bank_builder.py          指纹库构建与概率校准
-    challenge_suite.py       建库挑战套件
-    enrollment.py            合成品种语料生成
-    rebuild_unified_bank.py  重建统一全局库
-    report.py                归因报告生成
-    data/                    参考语料与指纹库
-    docs/                    归因报告、靶子拆解、ADR
-    static/                  页面资源
-    templates/               页面模板
-    tests/                   契约测试
+    app.py                   web API
+    start.py                 local server entry point
+    fingerprint.py           fingerprint extraction and attribution
+    bank_builder.py          bank construction and probability calibration
+    challenge_suite.py       challenge suite used for bank building
+    enrollment.py            synthetic breed corpus generation
+    rebuild_unified_bank.py  rebuild the unified global bank
+    report.py                attribution report generator
+    data/                    reference corpora and fingerprint banks
+    docs/                    attribution report, target breakdown, ADRs
+    static/                  page assets
+    templates/               page templates
+    tests/                   contract tests
 
-挑战套件共 12 个环境，每个环境 3 条查询，合计 36 条。环境之间只改外层包装语（无包装、system 前缀、user 前缀）与目标计数，任务内容固定。
+The challenge suite has 12 environments with 3 queries each, 36 in total. Environments differ only in the outer wrapper (none, system prefix, user prefix) and the target count. The task text is fixed.
 
-## 品种库说明
+## The breed bank
 
-当前统一库包含两个品种族、24 个品种，每族 12 个成员：
+The unified bank holds two breed families and 24 breeds, 12 members each:
 
-| 品种族 | 标识 | 成员 |
+| Family | ID | Members |
 |---|---|---|
-| 犬族 | dog | 哈士奇、拉布拉多、雪纳瑞、柯基、金毛、边牧、柴犬、萨摩耶、阿拉斯加、比格、贵宾、斗牛犬 |
-| 猫族 | cat | 布偶、暹罗、橘猫、英短、缅因、波斯、美短、俄罗斯蓝猫、苏格兰折耳、斯芬克斯、孟加拉豹猫、挪威森林猫 |
+| Dog family | dog | Husky, Labrador, Schnauzer, Corgi, Golden Retriever, Border Collie, Shiba Inu, Samoyed, Alaskan Malamute, Beagle, Poodle, Bulldog |
+| Cat family | cat | Ragdoll, Siamese, Orange Tabby, British Shorthair, Maine Coon, Persian, American Shorthair, Russian Blue, Scottish Fold, Sphynx, Bengal, Norwegian Forest |
 
-每个品种 36 条参考语料，来自 12 个环境各 3 条查询，两族合计 864 条。
+Each breed has 36 reference samples, 3 queries from each of 12 environments, for 864 across both families.
 
-待测样本 Clapt（clapt）不入库。它的权重向量由 0.80 份犬族基准与 0.20 份猫族基准混合而成，另叠加一个 111 处的峰。
+The test subject, Clapt (clapt), is deliberately kept out of the bank. Its weight vector is a 0.80 dog / 0.20 cat baseline mix with an extra peak at value 111.
 
-参考语料由参数化生成器合成，生成过程不发网络请求。每个品种一条 355 维权重向量，权重由高斯峰、值域提升、末位数字偏置、位置漂移四项相乘得到，抽样时对每个位置按权重归一化后做 categorical 抽样。成员之间的差异用确定性相位扰动实现，同一个 seed 永远得到同一份语料。
+The reference corpus is produced by a parameterized generator that makes no network calls. Each breed gets a 355-dimensional weight vector, built by multiplying four components: Gaussian peaks, a value-band lift, a last-digit bias, and a position drift. Sampling normalizes the weights per position and draws categorically. Member variation comes from deterministic phase perturbation, so the same seed always yields the same corpus.
 
-两族的成员数都是 4，因此品种族概率可以直接比较。增加成员时两族必须同步增加，否则族概率的大小会反映成员数而不是相似度。
+Both families have 12 members, so family probabilities are directly comparable. Adding members means adding them to both families in step, otherwise family probability reflects member count rather than similarity.
 
-## 声明
+## Caveats
 
-测试结果仅供参考，并非判断品种来源的决定性证据。
+Results are indicative only. They are not decisive evidence about where a breed came from.
 
-本工具为归因工具，只对指纹库内的品种尽可能去判断属于哪一种，若待测样本不在指纹库中，得到任何结果都是有可能的。
+This is an attribution tool. It tries to tell which of the breeds in the bank a sample most resembles. If the sample is not in the bank, any result is possible.
 
-结果是闭集概率。分母固定为库内候选数，因此任何输入都会得到一个看起来确定的答案，包括完全不在库内的输入。
+These are closed-set probabilities. The denominator is fixed to the number of candidates in the bank, so every input gets a confident-looking answer, including inputs that are nowhere near the bank.
 
-概率的输入是数字分布的相似度。工具全程不读取训练数据、权重或来源记录。
+The input to the probabilities is similarity between number distributions. The tool never reads training data, weights, or provenance records.
 
-报告里的每个百分号都来自一次真实运行，没有手写数值。重新跑 report.py 会得到与当次语料和 seed 对应的结果。
+Every percentage in the report comes from one real run. None are hand-written. Rerunning report.py produces results tied to that corpus and seed.
 
-## 现实检查
+## Reality check
 
-把这种公式的输出的百分数当作蒸馏证据，是本项目要展示的那个笑话本身。
+Treating the percentages out of this formula as evidence of distillation is the joke this project exists to tell.
 
-想先读一篇完整的长文，看这套东西为什么会给出自信的答案：[softmax 推不出蒸馏](docs/softmax-推不出蒸馏.md)。
+For the long-form version of why this formula produces confident answers, see [softmax 推不出蒸馏](docs/softmax-推不出蒸馏.md) (written in Chinese).
 
-这一节逐条拆解本工具复刻的四个推理动作。除本节与 docs/satire-targets.md 外，本仓库其余文件一律按上述方法描述。
+This section breaks down the four reasoning moves the tool reproduces. Outside this section and docs/satire-targets.md, every other file in the repo describes the method at face value.
 
-先说一组实测。把与库内任何品种都无生成关系的均匀随机整数喂进同一个归因流程，五个种子的品种族概率落在 78.4612% 到 99.9999% 之间，判定结果两族都有。详见 docs/归因报告.md 的「对照组」一节。
+Start with one measurement. Feed uniform random integers, which have no generative relationship to any breed in the bank, through the same pipeline. Across five seeds the family probabilities land between 78.4612% and 99.9999%, splitting across both families. Details in the "Control group" section of docs/归因报告.md.
 
-### T1 概率的输入是数字分布的相似度
+### T1 The probability input is similarity between number distributions
 
-softmax 的输入是一条由随机数字算出的余弦相似度，输出被命名为概率。相似度不含来源信息：同一个提示词模板、同一个采样温度、同一个分词器、同一段包装语都能造成相似，两个独立来源也可能碰巧偏向同一批数字。
+The softmax input is a cosine similarity computed from random numbers, and the output is named probability. Similarity carries no provenance: the same prompt template, the same sampling temperature, the same tokenizer, or the same wrapper text all produce similarity, and two independent sources can also happen to favor the same batch of numbers.
 
-推理断在：从"数字分布像候选 A"到"样本由候选 A 产生"，中间没有任何一步被补上。工具全程没有接触训练数据、权重或蒸馏记录。
+Where the reasoning breaks: between "the number distribution looks like candidate A" and "the sample came from candidate A", there is a step nobody supplies. The tool never touches training data, weights, or distillation records.
 
-### T2 品种族概率是成员概率之和
+### T2 Family probability is the sum of member probabilities
 
-品种族概率等于该族各成员概率之和。求和是加总，不是识别。一族有 12 个成员，另一族也有 12 个，份额大小反映的是成员概率的集中程度，与哪一族是源头没有逻辑通道。
+Family probability equals the sum of its members' probabilities. Summing is aggregation, not identification. One family has 12 members and the other has 12, so the share reflects how concentrated the member probabilities are. There is no logical path from that share to which family is the source.
 
-求和还会把两种不同情形压成同一个数：某族里有一个成员特别像，和某族里每个成员都稍微像一点。本次运行里 斗牛犬 的归因概率为 63.72%，而犬族的品种族概率为 99.9999%，这两个数说的是不同的事。
+Summing also collapses two very different situations into one number: one member in the family looking very similar, versus every member looking slightly similar. In this run, Bulldog gets 63.72% per-breed probability while the dog family gets 99.9999%. Those two numbers say different things.
 
-推理断在：从"这一族成员概率之和最大"到"这一族是待测样本的祖先"，中间缺一步。
+Where the reasoning breaks: between "this family's summed member probability is the largest" and "this family is the sample's ancestor", a step is missing.
 
-### T3 温度 β 的搜索上界
+### T3 The search cap on temperature beta
 
-β 的搜索区间是 [0.05, 12.0]，801 个格点按对数等距。本仓库统一库的校准结果里，查询数为 1 的 β 为 8.010150，查询数为 2 和 3 的 β 都是 11.99999999999999。2 次和 3 次查询的 β 打在上界，说明最优值在区间之外，搜索被截断。
+Beta is searched over [0.05, 12.0], 801 grid points spaced logarithmically. In this repo's unified bank, the one-query beta is 8.010150, and both the two-query and three-query betas are 11.99999999999999. Two and three queries land on the cap, which means the optimum is outside the range and the search is truncated.
 
-β 越大，softmax 越尖锐。β 趋近无穷时 softmax 退化成 one-hot，最大得分的候选拿走全部概率。当交叉验证正确率已经接近上限时，负对数似然仍会随 β 增大而下降，拟合过程会一路把 β 推到边界。于是概率的绝对大小由搜索区间的右端点决定，不由数据决定。
+The larger beta gets, the sharper the softmax. As beta goes to infinity, softmax degenerates into one-hot and the top-scoring candidate takes all the probability. Once cross-validation accuracy is near its ceiling, negative log-likelihood still falls as beta grows, so the fit keeps pushing beta to the boundary. The absolute size of the probability is then set by the right end of the search range, not by the data.
 
-推理断在：把这样得到的百分比读成"把握程度"，等于把一个被区间上界截断的缩放因子读成置信度。本次运行三次查询用的 β 是 12.000000，正是这个上界。
+Where the reasoning breaks: reading a percentage produced this way as a level of confidence means reading a scaling factor clipped by the search range as a confidence measure. The three-query beta for this run is 12.000000, which is exactly that cap.
 
-### T4 闭集与均匀先验
+### T4 Closed set and uniform prior
 
-候选集是有限且事先固定的 24 个品种。softmax 的分母只在这 24 个候选上归一化，因此 24 个概率加起来一定是 1。库外样本也会被归到最相似的那一个上，拿到一个看起来像概率的数。分母里没有"以上都不是"这一项。
+The candidate set is a fixed 24 breeds. The softmax denominator normalizes over those 24 only, so the 24 probabilities always sum to 1. A sample from outside the bank still gets assigned to the closest candidate and receives a number that looks like a probability. There is no "none of the above" slot in the denominator.
 
-均匀先验意味着 8 个候选事先被当成一样可能。真实场景里品种流行度、版本迭代关系、族内成员数都会让先验不均等，这些信息一律不参与计算。
+A uniform prior means all 24 candidates are treated as equally likely up front. Real-world breed popularity, version lineage, and family member counts would all make the prior uneven, and none of that information enters the calculation.
 
-cv_accuracy 衡量的是库内自我识别：按环境分组、按查询留出，看留出的那些样本能否被认回它自己的品种。本次运行的三查询 cv_accuracy 为 98.26%。这个数只说明库内样本能被认回自己，不涉及库外样本。
+cv_accuracy measures in-bank self-identification: group by environment, hold out queries, and check whether the held-out samples can be recognized as their own breed. This run's three-query cv_accuracy is 98.26%. That number only says in-bank samples can be matched back to themselves. It says nothing about samples outside the bank.
 
-推理断在：从"在这 8 个候选里 A 最像"到"这个样本就是 A"，中间缺一条。闭集假设把缺口藏起来了，因为分母一定是 8，任何输入都会得到一个看起来很确定的答案。
+Where the reasoning breaks: between "A looks closest among these 24 candidates" and "this sample is A", a step is missing. The closed-set assumption hides the gap, because the denominator is always 24 and every input gets a confident-looking answer.
 
-### 四条靶子的共同结构
+### What the four targets have in common
 
-四条靶子是同一个动作的四次重演：算一个相似度或求和，用一个可能被区间截断的缩放因子把它放大，在一个封闭候选集上归一化，最后把得到的小数命名为概率并读成因果断言。
+The four targets are the same move performed four times: compute a similarity or a sum, scale it up with a factor that may be clipped by a search range, normalize over a closed candidate set, then name the resulting decimal a probability and read it as a causal claim.
 
-每一步单独看都站得住。断的地方在最后一步：从相似到同源，没有任何一步被补上。
+Each step stands on its own. The break is in the last one: from similarity to common ancestry, nobody supplies the missing step.
 
-逐条展开见 docs/satire-targets.md。四个术语的准确用法见 GLOSSARY.md。
+Full breakdown: docs/satire-targets.md. Precise usage of the four terms: GLOSSARY.md.
 
-## 友链
+## Friends
 
 - [LINUX DO](https://linux.do/)
