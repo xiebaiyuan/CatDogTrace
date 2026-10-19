@@ -179,7 +179,7 @@ Every percentage in the report comes from one real run. None are hand-written. R
 
 Treating the percentages out of this formula as evidence of distillation is the joke this project exists to tell.
 
-For the long-form version of why this formula produces confident answers, see [softmax 推不出蒸馏](docs/softmax-推不出蒸馏.md) (written in Chinese).
+For the long-form version of why this formula produces confident answers, see [softmax does not imply distillation](docs/softmax-does-not-imply-distillation.md).
 
 This section breaks down the four reasoning moves the tool reproduces. Outside this section and docs/satire-targets.md, every other file in the repo describes the method at face value.
 
