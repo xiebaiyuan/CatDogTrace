@@ -42,6 +42,7 @@ import {
   percent,
   planJudge,
   progressLabel,
+  randomAnswer,
   rankedResults,
   rejectedDiagnostics,
   restart,
@@ -54,6 +55,7 @@ import {
   withDraft,
   withFailure,
   withPayload,
+  withRandomAnswers,
   withResult,
   type PanelState,
   type Segment,
@@ -211,6 +213,27 @@ function Body({ store }: { store: PanelStore }): ReactElement {
     }
   }, [store])
 
+  /**
+   * 「随机填充并计算」: draw a set if the panel has none, fill each empty slot with an answer of that
+   * challenge's length through the ordinary transitions, then judge.
+   *
+   * Deliberately not the shipped web page's short-cut (fill the boxes, then analyze): going through
+   * `commitDraft` is what keeps the progress line, the per-segment threshold marks, and undo honest —
+   * a random answer is judged by the same gate as a pasted one.
+   */
+  const randomize = useCallback(async () => {
+    if (store.getSnapshot().challenges.length < SEGMENTS_REQUIRED) {
+      try {
+        store.update(current => withChallenges(current, generateChallenges(SEGMENTS_REQUIRED)))
+      } catch (error) {
+        store.update(current => withFailure(current, errorMessage(error)))
+        return
+      }
+    }
+    store.update(current => withRandomAnswers(current, randomAnswer))
+    await judge()
+  }, [judge, store])
+
   const missing = missingSegments(state)
   const bareText = state.challenges.length === 0
   const nextSlot = Math.min(state.segments.length + 1, SEGMENTS_REQUIRED)
@@ -318,6 +341,14 @@ function Body({ store }: { store: PanelStore }): ReactElement {
       h('div', { className: 'cdt-block-head' },
         h('span', { className: 'cdt-block-title' }, '判定'),
         h('span', { className: 'cdt-hint' }, judgeHint(state)),
+      ),
+      h('div', { className: 'cdt-actions' },
+        h('button', {
+          type: 'button',
+          className: 'cdt-btn',
+          disabled: busy,
+          onClick: () => { void randomize() },
+        }, '随机填充并计算'),
         h('button', {
           type: 'button',
           className: 'cdt-btn cdt-btn-primary',

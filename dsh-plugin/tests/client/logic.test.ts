@@ -15,6 +15,8 @@ import {
   percent,
   planJudge,
   progressLabel,
+  randomAnswer,
+  randomNumbers,
   rankedResults,
   rejectedDiagnostics,
   restart,
@@ -26,6 +28,7 @@ import {
   withChallenges,
   withDraft,
   withPayload,
+  withRandomAnswers,
   type PanelState,
 } from '../../src/client/logic'
 import type { Challenge } from '../../src/core'
@@ -298,5 +301,100 @@ describe('展示层的小函数', () => {
       ],
     })
     expect(bars.map(bar => bar.family)).toEqual(['dog', 'cat'])
+  })
+})
+
+describe('随机填充：crypto + 拒绝采样', () => {
+  /** The largest word a uniform mapping may use; anything from here up must be discarded. */
+  const LIMIT = Math.floor(0x1_0000_0000 / 355) * 355 // 65320
+
+  /** A source that hands out the given batches in order, repeating the last one. */
+  function sourceOf(...batches: number[][]): (length: number) => ArrayLike<number> {
+    let cursor = 0
+    return (length: number) => {
+      const batch = batches[Math.min(cursor, batches.length - 1)]
+      cursor += 1
+      return batch.slice(0, Math.max(length, 1))
+    }
+  }
+
+  it('把样本均匀映射到 1..355', () => {
+    expect(randomNumbers(3, sourceOf([0, 1, 354]))).toEqual([1, 2, 355])
+  })
+
+  it('拒绝会引入偏差的样本（≥ 355 的整除上界），不拿它凑数', () => {
+    // 65320 itself is already outside the fair range: 65320 % 355 === 0 would double-count value 1.
+    expect(randomNumbers(1, sourceOf([LIMIT], [0]))).toEqual([1])
+  })
+
+  it('真随机源下长度与值域都对', () => {
+    const values = randomNumbers(292)
+    expect(values).toHaveLength(292)
+    for (const value of values) {
+      expect(Number.isInteger(value)).toBe(true)
+      expect(value).toBeGreaterThanOrEqual(1)
+      expect(value).toBeLessThanOrEqual(355)
+    }
+
+    const text = randomAnswer(292)
+    const tokens = text.trim().split(/\s+/)
+    expect(tokens).toHaveLength(292)
+    expect(tokens.every(token => Number(token) >= 1 && Number(token) <= 355)).toBe(true)
+  })
+
+  it('长度为 0 时是空数组；随机源交白卷时报错而不是死循环', () => {
+    expect(randomNumbers(0)).toEqual([])
+    expect(() => randomNumbers(1, () => [])).toThrow('随机源没有返回任何样本')
+  })
+
+  it('越界或非整数的样本直接报错，不静默取模', () => {
+    expect(() => randomNumbers(1, sourceOf([-1]))).toThrow('越界样本')
+    expect(() => randomNumbers(1, sourceOf([0x1_0000_0000]))).toThrow('越界样本')
+    expect(() => randomNumbers(1, sourceOf([1.5]))).toThrow('越界样本')
+  })
+
+  it('负长度是调用方的错', () => {
+    expect(() => randomNumbers(-1)).toThrow('非负整数')
+  })
+})
+
+describe('随机填充：走正常进位路径', () => {
+  it('没出题时每段按对应题的 expected_count 收下，门槛照旧', () => {
+    const state = withRandomAnswers(drawn(), (count: number) => randomAnswer(count))
+
+    expect(state.segments).toHaveLength(SEGMENTS_REQUIRED)
+    expect(state.segments.map(segment => segment.expected_count)).toEqual([292, 311, 327])
+    expect(state.segments.map(segment => segment.numbers)).toEqual([292, 311, 327])
+    expect(state.segments.map(segment => segment.threshold)).toEqual([161, 172, 180])
+    expect(state.segments.every(segment => segment.accepted)).toBe(true)
+    // One answer's worth of numbers is not a merged paste.
+    expect(state.notice).toBeNull()
+    expect(state.draft).toBe('')
+    expect(canJudge(state)).toBe(true)
+  })
+
+  it('已经收了的段不动，只补空位', () => {
+    const pasted = commitDraft(withDraft(drawn(), answer(292)))
+    const state = withRandomAnswers(pasted, (count: number) => randomAnswer(count))
+
+    expect(state.segments).toHaveLength(SEGMENTS_REQUIRED)
+    expect(state.segments[0].text).toBe(answer(292))
+    expect(state.segments[1].numbers).toBe(311)
+  })
+
+  it('三段已满时是空操作', () => {
+    const full = filled()
+    expect(withRandomAnswers(full)).toBe(full)
+  })
+
+  it('先清掉非空的 JSON 区，否则它会盖掉这次随机', () => {
+    const state = withRandomAnswers(withPayload(drawn(), '{"outputs":[{"text":"一"}]}'))
+    expect(state.payload).toBe('')
+    expect(state.segments).toHaveLength(SEGMENTS_REQUIRED)
+  })
+
+  it('没有题就没有可依据的长度，什么都不填', () => {
+    const state = withRandomAnswers(emptyPanelState())
+    expect(state.segments).toHaveLength(0)
   })
 })

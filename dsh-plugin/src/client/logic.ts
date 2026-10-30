@@ -11,6 +11,8 @@
  */
 
 import {
+  VALUE_MAX,
+  VALUE_MIN,
   parseNumbers,
   type AnalysisResult,
   type Challenge,
@@ -220,6 +222,89 @@ export function undoSegment(state: PanelState): PanelState {
     failure: null,
     notice: null,
   }
+}
+
+/** How many values one full turn of the domain holds: 355. */
+const VALUE_SPAN = VALUE_MAX - VALUE_MIN + 1
+
+/** 2^32, the width of one sampled word. */
+const WORD_SPAN = 0x1_0000_0000
+
+/**
+ * The largest word a uniform mapping can use: everything below it divides evenly into the domain, so
+ * `word % VALUE_SPAN` stays uniform. Same rejection idea as `static/challenge-browser.js`'s
+ * `randomIndex`, applied to a batch instead of one word per draw.
+ */
+const SAMPLE_LIMIT = Math.floor(WORD_SPAN / VALUE_SPAN) * VALUE_SPAN
+
+/** The default source: the platform CSPRNG. Never `Math.random()` — see `randomNumbers`. */
+function secureWords(length: number): Uint32Array {
+  const words = new Uint32Array(length)
+  crypto.getRandomValues(words)
+  return words
+}
+
+/**
+ * `count` uniform integers in `[VALUE_MIN, VALUE_MAX]`.
+ *
+ * Why `crypto.getRandomValues` and rejection sampling, when the shipped web page uses `Math.random()`:
+ * this tool's control group IS "uniform random integers", so a generator with a bias or a guessable
+ * stream makes the comparison meaningless. `Math.random()` guarantees neither. The rejection exists
+ * because 355 does not divide 2^32: mapping every word with `% 355` would favour the low end.
+ *
+ * `words` is injectable so tests can pin the mapping without pinning the entropy.
+ */
+export function randomNumbers(
+  count: number,
+  words: (length: number) => ArrayLike<number> = secureWords,
+): number[] {
+  if (!Number.isInteger(count) || count < 0) {
+    throw new Error(`随机填充需要非负整数长度，收到 ${String(count)}`)
+  }
+  const values: number[] = []
+  while (values.length < count) {
+    const batch = words(count - values.length)
+    if (batch.length === 0) throw new Error('随机源没有返回任何样本')
+    for (let index = 0; index < batch.length; index += 1) {
+      const word = batch[index]
+      if (!Number.isInteger(word) || word < 0 || word >= WORD_SPAN) {
+        throw new Error(`随机源返回了越界样本 ${String(word)}`)
+      }
+      if (word >= SAMPLE_LIMIT) continue
+      values.push((word % VALUE_SPAN) + VALUE_MIN)
+      if (values.length === count) break
+    }
+  }
+  return values
+}
+
+/** One answer of `expectedCount` random integers, in the shape the paste box takes. */
+export function randomAnswer(expectedCount: number, words?: (length: number) => ArrayLike<number>): string {
+  return randomNumbers(expectedCount, words).join(' ')
+}
+
+/**
+ * Fill every still-empty slot with a random answer, through the ordinary `commitDraft` transition.
+ *
+ * Going through the state machine (rather than writing a finished result) is what keeps the progress
+ * line, the per-segment threshold marks, undo, and the merged-paste warning honest: a random answer is
+ * just an answer, and it is judged by exactly the same gate.
+ *
+ * A non-empty JSON box is cleared first: it outranks the segments, so leaving it would make the three
+ * random answers decorative while the judge quietly used the pasted payload instead.
+ */
+export function withRandomAnswers(
+  state: PanelState,
+  answer: (expectedCount: number) => string = randomAnswer,
+): PanelState {
+  let next = state.payload === '' ? state : withPayload(state, '')
+  for (let index = 0; index < SEGMENTS_REQUIRED; index += 1) {
+    if (next.segments.length > index) continue
+    const expected = next.challenges[index]?.expected_count
+    if (expected === undefined) break
+    next = commitDraft(withDraft(next, answer(expected)))
+  }
+  return next
 }
 
 /** Clear the three segments and the result. The drawn challenges stay: re-drawing invalidates them. */

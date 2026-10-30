@@ -32,6 +32,7 @@ send each prompt to the model under test, then paste its reply back:
 | 出题 | Click 「生成 3 道挑战」, send each prompt to the model | Shows the three prompts with their expected number counts; each has a 复制 button |
 | 收答 | Paste one reply into the single box | Counts the numbers the core will actually score, drops them into the next slot, clears the box, and advances the progress line: `第 2/3 段 · 已收 1/3`, `已收 292 个数字，门槛 161 ✓` |
 | 判定 | Click 「判定」 once all three segments are in | Shows the two family shares, the champion breed, the full descending ranking of all 24 breeds, and any input the core rejected |
+| 懒得操作 | Click 「随机填充并计算」 | Draws a challenge set if there is none, fills every empty slot with that challenge's worth of random integers, collects them through the same advance path, and judges — one click, same gate |
 
 The threshold is `max(80, ceil(expected_count × 0.55))` — the same gate the core applies. Paste three
 segments that were never drawn against a challenge and every one of them falls back to the flat 80, and
@@ -39,6 +40,13 @@ the panel says 「门槛按 80 算」 out loud.
 
 「撤回上一段」 puts the last segment back into the box; 「重新开始」 clears all three segments and the
 result but keeps the drawn challenges; 「重新出题」 draws a fresh set and discards everything.
+
+「随机填充并计算」 is the control group in one click: it fills the slots with uniform random integers
+from `crypto.getRandomValues` (rejection-sampled, so 355's non-power-of-two domain stays unbiased) and
+runs the ordinary judge. It is the same input channel as a paste — nothing about the thresholds,
+diagnostics, or the ranking changes, and `SPEC.md`'s "the plugin does not change the maths" still holds.
+It only fills slots that are still empty, and it clears a non-empty JSON box first, because that box
+outranks the segments and would otherwise make the random answers decorative.
 
 A paste that looks like several replies strung together (two answers' worth of numbers) is warned about
 and **kept as one segment** — never split. A wrong split yields a wrong percentage, which is the exact

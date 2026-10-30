@@ -28,7 +28,33 @@ vi.mock('../../src/core', async (importOriginal) => {
       expected_count: 292 + index * 10,
       prompt: `请给出 ${292 + index * 10} 个 1 到 355 的整数。`,
     })),
-    analyzeGlobalOutputs: () => { throw new Error('render.test 不判定') },
+    analyzeGlobalOutputs: () => ({
+      prediction: 'shiba',
+      prediction_name: '柴犬',
+      probability: 0.42,
+      used_outputs: 3,
+      results: [{
+        model: 'shiba',
+        display_name: '柴犬',
+        probability: 0.42,
+        profile_similarity: 0.9,
+        score: 1,
+        nuisance_score: 0,
+        family: 'dog',
+        family_name: '犬族',
+        conditional_probability: 0.7,
+      }],
+      diagnostics: [{ index: 0, parsed_numbers: 292, minimum_numbers: 161, accepted: true }],
+      calibration: { queries: '3', beta: 12, cv_accuracy: 0.98 },
+      method: 'ordered-block + nuisance-Hellinger',
+      family_prediction: 'dog',
+      family_prediction_name: '犬族',
+      family_probability: 0.55,
+      family_probabilities: [
+        { family: 'dog', display_name: '犬族', probability: 0.55 },
+        { family: 'cat', display_name: '猫族', probability: 0.45 },
+      ],
+    }),
   }
 })
 
@@ -178,5 +204,36 @@ describe('侧栏面板', () => {
 
     expect(button(host, '判定').disabled).toBe(false)
     expect(host.textContent).toContain('JSON 区非空')
+  })
+})
+
+describe('随机填充并计算', () => {
+  it('没出题时先出题、再按每题长度收满三段、然后直接出结果', async () => {
+    const host = await mount()
+
+    // Nothing drawn yet: no prompts, no candidates for a length.
+    expect(host.querySelectorAll('pre.cdt-prompt')).toHaveLength(0)
+    expect(host.textContent).toContain('已收 0/3')
+
+    button(host, '随机填充并计算').dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    await flush()
+
+    // Step 1: a challenge set appeared.
+    expect(host.querySelectorAll('pre.cdt-prompt')).toHaveLength(3)
+    // Step 2: all three slots went through the ordinary advance path.
+    expect(host.textContent).toContain('已收 3/3')
+    expect(host.textContent).toContain('已收 292 个数字，门槛 161 ✓')
+    expect(host.textContent).toContain('已收 302 个数字，门槛 167 ✓')
+    expect(host.textContent).toContain('已收 312 个数字，门槛 172 ✓')
+    // Step 3: it judged on its own and rendered the result.
+    expect(host.textContent).toContain('柴犬')
+    expect(button(host, '判定').disabled).toBe(false)
+    // The button is back to its label after the run.
+    expect(button(host, '随机填充并计算').disabled).toBe(false)
+  })
+
+  it('按钮文案与网页版一致', async () => {
+    const host = await mount()
+    expect(button(host, '随机填充并计算').textContent?.trim()).toBe('随机填充并计算')
   })
 })
