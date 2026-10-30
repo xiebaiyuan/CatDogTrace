@@ -28,18 +28,22 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { createElement, type ComponentType } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { analyzeGlobalOutputs, assertBankDocument } from '../../src/core'
+import bankDocument from '../../src/core/bank/unified_bank'
 import { minimumNumbers } from '../../src/client/logic'
 import { resetPanelStores } from '../../src/client/panelStore'
 
 const PACKAGE_ID = 'dsh-catdogtrace'
 const ENTRY = 'lib/client.js'
 const BANK_CHUNK = 'client.unified_bank.js'
+const AVATAR_CHUNK = 'client.avatars.js'
 
 /** The loader's own chunk grammar, copied from `@deepseek-ai/dsh-client-modules`. */
 const CHUNK_FILE_NAME = /^client\.[A-Za-z0-9][A-Za-z0-9._-]*\.js$/
 
 /** The frozen module table's words this plugin is allowed to ask for. */
 const PLATFORM_MODULES = new Set(['react', 'react/jsx-runtime'])
+
+const bankIds = (bankDocument as { models: { id: string }[] }).models.map(model => model.id)
 
 const packageRoot = join(dirname(fileURLToPath(import.meta.url)), '..', '..')
 const nodeRequire = createRequire(join(packageRoot, 'package.json'))
@@ -123,6 +127,7 @@ interface LoadedArtifact {
 function loadArtifact(): { artifact: LoadedArtifact; restore(): void } {
   requireArtifact(ENTRY)
   requireArtifact(`lib/${BANK_CHUNK}`)
+  requireArtifact(`lib/${AVATAR_CHUNK}`)
 
   const registrations: Registration[] = []
   const previous = (window as unknown as { __ModuleLoader__?: unknown }).__ModuleLoader__
@@ -237,9 +242,27 @@ describe('构建产物：指纹库 chunk', () => {
     }
   })
 
-  it('入口里那条请求就是 require.async，不是同步 require', () => {
+  it('require.async 能真加载 client.avatars.js，24 个品种键都在', async () => {
+    const { artifact, restore } = loadArtifact()
+    try {
+      const chunk = await artifact.require.async(`./${AVATAR_CHUNK}`)
+      const map = chunk.default as Record<string, string>
+      const ids = (bankIds as string[]).slice().sort()
+
+      expect(Object.keys(map).slice().sort()).toEqual(ids)
+      expect(Object.keys(map)).toHaveLength(24)
+      for (const [id, uri] of Object.entries(map)) {
+        expect(uri.startsWith('data:image/png;base64,'), id).toBe(true)
+      }
+    } finally {
+      restore()
+    }
+  })
+
+  it('入口里两条请求都是 require.async，不是同步 require', () => {
     const code = readFileSync(join(packageRoot, ENTRY), 'utf8')
     expect(code).toContain(`require.async("./${BANK_CHUNK}")`)
+    expect(code).toContain(`require.async("./${AVATAR_CHUNK}")`)
     // A relative synchronous require would hit the frozen table and throw at runtime.
     expect(/\brequire\((["'])\.\//.test(code)).toBe(false)
   })

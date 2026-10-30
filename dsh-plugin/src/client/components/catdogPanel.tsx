@@ -29,6 +29,8 @@ import {
   type AnalysisResult,
   type Bank,
 } from '../../core'
+import { loadBreedAvatars } from '../avatars'
+import type { BreedAvatarMap } from '../assets/avatars'
 import { copyText } from '../copy'
 import {
   bankStatusText,
@@ -78,6 +80,34 @@ function modelCountOf(bank: Bank): number | null {
   return Array.isArray(models) ? models.length : null
 }
 
+/**
+ * One breed's avatar, or nothing.
+ *
+ * The images are opaque cream squares, so the stylesheet gives them a radius and a hairline edge — in a
+ * dark theme that edge is what stops them reading as pasted paper. `size` decides 22px in a ranking row
+ * or 40px on the champion line.
+ *
+ * Renders nothing (not a broken image) while the lazy chunk is still in flight or when the map has no
+ * entry for this breed: the name alone is always correct, the face is decoration.
+ */
+function BreedAvatar(props: {
+  avatars: BreedAvatarMap | null
+  id: string
+  name: string
+  large?: boolean
+}): ReactElement | null {
+  const src = props.avatars === null ? undefined : props.avatars[props.id]
+  if (src === undefined) return null
+  return h('img', {
+    className: props.large === true ? 'cdt-avatar cdt-avatar-lg' : 'cdt-avatar',
+    src,
+    alt: props.name,
+    width: props.large === true ? 40 : 22,
+    height: props.large === true ? 40 : 22,
+    draggable: false,
+  })
+}
+
 function CopyButton({ text }: { text: string }): ReactElement {
   const [label, setLabel] = useState('复制')
   return h('button', {
@@ -114,13 +144,16 @@ function FamilyBars({ result }: { result: AnalysisResult }): ReactElement {
   )))
 }
 
-function ResultPanel({ result }: { result: AnalysisResult }): ReactElement {
+function ResultPanel({ result, avatars }: { result: AnalysisResult; avatars: BreedAvatarMap | null }): ReactElement {
   const ranked = rankedResults(result.results)
   const rejected = rejectedDiagnostics(result.diagnostics)
   return h('div', { className: 'cdt-result' },
     h('div', { className: 'cdt-champion' },
-      h('span', { className: 'cdt-hint' }, '冠军品种'),
-      h('span', { className: 'cdt-champion-name' }, result.prediction_name),
+      h(BreedAvatar, { avatars, id: result.prediction, name: result.prediction_name, large: true }),
+      h('span', { className: 'cdt-champion-text' },
+        h('span', { className: 'cdt-hint' }, '冠军品种'),
+        h('span', { className: 'cdt-champion-name' }, result.prediction_name),
+      ),
       h('span', { className: 'cdt-champion-value' }, percent(result.probability)),
       h('span', { className: 'cdt-tag' }, `用掉 ${result.used_outputs} 条回答`),
     ),
@@ -135,7 +168,10 @@ function ResultPanel({ result }: { result: AnalysisResult }): ReactElement {
       )),
       h('tbody', null, ranked.map((breed, index) => h('tr', { key: breed.model },
         h('td', { className: 'cdt-rank' }, String(index + 1)),
-        h('td', null, breed.display_name),
+        h('td', { className: 'cdt-breed' },
+          h(BreedAvatar, { avatars, id: breed.model, name: breed.display_name }),
+          h('span', null, breed.display_name),
+        ),
         h('td', { className: 'cdt-num' }, percent(breed.probability)),
         h('td', { className: 'cdt-num' }, percent(breed.conditional_probability)),
         h('td', { className: 'cdt-tag' }, breed.family_name),
@@ -153,6 +189,7 @@ function ResultPanel({ result }: { result: AnalysisResult }): ReactElement {
 function Body({ store }: { store: PanelStore }): ReactElement {
   const state: PanelState = useSyncExternalStore(store.subscribe, store.getSnapshot)
   const [busy, setBusy] = useState(false)
+  const [avatars, setAvatars] = useState<BreedAvatarMap | null>(null)
 
   // First mount is the trigger. The store remembers the outcome, so remounting does not refetch.
   useEffect(() => {
@@ -170,6 +207,16 @@ function Body({ store }: { store: PanelStore }): ReactElement {
     )
     return () => { live = false }
   }, [store])
+
+  // The avatar chunk is a second lazy script; a failure here is silent by design (names still render).
+  useEffect(() => {
+    let live = true
+    loadBreedAvatars().then(
+      (map) => { if (live) setAvatars(map) },
+      () => { /* names only */ },
+    )
+    return () => { live = false }
+  }, [])
 
   const commit = useCallback((text: string) => {
     store.update(current => commitDraft(withDraft(current, text)))
@@ -357,7 +404,7 @@ function Body({ store }: { store: PanelStore }): ReactElement {
         }, busy ? '判定中…' : '判定'),
       ),
       state.failure === null ? null : h('p', { className: 'cdt-error' }, state.failure),
-      state.result === null ? null : h(ResultPanel, { result: state.result }),
+      state.result === null ? null : h(ResultPanel, { result: state.result, avatars }),
     ),
 
     h('footer', { className: 'cdt-foot' },

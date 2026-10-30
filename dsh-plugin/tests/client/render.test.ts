@@ -227,6 +227,17 @@ describe('随机填充并计算', () => {
     expect(host.textContent).toContain('已收 312 个数字，门槛 172 ✓')
     // Step 3: it judged on its own and rendered the result.
     expect(host.textContent).toContain('柴犬')
+    // The lazy avatar chunk resolved: a 40px face on the champion line and a 22px one in the row.
+    const champion = host.querySelector('img.cdt-avatar-lg') as HTMLImageElement | null
+    expect(champion).not.toBeNull()
+    expect(champion?.width).toBe(40)
+    expect(champion?.height).toBe(40)
+    expect(champion?.alt).toBe('柴犬')
+    expect(champion?.getAttribute('src')?.startsWith('data:image/png;base64,')).toBe(true)
+    const rowFace = host.querySelector('td.cdt-breed img.cdt-avatar') as HTMLImageElement | null
+    expect(rowFace).not.toBeNull()
+    expect(rowFace?.width).toBe(22)
+    expect(rowFace?.alt).toBe('柴犬')
     expect(button(host, '判定').disabled).toBe(false)
     // The button is back to its label after the run.
     expect(button(host, '随机填充并计算').disabled).toBe(false)

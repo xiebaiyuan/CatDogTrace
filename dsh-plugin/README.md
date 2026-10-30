@@ -31,7 +31,7 @@ send each prompt to the model under test, then paste its reply back:
 |---|---|---|
 | 出题 | Click 「生成 3 道挑战」, send each prompt to the model | Shows the three prompts with their expected number counts; each has a 复制 button |
 | 收答 | Paste one reply into the single box | Counts the numbers the core will actually score, drops them into the next slot, clears the box, and advances the progress line: `第 2/3 段 · 已收 1/3`, `已收 292 个数字，门槛 161 ✓` |
-| 判定 | Click 「判定」 once all three segments are in | Shows the two family shares, the champion breed, the full descending ranking of all 24 breeds, and any input the core rejected |
+| 判定 | Click 「判定」 once all three segments are in | Shows the two family shares, the champion breed with its avatar, the full descending ranking of all 24 breeds (each with a 22px face), and any input the core rejected |
 | 懒得操作 | Click 「随机填充并计算」 | Draws a challenge set if there is none, fills every empty slot with that challenge's worth of random integers, collects them through the same advance path, and judges — one click, same gate |
 
 The threshold is `max(80, ceil(expected_count × 0.55))` — the same gate the core applies. Paste three
@@ -74,6 +74,14 @@ the JSON text, and the result live in a per-session store, not in the component.
 - The 700KB fingerprint bank is a lazy chunk (`lib/client.unified_bank.js`), reached only through
   `loadBankChunk()`'s dynamic `import()`. It never enters `lib/client.js`, and it is only fetched the
   first time the panel is mounted.
+- The 24 breed avatars are a second lazy chunk (`lib/client.avatars.js`, ~255KB of base64 PNGs),
+  generated from `static/assets/breeds/*.png` by `scripts/gen-avatars.mjs`, reached only through
+  `loadBreedAvatars()`'s dynamic `import()`. The generator refuses to run unless the image set and the
+  fingerprint bank's model ids are exactly the same 24 keys, in both directions, so a swapped or renamed
+  portrait fails the build instead of silently putting the wrong face on a row. The images are opaque
+  cream squares (the illustrations' pale areas and their background are the same colour, so a cut-out
+  would eat the muzzle and chest), which is why the stylesheet gives them a radius and a hairline edge
+  rather than assuming transparency.
 - React is the only UI dependency, and it comes from the host's frozen module table (a peer, never
   bundled). There is no Tailwind: the whole panel is one hand-written stylesheet injected as a single
   `<style>` tag, coloured with the host's `--dsw-*` tokens so it follows the page theme.

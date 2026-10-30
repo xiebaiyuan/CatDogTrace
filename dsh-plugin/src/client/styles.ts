@@ -89,7 +89,8 @@ const CSS = `
 .cdt-bar-fill { height: 100%; border-radius: 4px; background: var(--dsw-alias-button-primary-fill, #1f6feb); }
 .cdt-bar-fill-cat { background: var(--dsw-alias-label-warning, #bf8700); }
 .cdt-bar-value { text-align: right; font-family: var(--dsw-font-family-mono, monospace); }
-.cdt-champion { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; margin: 4px 0 2px; }
+.cdt-champion { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 4px 0 2px; }
+.cdt-champion-text { display: flex; flex-direction: column; line-height: 1.25; }
 .cdt-champion-name { font-size: 15px; font-weight: 600; }
 .cdt-champion-value { font-family: var(--dsw-font-family-mono, monospace); font-size: 12.5px; }
 .cdt-result { margin-top: 8px; }
@@ -101,6 +102,15 @@ const CSS = `
 }
 .cdt-table td { padding: 3px 4px; border-bottom: 1px solid var(--dsw-alias-border-l2, rgba(0, 0, 0, 0.06)); }
 .cdt-table td.cdt-num { text-align: right; font-family: var(--dsw-font-family-mono, monospace); }
+.cdt-breed { display: flex; align-items: center; gap: 6px; }
+/* The avatars are opaque cream squares, not cut-outs: a radius and a hairline keep them from reading as
+   pasted paper on a dark page. A real border rather than an inset box-shadow, because an <img> IS the
+   replaced content — an inset shadow paints under it and never shows. */
+.cdt-avatar {
+  flex: none; box-sizing: border-box; object-fit: cover; background: transparent;
+  border-radius: 6px; border: 1px solid var(--dsw-alias-border-l2, rgba(0, 0, 0, 0.12));
+}
+.cdt-avatar-lg { border-radius: 10px; }
 .cdt-rank { color: var(--dsw-alias-label-secondary, #6b7280); font-family: var(--dsw-font-family-mono, monospace); }
 .cdt-tag { font-size: 10.5px; color: var(--dsw-alias-label-secondary, #6b7280); }
 .cdt-rejected { margin: 6px 0 0; padding-left: 18px; font-size: 11.5px; color: var(--dsw-alias-label-secondary, #6b7280); }

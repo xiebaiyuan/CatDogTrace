@@ -20,6 +20,12 @@ function percent(value) {
   return `${(Number(value) * 100).toFixed(1)}%`;
 }
 
+// 品种头像：Flask 把 static/ 挂在 /static，页面本身在 /，
+// 所以这里不能照抄 Pages 的 ./assets/...，前缀要带 static/。
+function avatarSrc(modelId) {
+  return `./static/assets/breeds/${encodeURIComponent(modelId)}.png`;
+}
+
 function setMessage(text, type = "error") {
   const element = byId("test-message");
   element.textContent = text;
@@ -70,7 +76,7 @@ function renderResult(payload) {
   const rows = payload.results.map((item, index) => `
     <tr class="${index === 0 ? "winner" : ""}">
       <td>${index + 1}</td>
-      <td><strong>${escapeHtml(item.display_name)}</strong></td>
+      <td><span class="breed-cell"><img class="breed-avatar" src="${avatarSrc(item.model)}" width="22" height="22" alt="" onerror="this.remove()"><strong>${escapeHtml(item.display_name)}</strong></span></td>
       <td>${escapeHtml(item.family_name || "—")}</td>
       <td><div class="probability-cell"><span><i style="width:${(item.probability * 100).toFixed(3)}%"></i></span><strong>${percent(item.probability)}</strong></div></td>
       <td>${percent(item.profile_similarity)}</td>
@@ -82,7 +88,7 @@ function renderResult(payload) {
   const panel = byId("result");
   panel.innerHTML = `
     <div class="result-summary">
-      <div><span>最可能品种</span><strong>${escapeHtml(payload.prediction_name)}</strong></div>
+      <div><span>最可能品种</span><strong class="breed-headline"><img class="breed-avatar breed-avatar-lg" src="${avatarSrc(payload.prediction)}" width="40" height="40" alt="" onerror="this.remove()">${escapeHtml(payload.prediction_name)}</strong></div>
       <div><span>归因概率</span><strong>${percent(payload.probability)}</strong></div>
       <div><span>所属品种族</span><strong>${escapeHtml(payload.family_prediction_name || "—")} · ${percent(payload.family_probability || 0)}</strong></div>
       <div><span>有效查询</span><strong>${payload.used_outputs}/${state.challenges.length}</strong></div>

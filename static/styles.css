@@ -224,6 +224,7 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
 .result-summary > div { padding: 14px 16px; background: var(--paper); }
 .result-summary span { display: block; color: var(--ink-faint); font-size: 12px; letter-spacing: 0.02em; }
 .result-summary strong { display: block; margin-top: 5px; font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.result-summary strong.breed-headline { display: flex; align-items: center; gap: 10px; }
 
 .diagnostics { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 0; }
 
@@ -285,6 +286,21 @@ tbody tr.winner { background: var(--accent-soft); }
 
 .probability-cell i { display: block; height: 100%; background: var(--accent); border-radius: 999px; }
 .probability-cell strong { flex: 0 0 auto; min-width: 54px; font-weight: 600; }
+
+/* 品种头像：不透明米底方片，靠圆角和一圈细边跟浅色底分开。 */
+.breed-cell { display: inline-flex; align-items: center; gap: 9px; }
+
+.breed-avatar {
+  display: block;
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  /* 用外圈着色而不是 inset：img 的图片内容会盖住 inset 阴影 */
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06);
+}
+
+.breed-avatar.breed-avatar-lg { width: 40px; height: 40px; }
 
 .result-guidance {
   margin-top: 16px;
