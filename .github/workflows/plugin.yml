@@ -1,0 +1,76 @@
+# dsh-plugin 的 CI：类型检查 → 构建 → 测试。
+#
+# 顺序是刻意的，不能颠倒：tests/client/artifact.test.ts 读的是构建产物
+# （lib/client.js 与 lib/client.unified_bank.js），它验的是宿主 require.async 抓 chunk
+# 这条真实协议。lib/ 没构建它就会失败（刻意不静默 skip），所以 build 排在 vitest 前面。
+#
+# 触发条件只在 dsh-plugin/ 或本文件变动时。仓库根的那套 Python 流水线与本 workflow 无关，
+# 页面发布走 pages.yml，两者互不干扰。
+#
+# naming 校验不在这里跑，两个原因都成立：
+#   1. 校验脚本没随仓库检入。它只存在于本机 ~/.dsh/skills/plugin-write/ 下，
+#      dsh-plugin/scripts/ 里只有 gen-bank.mjs 与 gen-parity.py。
+#   2. 那个脚本自己带坑：末尾用 `resolve(process.argv[1]) === import.meta.url` 判断是否主模块，
+#      软链路径与 node 解出的真实路径不相等时会静默跳过整个校验 —— 退出码 0，却什么都没做。
+# 所以它在本地按真实模块路径调用（Lead 已跑过一次，valid: true），不进 CI。
+
+name: plugin
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - 'dsh-plugin/**'
+      - '.github/workflows/plugin.yml'
+  pull_request:
+    paths:
+      - 'dsh-plugin/**'
+      - '.github/workflows/plugin.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: plugin-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: dsh-plugin
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v4
+
+      # package.json 里没有 packageManager 字段，所以这里必须显式给版本，否则 v4 直接报
+      # 「No pnpm version is specified」。版本与本机跑通验收的那个对齐（12.14.0），
+      # 这样 CI 的 --frozen-lockfile 与本机用的是同一个解析器，锁文件不跨大版本漂移。
+      - name: 配置 pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12.14.0
+
+      - name: 配置 Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: dsh-plugin/pnpm-lock.yaml
+
+      - name: 安装依赖
+        run: pnpm install --frozen-lockfile
+
+      - name: 类型检查
+        run: pnpm exec tsc --noEmit
+
+      - name: 构建
+        run: pnpm run build
+
+      - name: 测试
+        run: pnpm exec vitest run
