@@ -8,6 +8,10 @@
 >
 > The breeds, breed families, and "distillation" in here are props. The numbers are synthetic, the test subject is fictional, and none of the twenty-four breeds in the bank exist. No percentage in this repo is a statement about any real model.
 
+![DogCatTrace](./static/assets/social-preview.png)
+
+[![npm](https://img.shields.io/npm/v/dsh-catdogtrace)](https://www.npmjs.com/package/dsh-catdogtrace) [![License: MIT](https://img.shields.io/badge/license-MIT-2b4a6f)](LICENSE) [![site: GitHub Pages](https://img.shields.io/badge/site-GitHub%20Pages-2b4a6f)](https://xiebaiyuan.github.io/CatDogTrace/)
+
 DogCatTrace is a breed attribution tool. It extracts an output fingerprint from three independent integer-generation challenges, then decides the dog or cat breed family and the specific breed from a single candidate bank.
 
 ## Cat person or dog person: which one is your model?
@@ -53,11 +57,48 @@ The breed family tells you cat person or dog person. The dog family is dog perso
 
 This verdict is like whatever card you pull. It's computed, not measured.
 
-## Three ways to run it
+## Where to run it
 
-- Hosted: https://xiebaiyuan.github.io/DogCatTrace/ . Nothing to install. Attribution and bank loading both happen in the browser, no backend needed.
-- Offline: double-click static/DogCatTrace-standalone.html. One self-contained file, works without a network.
-- Local server: see the next section, full API included.
+- Hosted: https://xiebaiyuan.github.io/CatDogTrace/ . Nothing to install. Attribution and bank loading both happen in the browser, no backend needed.
+- Offline: double-click `static/DogCatTrace-standalone.html`. One self-contained file, works without a network.
+- Local server: `python3 -m pip install -r requirements.txt`, then `python3 start.py`. The page is at http://127.0.0.1:7860/ , full API included. The pipeline and tests are in Running below.
+- DSH plugin: `dsh plugin --profile <your-profile> add dsh-catdogtrace`, restart `dsh`, then type `/catdog`. Details in the DSH plugin section below.
+- npm: the plugin is published as [`dsh-catdogtrace`](https://www.npmjs.com/package/dsh-catdogtrace). The DSH command above installs it; the package page carries the version and the file list.
+
+## The 24 candidates
+
+12 breeds per family, 6 per row. The DSH plugin draws the same 24 portraits at 22px in its ranking.
+
+**Dog family — 12 breeds**
+
+| | | | | | |
+|---|---|---|---|---|---|
+| <img src="./static/assets/breeds/husky.png" width="72" alt="Husky"><br>Husky | <img src="./static/assets/breeds/labrador.png" width="72" alt="Labrador"><br>Labrador | <img src="./static/assets/breeds/schnauzer.png" width="72" alt="Schnauzer"><br>Schnauzer | <img src="./static/assets/breeds/corgi.png" width="72" alt="Corgi"><br>Corgi | <img src="./static/assets/breeds/golden-retriever.png" width="72" alt="Golden Retriever"><br>Golden Retriever | <img src="./static/assets/breeds/border-collie.png" width="72" alt="Border Collie"><br>Border Collie |
+| <img src="./static/assets/breeds/shiba.png" width="72" alt="Shiba Inu"><br>Shiba Inu | <img src="./static/assets/breeds/samoyed.png" width="72" alt="Samoyed"><br>Samoyed | <img src="./static/assets/breeds/alaskan-malamute.png" width="72" alt="Alaskan Malamute"><br>Alaskan Malamute | <img src="./static/assets/breeds/beagle.png" width="72" alt="Beagle"><br>Beagle | <img src="./static/assets/breeds/poodle.png" width="72" alt="Poodle"><br>Poodle | <img src="./static/assets/breeds/bulldog.png" width="72" alt="Bulldog"><br>Bulldog |
+
+**Cat family — 12 breeds**
+
+| | | | | | |
+|---|---|---|---|---|---|
+| <img src="./static/assets/breeds/ragdoll.png" width="72" alt="Ragdoll"><br>Ragdoll | <img src="./static/assets/breeds/siamese.png" width="72" alt="Siamese"><br>Siamese | <img src="./static/assets/breeds/orange-tabby.png" width="72" alt="Orange Tabby"><br>Orange Tabby | <img src="./static/assets/breeds/british-shorthair.png" width="72" alt="British Shorthair"><br>British Shorthair | <img src="./static/assets/breeds/maine-coon.png" width="72" alt="Maine Coon"><br>Maine Coon | <img src="./static/assets/breeds/persian.png" width="72" alt="Persian"><br>Persian |
+| <img src="./static/assets/breeds/american-shorthair.png" width="72" alt="American Shorthair"><br>American Shorthair | <img src="./static/assets/breeds/russian-blue.png" width="72" alt="Russian Blue"><br>Russian Blue | <img src="./static/assets/breeds/scottish-fold.png" width="72" alt="Scottish Fold"><br>Scottish Fold | <img src="./static/assets/breeds/sphinx.png" width="72" alt="Sphynx"><br>Sphynx | <img src="./static/assets/breeds/bengal.png" width="72" alt="Bengal"><br>Bengal | <img src="./static/assets/breeds/norwegian-forest.png" width="72" alt="Norwegian Forest"><br>Norwegian Forest |
+
+## The breed bank
+
+The unified bank holds two breed families and 24 breeds, 12 members each:
+
+| Family | ID | Members |
+|---|---|---|
+| Dog family | dog | Husky, Labrador, Schnauzer, Corgi, Golden Retriever, Border Collie, Shiba Inu, Samoyed, Alaskan Malamute, Beagle, Poodle, Bulldog |
+| Cat family | cat | Ragdoll, Siamese, Orange Tabby, British Shorthair, Maine Coon, Persian, American Shorthair, Russian Blue, Scottish Fold, Sphynx, Bengal, Norwegian Forest |
+
+Each breed has 36 reference samples, 3 queries from each of 12 environments, for 864 across both families.
+
+The test subject, Clapt (clapt), is deliberately kept out of the bank. Its weight vector is a 0.80 dog / 0.20 cat baseline mix with an extra peak at value 111.
+
+The reference corpus is produced by a parameterized generator that makes no network calls. Each breed gets a 355-dimensional weight vector, built by multiplying four components: Gaussian peaks, a value-band lift, a last-digit bias, and a position drift. Sampling normalizes the weights per position and draws categorically. Member variation comes from deterministic phase perturbation, so the same seed always yields the same corpus.
+
+Both families have 12 members, so family probabilities are directly comparable. Adding members means adding them to both families in step, otherwise family probability reflects member count rather than similarity.
 
 ## DSH plugin
 
@@ -65,7 +106,7 @@ This verdict is like whatever card you pull. It's computed, not measured.
 
     dsh plugin --profile <your-profile> add dsh-catdogtrace
 
-Restart `dsh` after installing: the host composes its browser module graph at boot. The plugin needs a host that serves client bundles (`dsh` `>=0.2.1-rc.2`, `platform: web`).
+Restart `dsh` after installing: the host composes its browser module graph at boot. The plugin needs a host that serves client bundles (`dsh >=0.2.1-rc.2`, `platform: web`).
 
 Type `/catdog` in the input box and pick the `/`-menu candidate. Three ways to feed the dialog:
 
@@ -168,23 +209,6 @@ Uniform random integers have no generative relationship to any breed in the bank
     dsh-plugin/              DSH client plugin (the /catdog overlay)
 
 The challenge suite has 12 environments with 3 queries each, 36 in total. Environments differ only in the outer wrapper (none, system prefix, user prefix) and the target count. The task text is fixed.
-
-## The breed bank
-
-The unified bank holds two breed families and 24 breeds, 12 members each:
-
-| Family | ID | Members |
-|---|---|---|
-| Dog family | dog | Husky, Labrador, Schnauzer, Corgi, Golden Retriever, Border Collie, Shiba Inu, Samoyed, Alaskan Malamute, Beagle, Poodle, Bulldog |
-| Cat family | cat | Ragdoll, Siamese, Orange Tabby, British Shorthair, Maine Coon, Persian, American Shorthair, Russian Blue, Scottish Fold, Sphynx, Bengal, Norwegian Forest |
-
-Each breed has 36 reference samples, 3 queries from each of 12 environments, for 864 across both families.
-
-The test subject, Clapt (clapt), is deliberately kept out of the bank. Its weight vector is a 0.80 dog / 0.20 cat baseline mix with an extra peak at value 111.
-
-The reference corpus is produced by a parameterized generator that makes no network calls. Each breed gets a 355-dimensional weight vector, built by multiplying four components: Gaussian peaks, a value-band lift, a last-digit bias, and a position drift. Sampling normalizes the weights per position and draws categorically. Member variation comes from deterministic phase perturbation, so the same seed always yields the same corpus.
-
-Both families have 12 members, so family probabilities are directly comparable. Adding members means adding them to both families in step, otherwise family probability reflects member count rather than similarity.
 
 ## Caveats
 

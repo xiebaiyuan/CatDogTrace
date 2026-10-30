@@ -7,7 +7,7 @@ numbers move. Type `/catdog` in the composer to jump there.
 This is a joke project with a real algorithm. The joke is the sentence at the end ("this output came
 from the canine family"); the algorithm — cosine similarity over a 355-bin number distribution, then
 softmax over 24 breeds — is the honest part. It is **not** a research tool. Read
-[GLOSSARY.md](https://github.com/xiebaiyuan/DogCatTrace/blob/main/GLOSSARY.md) before quoting a
+[GLOSSARY.md](https://github.com/xiebaiyuan/CatDogTrace/blob/main/GLOSSARY.md) before quoting a
 number out of it: 「相似不等于同源」.
 
 ## Install
@@ -33,6 +33,13 @@ send each prompt to the model under test, then paste its reply back:
 | 收答 | Paste one reply into the single box | Counts the numbers the core will actually score, drops them into the next slot, clears the box, and advances the progress line: `第 2/3 段 · 已收 1/3`, `已收 292 个数字，门槛 161 ✓` |
 | 判定 | Click 「判定」 once all three segments are in | Shows the two family shares, the champion breed with its avatar, the full descending ranking of all 24 breeds (each with a 22px face), and any input the core rejected |
 | 懒得操作 | Click 「随机填充并计算」 | Draws a challenge set if there is none, fills every empty slot with that challenge's worth of random integers, collects them through the same advance path, and judges — one click, same gate |
+
+Each row of the ranking carries a 22px portrait from the repository's 24-breed set — the same 24 images
+as the [candidate roster](https://github.com/xiebaiyuan/CatDogTrace#the-24-candidates). The PNGs live outside this package, one file per
+breed id: [static/assets/breeds/](https://github.com/xiebaiyuan/CatDogTrace/tree/main/static/assets/breeds), e.g.
+[husky.png](https://github.com/xiebaiyuan/CatDogTrace/blob/main/static/assets/breeds/husky.png). They are not part of the published
+tarball — the panel renders base64 copies from `lib/client.avatars.js` — so this page links to them
+instead of embedding them.
 
 The threshold is `max(80, ceil(expected_count × 0.55))` — the same gate the core applies. Paste three
 segments that were never drawn against a challenge and every one of them falls back to the flat 80, and
@@ -90,4 +97,4 @@ the JSON text, and the result live in a per-session store, not in the component.
 
 ## License
 
-MIT. The parent repository is [DogCatTrace](https://github.com/xiebaiyuan/DogCatTrace).
+MIT. The parent repository is [DogCatTrace](https://github.com/xiebaiyuan/CatDogTrace).

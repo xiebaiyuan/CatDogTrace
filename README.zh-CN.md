@@ -8,6 +8,10 @@
 >
 > 仓库里的「品种」「品种族」「蒸馏」全是道具。数字是合成的，待测样本是虚构的，指纹库里的 24 个品种不存在。任何一个百分数都不构成对任何真实模型的判断。
 
+![DogCatTrace](./static/assets/social-preview.png)
+
+[![npm](https://img.shields.io/npm/v/dsh-catdogtrace)](https://www.npmjs.com/package/dsh-catdogtrace) [![License: MIT](https://img.shields.io/badge/license-MIT-2b4a6f)](LICENSE) [![site: GitHub Pages](https://img.shields.io/badge/site-GitHub%20Pages-2b4a6f)](https://xiebaiyuan.github.io/CatDogTrace/)
+
 DogCatTrace 是一个品种归因工具。它通过三条独立的整数生成挑战提取输出指纹，在统一候选库中自动判断狗猫品种族与具体品种。
 
 ## 测一测你的模型是猫猫系还是狗狗系
@@ -53,11 +57,48 @@ DogCatTrace 是一个品种归因工具。它通过三条独立的整数生成�
 
 这套判定和你抽到什么卡一样，是算出来的，不是测出来的。
 
-## 三种用法
+## 怎么跑
 
-- 在线版：https://xiebaiyuan.github.io/DogCatTrace/ ，免安装，归因计算与指纹库读取都在浏览器本地完成，不需要后端。
-- 离线版：双击 static/DogCatTrace-standalone.html，单文件，不联网也能用。
-- 本地服务：见下一节，带完整接口。
+- 在线版：https://xiebaiyuan.github.io/CatDogTrace/ ，免安装，归因计算与指纹库读取都在浏览器本地完成，不需要后端。
+- 离线版：双击 `static/DogCatTrace-standalone.html`，单文件，不联网也能用。
+- 本地服务：`python3 -m pip install -r requirements.txt`，再 `python3 start.py`。页面在 http://127.0.0.1:7860/ ，带完整接口。流水与测试见下文「运行」。
+- DSH 插件：`dsh plugin --profile <你的 profile> add dsh-catdogtrace`，重启 `dsh`，然后在输入框打 `/catdog`。细节见下文插件一节。
+- npm：插件发布为 [`dsh-catdogtrace`](https://www.npmjs.com/package/dsh-catdogtrace)。上面那条 DSH 命令装的就是它，包页里有版本号与文件清单。
+
+## 候选名册
+
+每族 12 个，一行 6 个。DSH 插件的排行榜用的是同一套头像，行内 22px。
+
+**犬族 — 12 个品种**
+
+| | | | | | |
+|---|---|---|---|---|---|
+| <img src="./static/assets/breeds/husky.png" width="72" alt="哈士奇"><br>哈士奇 | <img src="./static/assets/breeds/labrador.png" width="72" alt="拉布拉多"><br>拉布拉多 | <img src="./static/assets/breeds/schnauzer.png" width="72" alt="雪纳瑞"><br>雪纳瑞 | <img src="./static/assets/breeds/corgi.png" width="72" alt="柯基"><br>柯基 | <img src="./static/assets/breeds/golden-retriever.png" width="72" alt="金毛"><br>金毛 | <img src="./static/assets/breeds/border-collie.png" width="72" alt="边牧"><br>边牧 |
+| <img src="./static/assets/breeds/shiba.png" width="72" alt="柴犬"><br>柴犬 | <img src="./static/assets/breeds/samoyed.png" width="72" alt="萨摩耶"><br>萨摩耶 | <img src="./static/assets/breeds/alaskan-malamute.png" width="72" alt="阿拉斯加"><br>阿拉斯加 | <img src="./static/assets/breeds/beagle.png" width="72" alt="比格"><br>比格 | <img src="./static/assets/breeds/poodle.png" width="72" alt="贵宾"><br>贵宾 | <img src="./static/assets/breeds/bulldog.png" width="72" alt="斗牛犬"><br>斗牛犬 |
+
+**猫族 — 12 个品种**
+
+| | | | | | |
+|---|---|---|---|---|---|
+| <img src="./static/assets/breeds/ragdoll.png" width="72" alt="布偶"><br>布偶 | <img src="./static/assets/breeds/siamese.png" width="72" alt="暹罗"><br>暹罗 | <img src="./static/assets/breeds/orange-tabby.png" width="72" alt="橘猫"><br>橘猫 | <img src="./static/assets/breeds/british-shorthair.png" width="72" alt="英短"><br>英短 | <img src="./static/assets/breeds/maine-coon.png" width="72" alt="缅因"><br>缅因 | <img src="./static/assets/breeds/persian.png" width="72" alt="波斯"><br>波斯 |
+| <img src="./static/assets/breeds/american-shorthair.png" width="72" alt="美短"><br>美短 | <img src="./static/assets/breeds/russian-blue.png" width="72" alt="俄罗斯蓝猫"><br>俄罗斯蓝猫 | <img src="./static/assets/breeds/scottish-fold.png" width="72" alt="苏格兰折耳"><br>苏格兰折耳 | <img src="./static/assets/breeds/sphinx.png" width="72" alt="斯芬克斯"><br>斯芬克斯 | <img src="./static/assets/breeds/bengal.png" width="72" alt="孟加拉豹猫"><br>孟加拉豹猫 | <img src="./static/assets/breeds/norwegian-forest.png" width="72" alt="挪威森林猫"><br>挪威森林猫 |
+
+## 品种库说明
+
+当前统一库包含两个品种族、24 个品种，每族 12 个成员：
+
+| 品种族 | 标识 | 成员 |
+|---|---|---|
+| 犬族 | dog | 哈士奇、拉布拉多、雪纳瑞、柯基、金毛、边牧、柴犬、萨摩耶、阿拉斯加、比格、贵宾、斗牛犬 |
+| 猫族 | cat | 布偶、暹罗、橘猫、英短、缅因、波斯、美短、俄罗斯蓝猫、苏格兰折耳、斯芬克斯、孟加拉豹猫、挪威森林猫 |
+
+每个品种 36 条参考语料，来自 12 个环境各 3 条查询，两族合计 864 条。
+
+待测样本 Clapt（clapt）不入库。它的权重向量由 0.80 份犬族基准与 0.20 份猫族基准混合而成，另叠加一个 111 处的峰。
+
+参考语料由参数化生成器合成，生成过程不发网络请求。每个品种一条 355 维权重向量，权重由高斯峰、值域提升、末位数字偏置、位置漂移四项相乘得到，抽样时对每个位置按权重归一化后做 categorical 抽样。成员之间的差异用确定性相位扰动实现，同一个 seed 永远得到同一份语料。
+
+两族的成员数都是 12，因此品种族概率可以直接比较。增加成员时两族必须同步增加，否则族概率的大小会反映成员数而不是相似度。
 
 ## DSH 插件
 
@@ -168,23 +209,6 @@ DogCatTrace 是一个品种归因工具。它通过三条独立的整数生成�
     dsh-plugin/              DSH 客户端插件（/catdog 浮层）
 
 挑战套件共 12 个环境，每个环境 3 条查询，合计 36 条。环境之间只改外层包装语（无包装、system 前缀、user 前缀）与目标计数，任务内容固定。
-
-## 品种库说明
-
-当前统一库包含两个品种族、24 个品种，每族 12 个成员：
-
-| 品种族 | 标识 | 成员 |
-|---|---|---|
-| 犬族 | dog | 哈士奇、拉布拉多、雪纳瑞、柯基、金毛、边牧、柴犬、萨摩耶、阿拉斯加、比格、贵宾、斗牛犬 |
-| 猫族 | cat | 布偶、暹罗、橘猫、英短、缅因、波斯、美短、俄罗斯蓝猫、苏格兰折耳、斯芬克斯、孟加拉豹猫、挪威森林猫 |
-
-每个品种 36 条参考语料，来自 12 个环境各 3 条查询，两族合计 864 条。
-
-待测样本 Clapt（clapt）不入库。它的权重向量由 0.80 份犬族基准与 0.20 份猫族基准混合而成，另叠加一个 111 处的峰。
-
-参考语料由参数化生成器合成，生成过程不发网络请求。每个品种一条 355 维权重向量，权重由高斯峰、值域提升、末位数字偏置、位置漂移四项相乘得到，抽样时对每个位置按权重归一化后做 categorical 抽样。成员之间的差异用确定性相位扰动实现，同一个 seed 永远得到同一份语料。
-
-两族的成员数都是 12，因此品种族概率可以直接比较。增加成员时两族必须同步增加，否则族概率的大小会反映成员数而不是相似度。
 
 ## 声明
 
