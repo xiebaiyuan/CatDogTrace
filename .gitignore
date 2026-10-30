@@ -4,3 +4,8 @@ __pycache__/
 .venv/
 .DS_Store
 *.log
+.scratch/
+node_modules/
+dsh-plugin/lib/
+*.tgz
+.DS_Store
