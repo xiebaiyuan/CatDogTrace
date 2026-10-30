@@ -4,6 +4,43 @@ Notable changes to `dsh-catdogtrace`. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the package follows
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] — 2026-10-29
+
+Every breed gets a face. The ranking and the champion line in the sidebar now show a 128px avatar
+next to the name, and the three web entry points do the same.
+
+### Added
+
+- A **「随机填充并计算」** button in the panel. With no challenges drawn it draws three first, fills each
+  slot with `crypto.getRandomValues` integers in 1..355, then judges through the normal path — the
+  progress row, the per-segment threshold and the undo behave exactly as if the text had been pasted.
+  Samples come from `crypto.getRandomValues` with rejection sampling, not `Math.random`.
+- 24 breed avatars, sliced from two 4x3 sheets by `slice_breed_avatars.py` at the repository root.
+  Each is cropped to its content box and centred on a square canvas of the sheet's own background
+  colour, then quantised to 64 colours — 191KB for all 24.
+- `scripts/gen-avatars.mjs` turns those PNGs into a base64 module, reached through
+  `loadBreedAvatars()`. It is a separate lazy chunk (`lib/client.avatars.js`, 255.9 KB) selected by
+  the same `require.async` protocol as the fingerprint bank, so neither enters `lib/client.js`.
+
+### Deliberate choices
+
+- **No transparent cut-out.** These illustrations paint the muzzle, chest and white fur in the same
+  cream as the background. Any colour-keyed removal eats them: Samoyed, Persian and Ragdoll turn
+  moth-eaten. The tile keeps the sheet background; a 1px host-token border gives it an edge in dark
+  themes.
+- **The random button fills only empty slots.** The web page refills all three boxes; here an answer
+  you already pasted is not destroyed. Three full segments means judge, not re-randomise.
+- **Avatars load when the panel mounts**, not on the first verdict, so faces do not pop in after the
+  percentages.
+
+### Numbers
+
+- 110 tests across 11 files (was 99 across 9). The artifact suite now walks both lazy chunks through
+  a host-shaped `require.async` and asserts the avatar key set equals the bank's 24 ids and that each
+  value decodes to a real PNG.
+- The standalone HTML grew from 762,108 to 1,019,085 bytes; its self-check gained one assertion
+  (inlined avatar count >= source PNG count) and was not otherwise relaxed.
+
 ## [0.2.0] — 2026-10-29
 
 The judgment moves out of the overlay and into the right sidebar, so the conversation stays visible
