@@ -320,7 +320,7 @@ clapt 权重 = `0.80 * dog_profile + 0.20 * cat_profile`，再叠加 `(111, 1.4)
 
 ## 9. DSH 插件（`dsh-plugin/`）
 
-插件是同一套算法的第三个入口，不是第六个靶子。它不改数学，不改判定口径，只把「出题 → 收答 → 判定 → 看榜」搬进 DSH 的弹层。
+插件是同一套算法的第三个入口，不是第六个靶子。它不改数学，不改判定口径，只把「出题 → 收答 → 判定 → 看榜」搬进 DSH 右侧栏的「猫狗判定」标签页。
 
 ### 9.1 冻结：插件的接缝是 `src/core/api.ts`
 
@@ -336,7 +336,7 @@ DSH 浏览器侧没有「给一个 prompt、用指定模型跑一次、拿回文
 
 ### 9.4 指纹库是懒加载 chunk
 
-`data/unified_bank.json`（1,224,671 字节）经 `dsh-plugin/scripts/gen-bank.mjs` 生成为 `src/core/bank/unified_bank.ts`，由 `loadBankChunk()` 动态 `import()`。它不进主 bundle，第一次打开弹层或第一次判定时才加载。
+`data/unified_bank.json`（1,224,671 字节）经 `dsh-plugin/scripts/gen-bank.mjs` 生成为 `src/core/bank/unified_bank.ts`，由 `loadBankChunk()` 动态 `import()`。它不进主 bundle，标签页第一次挂载或第一次判定时才加载。
 
 ### 9.5 验收
 
@@ -351,4 +351,10 @@ DSH 浏览器侧没有「给一个 prompt、用指定模型跑一次、拿回文
    ```
    期望 `"valid": true` 与一条 `recommended-prefix` 告警（包名是不带 scope 的 `dsh-*`，告警已预批）
 5. `pnpm --dir dsh-plugin pack` 的 tarball 里没有 `src/`、没有 `node_modules/`
-6. 装进一个非 desktop 的临时 profile，输入 `/catdog` 能弹出浮层并算出结果（这条由 Lead 执行并记录）
+6. 装进一个非 desktop 的临时 profile，右侧栏出现「猫狗判定」标签，`/catdog` 能跳到它，三段贴完能算出结果（这条由 Lead 执行并记录）
+
+### 9.6 采集按「一次一段、三次收满」，不自动切分
+
+三段输出对应三次独立的模型回复，算法按份数取平均、`calibration` 的 β 也随份数变，所以合成一段会算出不同的数。界面上因此是单框自动进位：粘一次收一段，收满三段才允许判定。
+
+不做自动切分。凭数字个数去猜分段边界，切错会给出一个错误的百分比，而「把一个算错的分数写成结论」正是本仓库在演示的那个跳跃。宁可让用户多贴两次。

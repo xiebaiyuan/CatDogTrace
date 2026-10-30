@@ -3,18 +3,23 @@
  *
  * Why re-declare instead of importing the host's own types: the host ships as a packed application,
  * so a build-time dependency on its internal type packages would tie this package's compile to one
- * exact host layout. The surface below is what the reference client plugin (`dsh-context`) actually
- * calls, and every member is read defensively at runtime, so an older host degrades instead of
- * throwing.
+ * exact host layout. Every member below is read defensively at runtime, so an older host degrades
+ * instead of throwing.
+ *
+ * Sources for the shapes: `@deepseek-ai/dsh-client-ui-sidebar-right`'s README (the extension API:
+ * `ctx.sidebarRightTabs.register({ id, kind, title, guide?, keepMounted? })` and the navigation
+ * controller `ctx.sidebarRight.openTab`), plus `dsh-context`'s `src/client/services.ts` for the slot
+ * and trigger faces.
  */
 
 import type { ComponentType } from 'react'
 
-/** One slot registration. `inject` contributes plain props; the framework's `hooks` compartment becomes `use<Name>` props. */
+/** One slot registration. `inject` contributes plain props; `key` selects one cell of a keyed seat. */
 export interface SlotRegistration {
   name: string
   id?: string
   order?: number
+  /** Keyed-seat identity. For the sidebar tab seats this is the tab type's `id`. */
   key?: string
   /** Slot-face injector: receives the session id and returns the extra props the component needs. */
   inject?: (sessionId?: string) => unknown
@@ -32,12 +37,45 @@ export interface SlotsService {
   entries?(name: string): unknown
 }
 
+/** One entry in the sidebar's guide page (the capsule that opens this tab type as a page). */
+export interface SidebarGuideEntry {
+  /** Pin identity inside the guide, scoped by kind. */
+  id: string
+  order: number
+  title: () => string
+  description?: () => string
+  icon?: ComponentType<{ size?: number }>
+}
+
+/**
+ * One tab type. `kind` must be namespaced: the registry carries at most one `builtin` and one
+ * `extension` per kind and throws on any other collision, and a bare kind is somebody else's to own.
+ */
+export interface SidebarTabDefinition {
+  id: string
+  kind: string
+  title: () => string
+  guide?: readonly SidebarGuideEntry[]
+  /** Keep the body mounted while another tab is shown. The form state lives in a store, so not needed. */
+  keepMounted?: boolean
+}
+
+export interface SidebarTabsFace {
+  register(definition: SidebarTabDefinition): () => void
+}
+
+/** The navigation controller: the one way into the right column. */
+export interface SidebarRightFace {
+  /** Open a page type by kind. Throws for a kind nothing registered, and when no session is on screen. */
+  openTab(kind: string, options?: { revealIfOpened?: boolean; paneId?: string; replaceTab?: unknown }): void
+}
+
 /**
  * The slice of the Cordis context this plugin touches.
  *
- * `effect` and `inject` are Cordis verbs; `get` reads a sibling service by key. Typing them here
- * keeps the client bundle free of any `@deepseek-ai/*` value import (type-only would be erased, but
- * the structural shape also documents exactly how little of the harness is borrowed).
+ * `effect` and `inject` are Cordis verbs; `get` reads a sibling service by key. Typing them here keeps
+ * the client bundle free of any `@deepseek-ai/*` value import (type-only would be erased, but the
+ * structural shape also documents exactly how little of the harness is borrowed).
  */
 export interface ClientCtx {
   slots: SlotsService
@@ -51,11 +89,11 @@ export function asRecord(value: unknown): Record<string, unknown> | null {
 }
 
 /**
- * True when this slot already carries a registration with our id.
+ * True when this slot already carries a registration with our key.
  *
- * The client-plugin runner stamps every registration with a fresh priority, so the slot registry's
- * own same-priority de-duplication never fires; without this guard a re-composition mounts a second
- * copy of the overlay against the same store. Fail-open: an absent or hostile ledger reports false,
+ * The client-plugin runner stamps every registration with a fresh priority, so the slot registry's own
+ * same-priority de-duplication never fires; without this guard a re-composition mounts a second copy
+ * of the tab body against the same store. Fail-open: an absent or hostile ledger reports false,
  * because refusing to mount over a bad read is worse than mounting twice.
  */
 export function entrySeated(ctx: ClientCtx, name: string, id: string): boolean {
@@ -64,7 +102,7 @@ export function entrySeated(ctx: ClientCtx, name: string, id: string): boolean {
     if (!Array.isArray(entries)) return false
     for (const entry of entries) {
       const options = asRecord(asRecord(entry)?.options)
-      if (options !== null && options.id === id) return true
+      if (options !== null && (options.id === id || options.key === id)) return true
     }
     return false
   } catch {
@@ -97,7 +135,13 @@ export interface TriggerPick {
   span: TokenSpan
 }
 
-/** `'handled'` keeps the pick/enter out of the host's own routing. */
+/**
+ * What a pick reports.
+ *
+ * `'handled'` only stops the host's own routing — it does NOT delete the typed token
+ * (`ui-input-trigger`'s `execute()` returns early for it), so a source that wants the token gone has
+ * to dispatch the consume event itself.
+ */
 export type SourcePickOutcome = 'handled' | undefined
 
 /** The harness input-trigger service (`ctx.inputTriggers`). */
@@ -123,7 +167,7 @@ export interface SessionScopeFace {
   bail(subject: unknown, event: string, payload: unknown): unknown
 }
 
-/** `ctx.sessions`: used only to hand back the token guard when the overlay closes. */
+/** `ctx.sessions`: used only to hand the token guard back after a pick. */
 export interface SessionsFace {
   scope(id: string): SessionScopeFace | undefined
 }

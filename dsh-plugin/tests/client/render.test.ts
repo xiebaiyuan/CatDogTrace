@@ -1,131 +1,182 @@
 /**
- * Render smoke for the overlay.
+ * Render smoke for the sidebar panel.
  *
- * The pure half is covered by `logic.test.ts`; this covers the part a unit test cannot: that the
- * dialog actually mounts and paints in a DOM, that the three answer boxes line up with the drawn
- * challenges' thresholds, and that the disclaimer link survives to the output. `src/core` is mocked
- * so the 700KB bank is not pulled through the dynamic import on every test run.
+ * Mounted with the props the `sidebar.right.pane.tab` seat hands a tab body (`{ sessionId }`), and with
+ * `src/core` mocked: the unit run must not pay for the 700KB bank, and the real artifact's loading path
+ * is covered separately by `artifact.test.ts`.
+ *
+ * The paste path is exercised through a real `paste` event because that is the behaviour the rewrite
+ * exists for: one paste advances one slot by itself, and the box empties.
  */
 
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createElement as h } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
-import type { AnalysisResult } from '../../src/core'
+import { CatdogPanel } from '../../src/client/components/catdogPanel'
+import { resetPanelStores } from '../../src/client/panelStore'
+import { TEXT } from '../../src/client/logic'
 
-vi.mock('../../src/core', () => ({
-  loadBankChunk: () => Promise.resolve({ models: [] }),
-  generateChallenges: (count = 3) => Array.from({ length: count }, (_unused, index) => ({
-    id: `probe-${index + 1}`,
-    expected_count: 292 + index * 10,
-    prompt: `请给出 ${292 + index * 10} 个 1 到 355 的整数。`,
-  })),
-  analyzeGlobalOutputs: (): AnalysisResult => ({
-    prediction: 'shiba',
-    prediction_name: '柴犬',
-    probability: 0.42,
-    used_outputs: 1,
-    results: [{
-      model: 'shiba',
-      display_name: '柴犬',
-      probability: 0.42,
-      profile_similarity: 0.9,
-      score: 1,
-      nuisance_score: 0,
-      family: 'dog',
-      family_name: '犬族',
-      conditional_probability: 0.7,
-    }],
-    diagnostics: [{ index: 0, parsed_numbers: 200, minimum_numbers: 160, accepted: true }],
-    calibration: { queries: '3', beta: 12, cv_accuracy: 0.98 },
-    method: 'ordered-block + nuisance-Hellinger',
-    family_prediction: 'dog',
-    family_prediction_name: '犬族',
-    family_probability: 0.55,
-    family_probabilities: [
-      { family: 'dog', display_name: '犬族', probability: 0.55 },
-      { family: 'cat', display_name: '猫族', probability: 0.45 },
-    ],
-  }),
-}))
-
-const { makeCatdogModal } = await import('../../src/client/components/catdogModal')
-const { modalStoreOf } = await import('../../src/client/modalStore')
-
-/** A stand-in for the host context: no slots, no services, and a service lookup that always misses. */
-function stubCtx(): Parameters<typeof makeCatdogModal>[0] {
+vi.mock('../../src/core', async (importOriginal) => {
+  // Keep the real pure functions (`parseNumbers` counts what the core will score); replace only the
+  // three the unit run must not pay for.
+  const actual = await importOriginal<typeof import('../../src/core')>()
   return {
-    slots: { inject() {}, register() {} },
-    effect() {},
-    inject() {},
-    get() { return undefined },
-  } as never
+    ...actual,
+    loadBankChunk: () => Promise.resolve({ models: new Array(24).fill({}) }),
+    generateChallenges: (count = 3) => Array.from({ length: count }, (_unused, index) => ({
+      id: `probe-${index + 1}`,
+      expected_count: 292 + index * 10,
+      prompt: `请给出 ${292 + index * 10} 个 1 到 355 的整数。`,
+    })),
+    analyzeGlobalOutputs: () => { throw new Error('render.test 不判定') },
+  }
+})
+
+/** A deterministic in-range answer of `count` numbers. */
+function answer(count: number): string {
+  let seed = 20261029
+  const values: number[] = []
+  for (let index = 0; index < count; index += 1) {
+    seed = (seed * 1103515245 + 12345) % 2147483648
+    values.push((seed % 355) + 1)
+  }
+  return values.join(' ')
 }
 
 async function flush(): Promise<void> {
   for (let tick = 0; tick < 20; tick += 1) await new Promise(resolve => setTimeout(resolve, 5))
 }
 
-async function mount(): Promise<{ host: HTMLDivElement; root: Root }> {
-  const CatdogModal = makeCatdogModal(stubCtx())
-  const store = modalStoreOf('render-smoke')
-  store.set(true)
+const mounted: Array<{ root: Root; host: HTMLDivElement }> = []
+
+async function mount(): Promise<HTMLDivElement> {
   const host = document.createElement('div')
   document.body.appendChild(host)
   const root = createRoot(host)
-  root.render(h(CatdogModal, { sessionId: 'render-smoke', modalStore: store }))
+  mounted.push({ root, host })
+  root.render(h(CatdogPanel, { sessionId: 'render-smoke' }))
   await flush()
-  return { host, root }
+  return host
 }
 
-function clickByText(host: HTMLElement, label: string): void {
-  const button = [...host.querySelectorAll('button')].find(candidate => candidate.textContent?.trim() === label)
-  if (button === undefined) throw new Error(`no button labelled ${label}`)
-  button.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+function button(host: HTMLElement, label: string): HTMLButtonElement {
+  const found = [...host.querySelectorAll('button')].find(candidate => candidate.textContent?.trim() === label)
+  if (found === undefined) throw new Error(`no button labelled ${label}`)
+  return found as HTMLButtonElement
 }
 
-describe('浮层渲染', () => {
-  it('打开状态画出三块、三个答题框、JSON 折叠区与免责声明', async () => {
-    const { host, root } = await mount()
+function paste(host: HTMLElement, text: string): void {
+  const box = host.querySelector('textarea') as HTMLTextAreaElement
+  const event = new Event('paste', { bubbles: true })
+  Object.defineProperty(event, 'clipboardData', { value: { getData: () => text } })
+  box.dispatchEvent(event)
+}
+
+beforeEach(() => {
+  resetPanelStores()
+})
+
+afterEach(() => {
+  for (const { root, host } of mounted.splice(0)) {
+    root.unmount()
+    host.remove()
+  }
+})
+
+describe('侧栏面板', () => {
+  it('画出三块、一个粘贴框、一个 JSON 折叠框与免责声明', async () => {
+    const host = await mount()
     const text = host.textContent ?? ''
 
-    expect(text).toContain('猫狗判定')
     expect(text).toContain('出题')
     expect(text).toContain('收答')
     expect(text).toContain('判定')
-    // No challenges drawn yet: the bare-text threshold has to be stated, not implied.
-    expect(text).toContain('门槛按 80 算')
-    // Three answer boxes plus the paste-JSON one.
-    expect(host.querySelectorAll('textarea')).toHaveLength(4)
+    expect(text).toContain('第 1/3 段')
+    expect(text).toContain('已收 0/3')
+    // One paste box plus the collapsed JSON passthrough.
+    expect(host.querySelectorAll('textarea')).toHaveLength(2)
     expect(host.querySelector('a[href*="GLOSSARY.md"]')).not.toBeNull()
-
-    root.unmount()
-    host.remove()
+    // No dialog furniture survived the move: no backdrop, no close button.
+    expect(host.querySelector('.cdt-backdrop')).toBeNull()
+    expect([...host.querySelectorAll('button')].some(node => node.textContent?.trim() === '×')).toBe(false)
   })
 
-  it('点「生成 3 道挑战」后每个框带上对应那题的门槛', async () => {
-    const { host, root } = await mount()
+  it('没出题时明说门槛按 80 算', async () => {
+    const host = await mount()
+    expect(host.textContent).toContain('门槛按 80 算')
+    expect(host.textContent).toContain(TEXT.bareText)
+  })
 
-    clickByText(host, '生成 3 道挑战')
+  it('粘一段就自动进位：输入框清空、进度前移、行内报出门槛', async () => {
+    const host = await mount()
+    button(host, '生成 3 道挑战').dispatchEvent(new MouseEvent('click', { bubbles: true }))
     await flush()
 
-    const prompts = [...host.querySelectorAll('pre.cdt-prompt')].map(node => node.textContent ?? '')
-    expect(prompts).toHaveLength(3)
-    expect(prompts[0]).toContain('292')
-    expect(prompts[2]).toContain('312')
+    paste(host, answer(292))
+    await flush()
 
-    // Each answer box is labelled with its own challenge's count, in order.
-    const labels = [...host.querySelectorAll('.cdt-field-label')].map(node => node.textContent ?? '')
-    expect(labels).toHaveLength(3)
-    expect(labels[0]).toContain('门槛 292')
-    expect(labels[1]).toContain('门槛 302')
-    expect(labels[2]).toContain('门槛 312')
-    expect(host.textContent).not.toContain('门槛按 80 算')
+    const box = host.querySelector('textarea') as HTMLTextAreaElement
+    expect(box.value).toBe('')
+    expect(host.textContent).toContain('第 2/3 段')
+    expect(host.textContent).toContain('已收 1/3')
+    expect(host.textContent).toContain('已收 292 个数字，门槛 161 ✓')
+    // 292 is below twice the threshold, so no merged-paste warning.
+    expect(host.textContent).not.toContain(TEXT.merged)
+  })
 
-    // Three copy buttons, one per challenge.
-    const copies = [...host.querySelectorAll('button')].filter(node => node.textContent?.trim() === '复制')
-    expect(copies).toHaveLength(3)
+  it('未收满时判定按钮禁用，收满三段后启用', async () => {
+    const host = await mount()
+    button(host, '生成 3 道挑战').dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    await flush()
 
-    root.unmount()
-    host.remove()
+    expect(button(host, '判定').disabled).toBe(true)
+    expect(host.textContent).toContain('还差 3 段')
+
+    paste(host, answer(292))
+    await flush()
+    expect(button(host, '判定').disabled).toBe(true)
+    expect(host.textContent).toContain('还差 2 段')
+
+    paste(host, answer(311))
+    paste(host, answer(327))
+    await flush()
+
+    expect(button(host, '判定').disabled).toBe(false)
+    expect(host.textContent).toContain('三段已收满')
+  })
+
+  it('撤回上一段把文本退回输入框，重新开始清空', async () => {
+    const host = await mount()
+    button(host, '生成 3 道挑战').dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    await flush()
+
+    const first = answer(292)
+    paste(host, first)
+    await flush()
+
+    button(host, '撤回上一段').dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    await flush()
+
+    const box = host.querySelector('textarea') as HTMLTextAreaElement
+    expect(box.value).toBe(first)
+    expect(host.textContent).toContain('已收 0/3')
+
+    button(host, '重新开始').dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    await flush()
+    expect((host.querySelector('textarea') as HTMLTextAreaElement).value).toBe('')
+  })
+
+  it('JSON 非空时优先：不必收满也能判定，且界面说明用 JSON', async () => {
+    const host = await mount()
+    const boxes = [...host.querySelectorAll('textarea')]
+    const json = boxes[1] as HTMLTextAreaElement
+
+    const setter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value')?.set
+    setter?.call(json, '{"outputs":[{"text":"一","expected_count":218}]}')
+    json.dispatchEvent(new Event('input', { bubbles: true }))
+    await flush()
+
+    expect(button(host, '判定').disabled).toBe(false)
+    expect(host.textContent).toContain('JSON 区非空')
   })
 })

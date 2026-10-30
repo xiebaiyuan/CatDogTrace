@@ -4,6 +4,42 @@ Notable changes to `dsh-catdogtrace`. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the package follows
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] — 2026-10-29
+
+The judgment moves out of the overlay and into the right sidebar, so the conversation stays visible
+while you copy a reply. Collecting the three answers no longer means hunting three separate boxes.
+
+### Changed
+
+- The surface is a right-sidebar tab owned by this plugin (`kind: dsh-catdogtrace`, guide entry
+  after the host's own Files). Mounting the tab is opening it, so there is no dialog to close: no
+  backdrop, no `Esc` capture, no open/closed state.
+- Form state lives in a per-session store outside the component tree, so switching to another tab
+  and back keeps the drawn challenges, the collected segments, and the last result.
+- `/catdog` now opens that tab through the host's `sidebarRight.openTab(kind)` instead of opening a
+  dialog. Where the service is absent or refuses, it degrades to nothing rather than throwing.
+- Collection is one box that advances: paste once, the segment lands in the next empty slot, the box
+  clears, and the row reports `已收 N 个数字，门槛 M`. `撤回上一段` returns the last segment to the
+  box; `重新开始` clears the segments and the result but keeps the drawn challenges; `重新出题`
+  also redraws.
+
+### Not changed, on purpose
+
+- No automatic splitting. A blob that looks like several replies pasted together is stored as **one**
+  segment with a hint to re-paste. Guessing a split from integer counts would produce a wrong
+  percentage, and writing a wrong score as a conclusion is the exact move this repository exists to
+  expose.
+- Three segments stay three segments. Fusing them into one changes the average and the
+  `calibration`-selected β, which changes the number.
+
+### Numbers
+
+- 86 tests across 9 files (was 57 across 7). The artifact suite still runs the built bundle through a
+  host-shaped loader and asserts `models.length === 24`, and it now also pins
+  `minimumNumbers(240) === result.diagnostics[0].minimum_numbers`.
+- `lib/client.js` 47.43 kB; `lib/client.unified_bank.js` 963,838 B, still a separate lazy chunk
+  reached only through `require.async`.
+
 ## [0.1.0] — 2026-10-29
 
 First release. A DeepSeek Harness client overlay for the DogCatTrace attribution: draw the

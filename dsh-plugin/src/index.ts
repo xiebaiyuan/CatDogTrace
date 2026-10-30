@@ -2,9 +2,9 @@
  * Host-half package entry: the bundle patch row loads this module as a Cordis plugin.
  *
  * It is deliberately empty. Every behaviour of this plugin is browser-side — the `/catdog`
- * trigger, the overlay, and the analysis all run in the page against the bundled fingerprint
- * bank — so the host half exists only because the browser half is discovered through an active
- * loader entry for the same package. Keep `name` in sync with the patch row id and the
+ * trigger, the right-sidebar tab, and the analysis all run in the page against the bundled
+ * fingerprint bank — so the host half exists only because the browser half is discovered through
+ * an active loader entry for the same package. Keep `name` in sync with the patch row id and the
  * `dsh-catdogtrace` bundle id.
  */
 

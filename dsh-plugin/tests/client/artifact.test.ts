@@ -13,8 +13,8 @@
  * - `require.async("./<file>")` accepts only `client.<name>.js` and fetches that sibling script,
  *   which must register itself with `chunk: "<file>"` under the same package id.
  *
- * It evaluates the bundles in this file's own jsdom window (not a private one) so the last test can
- * mount the real overlay with real React and let the plugin's own `loadBankChunk()` reach the chunk.
+ * It evaluates the bundles in this file's own jsdom window (not a private one) so the last two tests can
+ * mount the real panel with real React and let the plugin's own `loadBankChunk()` reach the chunk.
  *
  * Deliberately no silent skip in the precondition: CI runs this after `pnpm run build`, so a missing
  * artifact has to be a red test, not a green no-op.
@@ -28,6 +28,8 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { createElement, type ComponentType } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { analyzeGlobalOutputs, assertBankDocument } from '../../src/core'
+import { minimumNumbers } from '../../src/client/logic'
+import { resetPanelStores } from '../../src/client/panelStore'
 
 const PACKAGE_ID = 'dsh-catdogtrace'
 const ENTRY = 'lib/client.js'
@@ -157,37 +159,39 @@ async function flush(): Promise<void> {
   for (let tick = 0; tick < 20; tick += 1) await new Promise(resolve => setTimeout(resolve, 5))
 }
 
-/** The registration's injected props for one session: `{ modalStore }`, freshly built per call. */
-interface OverlayRegistration {
-  inject?: (sessionId?: string) => Record<string, unknown>
-  component: ComponentType<Record<string, unknown>>
-}
-
 /**
- * Apply the artifact with a stub host context and return the overlay registration it made.
+ * Apply the artifact with a stub host context and return the tab body it registered.
  *
- * `slots.inject` is called back immediately (the real one waits for the slot declaration, which in
- * this stub does not exist), which is the same shape the host takes on first composition.
+ * `slots.inject` is called back immediately (the real one waits for the slot declaration, which in this
+ * stub does not exist); `sidebarRightTabs` is the one service the registration asks for.
  */
-function applyArtifact(artifact: LoadedArtifact): OverlayRegistration {
-  let overlay: OverlayRegistration | undefined
-  const ctx = {
+function applyArtifact(artifact: LoadedArtifact): ComponentType<Record<string, unknown>> {
+  let body: ComponentType<Record<string, unknown>> | undefined
+
+  const scoped = {
     slots: {
       inject(_name: string, callback: () => unknown): unknown { return callback() },
-      register(registration: { inject?: (sessionId?: string) => Record<string, unknown> }, component: ComponentType<Record<string, unknown>>): unknown {
-        overlay = { inject: registration.inject, component }
+      register(
+        registration: { name: string },
+        component: ComponentType<Record<string, unknown>>,
+      ): unknown {
+        if (registration.name === 'sidebar.right.pane.tab') body = component
         return () => {}
       },
     },
     effect(callback: () => unknown): unknown { return callback() },
-    // `inputTriggers` never arrives in this stub, so the `/catdog` source stays unregistered — the
-    // overlay is what this test is about.
-    inject(): void {},
-    get(): unknown { return undefined },
+    inject(names: readonly string[], callback: (inner: unknown) => void): unknown {
+      if (names.includes('sidebarRightTabs')) callback(scoped)
+      return undefined
+    },
+    get(name: string): unknown {
+      return name === 'sidebarRightTabs' ? { register: () => () => {} } : undefined
+    },
   }
-  ;(artifact.plugin.apply as (ctx: unknown) => void)(ctx)
-  if (overlay === undefined) throw new Error('apply() 没有注册 conversation.input.overlay')
-  return overlay
+
+  ;(artifact.plugin.apply as (ctx: unknown) => void)(scoped)
+  if (body === undefined) throw new Error('apply() 没有注册 sidebar.right.pane.tab')
+  return body
 }
 
 const mounted: Array<{ root: Root; host: HTMLDivElement }> = []
@@ -197,6 +201,7 @@ afterEach(() => {
     root.unmount()
     host.remove()
   }
+  resetPanelStores()
 })
 
 describe('构建产物 lib/client.js', () => {
@@ -239,7 +244,7 @@ describe('构建产物：指纹库 chunk', () => {
     expect(/\brequire\((["'])\.\//.test(code)).toBe(false)
   })
 
-  it('用产物里加载的真指纹库跑一次判定', async () => {
+  it('用产物里加载的真指纹库跑一次判定，并钉住面板门槛与核心同口径', async () => {
     const { artifact, restore } = loadArtifact()
     try {
       const chunk = await artifact.require.async(`./${BANK_CHUNK}`)
@@ -253,6 +258,11 @@ describe('构建产物：指纹库 chunk', () => {
       expect(result.used_outputs).toBe(1)
       expect(result.diagnostics).toHaveLength(1)
       expect(result.diagnostics[0].accepted).toBe(true)
+
+      // The panel states this threshold next to every segment; the core states it in diagnostics.
+      // Same number or the progress line is lying about a gate the user is being judged by.
+      expect(minimumNumbers(240)).toBe(result.diagnostics[0].minimum_numbers)
+      expect(minimumNumbers(240)).toBe(132)
     } finally {
       restore()
     }
@@ -260,27 +270,22 @@ describe('构建产物：指纹库 chunk', () => {
 })
 
 describe('构建产物：真实组件走完加载链', () => {
-  it('挂载浮层后，插件自己的 loadBankChunk() 通过 require.async 把指纹库抓了下来', async () => {
+  it('挂载面板后，插件自己的 loadBankChunk() 通过 require.async 把指纹库抓了下来', async () => {
     const { artifact, restore } = loadArtifact()
     try {
-      const overlay = applyArtifact(artifact)
-      const props: Record<string, unknown> = {
-        sessionId: 'artifact-session',
-        ...(overlay.inject?.('artifact-session') ?? {}),
-      }
-      const store = props.modalStore as { set(open: boolean): void }
-      store.set(true)
+      const Panel = applyArtifact(artifact)
 
       const host = document.createElement('div')
       document.body.appendChild(host)
       const root = createRoot(host)
       mounted.push({ root, host })
-      root.render(createElement(overlay.component, props))
+      root.render(createElement(Panel, { sessionId: 'artifact-session' }))
       await flush()
 
       // The status line only reaches this text when the lazy chunk was fetched and admitted.
       expect(host.textContent).toContain('指纹库已就绪：24 个品种')
-      expect(host.textContent).toContain('猫狗判定')
+      // The tab chip carries the title; the body must at least be the panel, not an error fallback.
+      expect(host.textContent).toContain('生成 3 道挑战')
     } finally {
       restore()
     }

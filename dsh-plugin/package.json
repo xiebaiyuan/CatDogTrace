@@ -1,7 +1,7 @@
 {
   "name": "dsh-catdogtrace",
-  "version": "0.1.0",
-  "description": "The /catdog test in your DSH composer: draw three challenges, paste the model's numbers back, and read the 24-breed dog and cat fingerprint ranking.",
+  "version": "0.2.0",
+  "description": "A cat-or-dog fingerprint tab (「猫狗判定」) in the DSH right sidebar: draw three number challenges, paste the model's answers back one segment at a time, and read the 24-breed dog and cat ranking.",
   "author": "xiebaiyuan",
   "repository": {
     "type": "git",

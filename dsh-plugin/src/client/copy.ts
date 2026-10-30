@@ -2,9 +2,9 @@
  * Copy to clipboard, with the fallback every non-secure context needs.
  *
  * `navigator.clipboard` is undefined outside a secure context and rejects when the document is not
- * focused; the overlay is opened by a keyboard shortcut, so both happen in practice. The fallback is
- * the same one `static/pages-app.js` uses (a hidden textarea + `execCommand`), kept here so a
- * silently failed copy cannot look like a successful one: the caller gets a boolean.
+ * focused; a sidebar panel is often reopened from a background tab, so both happen in practice. The
+ * fallback is the same one `static/pages-app.js` uses (a hidden textarea + `execCommand`), kept here so
+ * a silently failed copy cannot look like a successful one: the caller gets a boolean.
  */
 export async function copyText(text: string): Promise<boolean> {
   try {
