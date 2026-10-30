@@ -1,0 +1,23 @@
+{
+  "$schema": "../../.dsh/skills/plugin-write/references/plugin-naming.schema.json",
+  "schemaVersion": 1,
+  "policy": "dsh-plugin-naming/v1",
+  "plugin": {
+    "namespace": "xiebaiyuan",
+    "name": "catdogtrace",
+    "coordinate": "xiebaiyuan/catdogtrace",
+    "packageName": "dsh-catdogtrace"
+  },
+  "names": {
+    "pluginNames": ["dsh-catdogtrace"],
+    "loaderIds": ["dsh-catdogtrace"],
+    "services": [],
+    "tools": [],
+    "commands": [],
+    "skills": [],
+    "skillProviders": [],
+    "events": [],
+    "settingsNamespaces": [],
+    "routes": []
+  }
+}

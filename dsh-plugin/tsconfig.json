@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "forceConsistentCasingInFileNames": true,
+    // No Node types in the shipped halves: the host half is a Cordis plugin with no Node API use,
+    // and the client half runs in the page. Tests get their own program (tsconfig.tests.json).
+    "types": []
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
+}

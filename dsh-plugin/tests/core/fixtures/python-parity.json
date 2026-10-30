@@ -1,0 +1,2270 @@
+{
+  "generator": "dsh-plugin/scripts/gen-parity.py",
+  "numeric_reference": "fingerprint.py::analyze_global_outputs",
+  "bank": {
+    "path": "data/unified_bank.json",
+    "bytes": 1224671
+  },
+  "tolerance": {
+    "probability_abs": 1e-12
+  },
+  "cases": [
+    {
+      "name": "three-real-answers-calibration-3",
+      "outputs": [
+        {
+          "text": "262 255 64 38 187 49 324 340 329 242 63 277 347 45 149 136 93 86 334 123 198 203 270 71 119 108 237 345 42 220 61 43 135 59 321 309 44 259 204 254 113 268 79 189 41 80 92 114 180 199 254 43 188 258 318 186 206 153 206 133 269 137 192 176 168 274 189 136 62 66 68 271 216 52 64 338 264 266 11 126 50 201 206 89 142 157 107 88 153 243 322 83 68 17 136 40 179 61 162 179 102 25 48 31 307 300 345 282 216 190 129 150 33 240 186 285 41 10 194 3 109 131 243 199 268 254 207 65 59 237 187 127 289 258 306 278 7 159 336 116 180 65 238 43 192 146 163 230 99 203 107 71 337 147 200 333 245 294 277 300 32 170 37 66 187 317 98 29 78 27 277 72 234 240 300 296 200 11 12 320 275 267 278 26 220 272 315 210 102 21 59 50 142 46 104 288 32 112 311 101 205 300 191 270 119 48 256 217 106 101 293 156 1 196 255 125 110 124",
+          "expected_count": 218
+        },
+        {
+          "text": "236 222 315 350 122 299 226 181 242 202 308 285 290 240 310 182 341 254 258 267 311 182 238 183 110 237 238 326 166 184 86 167 181 322 346 101 66 329 146 187 276 181 178 339 180 180 300 58 198 176 349 266 331 266 300 80 280 277 348 188 211 264 185 353 231 172 139 144 328 304 316 281 302 235 55 154 156 279 152 343 324 322 27 206 227 57 39 242 304 217 310 327 286 70 254 215 39 55 351 214 267 149 325 348 261 269 322 123 310 5 34 258 247 3 213 210 182 117 181 292 131 304 124 179 127 243 126 130 294 336 182 115 176 298 317 94 116 308 260 294 255 242 128 252 152 134 218 76 42 77 336 11 260 162 237 316 287 293 236 198 201 291 217 104 323 111 155 182 36 90 219 6 328 318 20 313 231 248 178 175 290 172 296 96 178 56 203 93 59 159 38 64 88 48 217 246 223 120 283 206 76 93 23 271 147 61 248 116 298 193 77 190 241 10 207 129 305 120",
+          "expected_count": 218
+        },
+        {
+          "text": "50 296 151 310 167 36 20 122 31 152 50 301 72 249 205 15 50 48 209 102 158 302 65 134 262 53 184 306 59 326 262 128 53 245 141 36 338 243 87 24 68 153 192 332 17 222 233 210 270 150 256 48 181 175 142 303 291 266 20 249 27 219 305 143 171 169 81 175 60 203 43 199 41 167 230 129 252 219 115 153 178 96 107 18 78 42 204 195 268 76 77 73 209 98 91 316 146 31 179 168 50 166 169 15 301 113 173 43 286 113 198 220 56 47 127 47 53 173 308 94 59 214 235 125 152 64 155 143 289 349 331 263 44 95 238 241 88 46 46 105 58 84 127 135 203 271 116 317 57 151 131 114 303 43 179 99 69 57 163 59 215 107 125 200 243 74 133 179 319 217 227 138 25 105 218 302 237 335 5 30 14 303 84 151 115 59 87 50 73 47 116 178 255 7 270 69 19 76 250 37 58 3 179 271 187 107 313 40 262 34 23 251 30 75 261 49 149 49",
+          "expected_count": 218
+        }
+      ],
+      "result": {
+        "prediction": "labrador",
+        "prediction_name": "拉布拉多",
+        "probability": 0.4705250091102473,
+        "used_outputs": 3,
+        "results": [
+          {
+            "model": "labrador",
+            "display_name": "拉布拉多",
+            "probability": 0.4705250091102473,
+            "profile_similarity": 0.6475786305682836,
+            "score": 0.7101317136483666,
+            "nuisance_score": 0.7792026336123158,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.47076652426468324
+          },
+          {
+            "model": "husky",
+            "display_name": "哈士奇",
+            "probability": 0.42018511645244216,
+            "profile_similarity": 0.6410003934554502,
+            "score": 0.7007022349561858,
+            "nuisance_score": 0.6319672432573932,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.42040079271050884
+          },
+          {
+            "model": "alaskan-malamute",
+            "display_name": "阿拉斯加",
+            "probability": 0.04575857068906823,
+            "profile_similarity": 0.6442217024656923,
+            "score": 0.5159258802903269,
+            "nuisance_score": 0.5552874213743242,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.04578205804479377
+          },
+          {
+            "model": "border-collie",
+            "display_name": "边牧",
+            "probability": 0.04039130419717758,
+            "profile_similarity": 0.6421524809015478,
+            "score": 0.5055288309164045,
+            "nuisance_score": 0.49617837184157904,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.04041203659584327
+          },
+          {
+            "model": "shiba",
+            "display_name": "柴犬",
+            "probability": 0.01923133417062976,
+            "profile_similarity": 0.6453530190811817,
+            "score": 0.44368936572365475,
+            "nuisance_score": 0.4640665932982446,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.019241205396499372
+          },
+          {
+            "model": "schnauzer",
+            "display_name": "雪纳瑞",
+            "probability": 0.002900524571168223,
+            "profile_similarity": 0.6353118623435934,
+            "score": 0.2860519215905033,
+            "nuisance_score": 0.3074315856011166,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.00290201337755723
+          },
+          {
+            "model": "ragdoll",
+            "display_name": "布偶",
+            "probability": 0.00043834767522445785,
+            "profile_similarity": 0.6363523014476955,
+            "score": 0.12858237895095806,
+            "nuisance_score": 0.009344623409478873,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.8544366997048747
+          },
+          {
+            "model": "bulldog",
+            "display_name": "斗牛犬",
+            "probability": 0.0001641164024356199,
+            "profile_similarity": 0.6324594663955487,
+            "score": 0.04671267665538126,
+            "nuisance_score": 0.1604278357905806,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.0001642006415249611
+          },
+          {
+            "model": "samoyed",
+            "display_name": "萨摩耶",
+            "probability": 0.000130308513920069,
+            "profile_similarity": 0.6329701349348863,
+            "score": 0.027490082980171377,
+            "nuisance_score": 0.02315645928563867,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.00013037539980340011
+          },
+          {
+            "model": "corgi",
+            "display_name": "柯基",
+            "probability": 9.865017841423167e-05,
+            "profile_similarity": 0.639332384291514,
+            "score": 0.004296351157048873,
+            "nuisance_score": 0.13303043363323627,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 9.870081443275042e-05
+          },
+          {
+            "model": "golden-retriever",
+            "display_name": "金毛",
+            "probability": 5.842655151481655e-05,
+            "profile_similarity": 0.6261258624385655,
+            "score": -0.03935444928345028,
+            "nuisance_score": -0.11480306708669046,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 5.845654120152617e-05
+          },
+          {
+            "model": "persian",
+            "display_name": "波斯",
+            "probability": 3.129060610864632e-05,
+            "profile_similarity": 0.63325296077464,
+            "score": -0.09139215824707177,
+            "nuisance_score": -0.10551855651413299,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.06099232122434948
+          },
+          {
+            "model": "beagle",
+            "display_name": "比格",
+            "probability": 2.6464605066430596e-05,
+            "profile_similarity": 0.6209621218008259,
+            "score": -0.10535130373372092,
+            "nuisance_score": -0.3441900585831105,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 2.6478189048272052e-05
+          },
+          {
+            "model": "poodle",
+            "display_name": "贵宾",
+            "probability": 1.7149221602359077e-05,
+            "profile_similarity": 0.6385301657138849,
+            "score": -0.14150592018132493,
+            "nuisance_score": -0.15818070920941643,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 1.7158024103445216e-05
+          },
+          {
+            "model": "maine-coon",
+            "display_name": "缅因",
+            "probability": 1.2175622959238022e-05,
+            "profile_similarity": 0.6334512949921212,
+            "score": -0.17004899936644877,
+            "nuisance_score": -0.12426823831406508,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.0237329856781268
+          },
+          {
+            "model": "siamese",
+            "display_name": "暹罗",
+            "probability": 8.763398385230067e-06,
+            "profile_similarity": 0.6297929550510086,
+            "score": -0.19745333782526409,
+            "nuisance_score": -0.2436366411852433,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.017081804279310622
+          },
+          {
+            "model": "american-shorthair",
+            "display_name": "美短",
+            "probability": 5.875939632905052e-06,
+            "profile_similarity": 0.6334320828943998,
+            "score": -0.23076315353190982,
+            "nuisance_score": -0.12851597847783788,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.01145350768664083
+          },
+          {
+            "model": "sphinx",
+            "display_name": "斯芬克斯",
+            "probability": 5.509746087577426e-06,
+            "profile_similarity": 0.6355093971392904,
+            "score": -0.23612544059555027,
+            "nuisance_score": -0.40776844963976816,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.010739715366052501
+          },
+          {
+            "model": "scottish-fold",
+            "display_name": "苏格兰折耳",
+            "probability": 4.280584623887394e-06,
+            "profile_similarity": 0.6297330276582302,
+            "score": -0.25716118604237465,
+            "nuisance_score": -0.28647811015385477,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.00834380745140018
+          },
+          {
+            "model": "british-shorthair",
+            "display_name": "英短",
+            "probability": 2.5160463308222893e-06,
+            "profile_similarity": 0.6282547219451855,
+            "score": -0.30144458949961145,
+            "nuisance_score": -0.19784663407583078,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.004904331526593681
+          },
+          {
+            "model": "orange-tabby",
+            "display_name": "橘猫",
+            "probability": 2.179904865396085e-06,
+            "profile_similarity": 0.633774064886417,
+            "score": -0.31339521591817193,
+            "nuisance_score": -0.34839200817455884,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.004249117365355896
+          },
+          {
+            "model": "norwegian-forest",
+            "display_name": "挪威森林猫",
+            "probability": 1.2334162730019039e-06,
+            "profile_similarity": 0.6337327633520462,
+            "score": -0.3608530041699445,
+            "nuisance_score": -0.23749466823210094,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.0024042014803121554
+          },
+          {
+            "model": "russian-blue",
+            "display_name": "俄罗斯蓝猫",
+            "probability": 6.448389223005271e-07,
+            "profile_similarity": 0.6350421249377451,
+            "score": -0.41489821278187194,
+            "nuisance_score": -0.33380365264075235,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.0012569338717938491
+          },
+          {
+            "model": "bengal",
+            "display_name": "孟加拉豹猫",
+            "probability": 2.075568997649021e-07,
+            "profile_similarity": 0.6284590602560914,
+            "score": -0.5093644656922863,
+            "nuisance_score": -0.5291964288165453,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.0004045743651892041
+          }
+        ],
+        "diagnostics": [
+          {
+            "index": 0,
+            "parsed_numbers": 218,
+            "minimum_numbers": 120,
+            "accepted": true
+          },
+          {
+            "index": 1,
+            "parsed_numbers": 218,
+            "minimum_numbers": 120,
+            "accepted": true
+          },
+          {
+            "index": 2,
+            "parsed_numbers": 218,
+            "minimum_numbers": 120,
+            "accepted": true
+          }
+        ],
+        "calibration": {
+          "queries": "3",
+          "beta": 11.99999999999999,
+          "cv_accuracy": 0.9826388888888888
+        },
+        "method": "统一全局稳健数字指纹",
+        "family_prediction": "dog",
+        "family_prediction_name": "犬族",
+        "family_probability": 0.9994869746636867,
+        "family_probabilities": [
+          {
+            "family": "dog",
+            "display_name": "犬族",
+            "probability": 0.9994869746636867
+          },
+          {
+            "family": "cat",
+            "display_name": "猫族",
+            "probability": 0.0005130253363132279
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "name": "two-real-answers-calibration-2",
+      "outputs": [
+        {
+          "text": "262 255 64 38 187 49 324 340 329 242 63 277 347 45 149 136 93 86 334 123 198 203 270 71 119 108 237 345 42 220 61 43 135 59 321 309 44 259 204 254 113 268 79 189 41 80 92 114 180 199 254 43 188 258 318 186 206 153 206 133 269 137 192 176 168 274 189 136 62 66 68 271 216 52 64 338 264 266 11 126 50 201 206 89 142 157 107 88 153 243 322 83 68 17 136 40 179 61 162 179 102 25 48 31 307 300 345 282 216 190 129 150 33 240 186 285 41 10 194 3 109 131 243 199 268 254 207 65 59 237 187 127 289 258 306 278 7 159 336 116 180 65 238 43 192 146 163 230 99 203 107 71 337 147 200 333 245 294 277 300 32 170 37 66 187 317 98 29 78 27 277 72 234 240 300 296 200 11 12 320 275 267 278 26 220 272 315 210 102 21 59 50 142 46 104 288 32 112 311 101 205 300 191 270 119 48 256 217 106 101 293 156 1 196 255 125 110 124",
+          "expected_count": 218
+        },
+        {
+          "text": "236 222 315 350 122 299 226 181 242 202 308 285 290 240 310 182 341 254 258 267 311 182 238 183 110 237 238 326 166 184 86 167 181 322 346 101 66 329 146 187 276 181 178 339 180 180 300 58 198 176 349 266 331 266 300 80 280 277 348 188 211 264 185 353 231 172 139 144 328 304 316 281 302 235 55 154 156 279 152 343 324 322 27 206 227 57 39 242 304 217 310 327 286 70 254 215 39 55 351 214 267 149 325 348 261 269 322 123 310 5 34 258 247 3 213 210 182 117 181 292 131 304 124 179 127 243 126 130 294 336 182 115 176 298 317 94 116 308 260 294 255 242 128 252 152 134 218 76 42 77 336 11 260 162 237 316 287 293 236 198 201 291 217 104 323 111 155 182 36 90 219 6 328 318 20 313 231 248 178 175 290 172 296 96 178 56 203 93 59 159 38 64 88 48 217 246 223 120 283 206 76 93 23 271 147 61 248 116 298 193 77 190 241 10 207 129 305 120",
+          "expected_count": 218
+        }
+      ],
+      "result": {
+        "prediction": "ragdoll",
+        "prediction_name": "布偶",
+        "probability": 0.6794502386101192,
+        "used_outputs": 2,
+        "results": [
+          {
+            "model": "ragdoll",
+            "display_name": "布偶",
+            "probability": 0.6794502386101192,
+            "profile_similarity": 0.5768936586561267,
+            "score": 0.746751291669335,
+            "nuisance_score": 0.5735024130728652,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.9880331194504155
+          },
+          {
+            "model": "husky",
+            "display_name": "哈士奇",
+            "probability": 0.3064617688669021,
+            "profile_similarity": 0.555836924848307,
+            "score": 0.680402042879308,
+            "nuisance_score": 0.5029788576234422,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.9812416575453691
+          },
+          {
+            "model": "border-collie",
+            "display_name": "边牧",
+            "probability": 0.003233407559221215,
+            "profile_similarity": 0.5585772852160473,
+            "score": 0.30110567121018283,
+            "nuisance_score": 0.3478895273454163,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.010352854793799401
+          },
+          {
+            "model": "maine-coon",
+            "display_name": "缅因",
+            "probability": 0.002927609831258688,
+            "profile_similarity": 0.5751584635781577,
+            "score": 0.29282648619605556,
+            "nuisance_score": 0.3649084468597899,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.004257229315320085
+          },
+          {
+            "model": "american-shorthair",
+            "display_name": "美短",
+            "probability": 0.0024777014271867796,
+            "profile_similarity": 0.573215297038895,
+            "score": 0.27892189899995967,
+            "nuisance_score": 0.452126983312627,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.003602988020399881
+          },
+          {
+            "model": "british-shorthair",
+            "display_name": "英短",
+            "probability": 0.0018456391701494044,
+            "profile_similarity": 0.5715113938458507,
+            "score": 0.2543797627223169,
+            "nuisance_score": 0.41466419658962184,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.0026838648705059614
+          },
+          {
+            "model": "alaskan-malamute",
+            "display_name": "阿拉斯加",
+            "probability": 0.0011740021461720677,
+            "profile_similarity": 0.5570279876013493,
+            "score": 0.2166791709144802,
+            "nuisance_score": 0.2450945216481516,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.003758967443576987
+          },
+          {
+            "model": "persian",
+            "display_name": "波斯",
+            "probability": 0.0006273484942349644,
+            "profile_similarity": 0.5676636644395615,
+            "score": 0.16445653507547292,
+            "nuisance_score": 0.1966914462521667,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.0009122685584884589
+          },
+          {
+            "model": "shiba",
+            "display_name": "柴犬",
+            "probability": 0.0006010837034355363,
+            "profile_similarity": 0.55944163559211,
+            "score": 0.16089253507857626,
+            "nuisance_score": 0.13816574872234694,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.0019245740558873803
+          },
+          {
+            "model": "schnauzer",
+            "display_name": "雪纳瑞",
+            "probability": 0.0004305344128145155,
+            "profile_similarity": 0.5574047357106033,
+            "score": 0.13308362333554424,
+            "nuisance_score": 0.19089993751905027,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.001378502455371238
+          },
+          {
+            "model": "labrador",
+            "display_name": "拉布拉多",
+            "probability": 0.00041613512476232855,
+            "profile_similarity": 0.5570478091385673,
+            "score": 0.1302488540967761,
+            "nuisance_score": 0.283530009971149,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.001332398233862494
+          },
+          {
+            "model": "norwegian-forest",
+            "display_name": "挪威森林猫",
+            "probability": 0.00016139464360820656,
+            "profile_similarity": 0.5720876929887982,
+            "score": 0.05131906589378177,
+            "nuisance_score": 0.24238575717802968,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.00023469452820121427
+          },
+          {
+            "model": "orange-tabby",
+            "display_name": "橘猫",
+            "probability": 6.534146718761423e-05,
+            "profile_similarity": 0.5676748726315924,
+            "score": -0.024033076409586518,
+            "nuisance_score": -0.08151635255021272,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 9.501730956325543e-05
+          },
+          {
+            "model": "siamese",
+            "display_name": "暹罗",
+            "probability": 4.887481661682235e-05,
+            "profile_similarity": 0.561936816360779,
+            "score": -0.04823012594040285,
+            "nuisance_score": -0.07095933678124368,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 7.107207383320329e-05
+          },
+          {
+            "model": "sphinx",
+            "display_name": "斯芬克斯",
+            "probability": 3.868319105789933e-05,
+            "profile_similarity": 0.5696350995327526,
+            "score": -0.06771821761700314,
+            "nuisance_score": -0.24440201149752538,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 5.6251763204051465e-05
+          },
+          {
+            "model": "scottish-fold",
+            "display_name": "苏格兰折耳",
+            "probability": 1.9006819880353883e-05,
+            "profile_similarity": 0.5599765711249488,
+            "score": -0.12693549347200717,
+            "nuisance_score": -0.21797680718046825,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 2.763906239202038e-05
+          },
+          {
+            "model": "bengal",
+            "display_name": "孟加拉豹猫",
+            "probability": 1.1632829276158297e-05,
+            "profile_similarity": 0.5671769667547882,
+            "score": -0.16784938054944065,
+            "nuisance_score": -0.20694002961412095,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 1.6916059403066967e-05
+          },
+          {
+            "model": "russian-blue",
+            "display_name": "俄罗斯蓝猫",
+            "probability": 6.1471600452581155e-06,
+            "profile_similarity": 0.5694090490263477,
+            "score": -0.22100279863267225,
+            "nuisance_score": -0.15817833361884215,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 8.938988273374458e-06
+          },
+          {
+            "model": "bulldog",
+            "display_name": "斗牛犬",
+            "probability": 1.7669175306683344e-06,
+            "profile_similarity": 0.5486922771773696,
+            "score": -0.32489893809976716,
+            "nuisance_score": -0.21510615539736738,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 5.657387846286149e-06
+          },
+          {
+            "model": "golden-retriever",
+            "display_name": "金毛",
+            "probability": 6.098413685307681e-07,
+            "profile_similarity": 0.5442516810969751,
+            "score": -0.4135483487267345,
+            "nuisance_score": -0.484442137683895,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 1.9526147013683658e-06
+          },
+          {
+            "model": "samoyed",
+            "display_name": "萨摩耶",
+            "probability": 5.928104146182497e-07,
+            "profile_similarity": 0.5467109746022547,
+            "score": -0.4159087011777602,
+            "nuisance_score": -0.44523767595465535,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 1.8980843059181058e-06
+          },
+          {
+            "model": "beagle",
+            "display_name": "比格",
+            "probability": 2.2848537249979324e-07,
+            "profile_similarity": 0.5394299932303931,
+            "score": -0.49535890529274923,
+            "nuisance_score": -0.7257280695316536,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 7.315736852446973e-07
+          },
+          {
+            "model": "poodle",
+            "display_name": "贵宾",
+            "probability": 1.7760005455883982e-07,
+            "profile_similarity": 0.5547233026966116,
+            "score": -0.5163537432267745,
+            "nuisance_score": -0.6297938618343184,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 5.686470209964418e-07
+          },
+          {
+            "model": "corgi",
+            "display_name": "柯基",
+            "probability": 7.407133011153054e-08,
+            "profile_similarity": 0.5496810872473465,
+            "score": -0.589229208926892,
+            "nuisance_score": -0.4725570744503539,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 2.3716457359088908e-07
+          }
+        ],
+        "diagnostics": [
+          {
+            "index": 0,
+            "parsed_numbers": 218,
+            "minimum_numbers": 120,
+            "accepted": true
+          },
+          {
+            "index": 1,
+            "parsed_numbers": 218,
+            "minimum_numbers": 120,
+            "accepted": true
+          }
+        ],
+        "calibration": {
+          "queries": "2",
+          "beta": 11.99999999999999,
+          "cv_accuracy": 0.9490740740740741
+        },
+        "method": "统一全局稳健数字指纹",
+        "family_prediction": "cat",
+        "family_prediction_name": "猫族",
+        "family_probability": 0.6876796184606213,
+        "family_probabilities": [
+          {
+            "family": "dog",
+            "display_name": "犬族",
+            "probability": 0.31232038153937874
+          },
+          {
+            "family": "cat",
+            "display_name": "猫族",
+            "probability": 0.6876796184606213
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "name": "one-real-answer-calibration-1",
+      "outputs": [
+        {
+          "text": "262 255 64 38 187 49 324 340 329 242 63 277 347 45 149 136 93 86 334 123 198 203 270 71 119 108 237 345 42 220 61 43 135 59 321 309 44 259 204 254 113 268 79 189 41 80 92 114 180 199 254 43 188 258 318 186 206 153 206 133 269 137 192 176 168 274 189 136 62 66 68 271 216 52 64 338 264 266 11 126 50 201 206 89 142 157 107 88 153 243 322 83 68 17 136 40 179 61 162 179 102 25 48 31 307 300 345 282 216 190 129 150 33 240 186 285 41 10 194 3 109 131 243 199 268 254 207 65 59 237 187 127 289 258 306 278 7 159 336 116 180 65 238 43 192 146 163 230 99 203 107 71 337 147 200 333 245 294 277 300 32 170 37 66 187 317 98 29 78 27 277 72 234 240 300 296 200 11 12 320 275 267 278 26 220 272 315 210 102 21 59 50 142 46 104 288 32 112 311 101 205 300 191 270 119 48 256 217 106 101 293 156 1 196 255 125 110 124",
+          "expected_count": 218
+        }
+      ],
+      "result": {
+        "prediction": "husky",
+        "prediction_name": "哈士奇",
+        "probability": 0.9908771168724666,
+        "used_outputs": 1,
+        "results": [
+          {
+            "model": "husky",
+            "display_name": "哈士奇",
+            "probability": 0.9908771168724666,
+            "profile_similarity": 0.4106634668143301,
+            "score": 2.182011633276823,
+            "nuisance_score": 2.0453301602036715,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.9908771605034463
+          },
+          {
+            "model": "alaskan-malamute",
+            "display_name": "阿拉斯加",
+            "probability": 0.005505176357283456,
+            "profile_similarity": 0.4104779500724355,
+            "score": 1.5337214632418057,
+            "nuisance_score": 1.565415677984541,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.005505176599691151
+          },
+          {
+            "model": "border-collie",
+            "display_name": "边牧",
+            "probability": 0.0034355989797507833,
+            "profile_similarity": 0.40874852768783876,
+            "score": 1.4748589575591835,
+            "nuisance_score": 1.505155269917982,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.00343559913102943
+          },
+          {
+            "model": "labrador",
+            "display_name": "拉布拉多",
+            "probability": 0.00010715384760660956,
+            "profile_similarity": 0.4064474742500811,
+            "score": 1.0419481143829998,
+            "nuisance_score": 1.239541384576994,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.00010715385232488115
+          },
+          {
+            "model": "shiba",
+            "display_name": "柴犬",
+            "probability": 5.990128525749976e-05,
+            "profile_similarity": 0.40550744724105925,
+            "score": 0.9693442750021031,
+            "nuisance_score": 0.8996735679645802,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 5.990128789511417e-05
+          },
+          {
+            "model": "schnauzer",
+            "display_name": "雪纳瑞",
+            "probability": 1.3767256261419081e-05,
+            "profile_similarity": 0.4015503672086246,
+            "score": 0.7857765687525748,
+            "nuisance_score": 0.7384503929453012,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 1.3767256867628337e-05
+          },
+          {
+            "model": "bulldog",
+            "display_name": "斗牛犬",
+            "probability": 6.457047737309952e-07,
+            "profile_similarity": 0.4015477992576314,
+            "score": 0.40379797949006646,
+            "nuisance_score": 0.6744164267179519,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 6.4570480216311e-07
+          },
+          {
+            "model": "golden-retriever",
+            "display_name": "金毛",
+            "probability": 2.773718625651141e-07,
+            "profile_similarity": 0.3990611522241655,
+            "score": 0.2983089078170716,
+            "nuisance_score": 0.21106761022826867,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 2.773718747785419e-07
+          },
+          {
+            "model": "samoyed",
+            "display_name": "萨摩耶",
+            "probability": 2.3056793131899496e-07,
+            "profile_similarity": 0.3978909521064047,
+            "score": 0.27523648964535596,
+            "nuisance_score": 0.15955827488830734,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 2.3056794147152e-07
+          },
+          {
+            "model": "beagle",
+            "display_name": "比格",
+            "probability": 7.5791294006316e-08,
+            "profile_similarity": 0.3941920675144973,
+            "score": 0.13634245467024333,
+            "nuisance_score": -0.09390440331604283,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 7.579129734361015e-08
+          },
+          {
+            "model": "british-shorthair",
+            "display_name": "英短",
+            "probability": 1.7049233475525462e-08,
+            "profile_similarity": 0.4012251300965207,
+            "score": -0.04990600806500167,
+            "nuisance_score": 0.23495029488645885,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.3871949739455146
+          },
+          {
+            "model": "persian",
+            "display_name": "波斯",
+            "probability": 1.4009807550806008e-08,
+            "profile_similarity": 0.3967938839519415,
+            "score": -0.07441835969257969,
+            "nuisance_score": -0.0261519668188075,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.3181683843677213
+          },
+          {
+            "model": "corgi",
+            "display_name": "柯基",
+            "probability": 1.1417910244734605e-08,
+            "profile_similarity": 0.39722827716141174,
+            "score": -0.0999577588937856,
+            "nuisance_score": 0.08894592361427227,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 1.1417910747495849e-08
+          },
+          {
+            "model": "american-shorthair",
+            "display_name": "美短",
+            "probability": 9.685066515756174e-09,
+            "profile_similarity": 0.3994223807469319,
+            "score": -0.12050644088363033,
+            "nuisance_score": 0.1049066741103425,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.2199517698324682
+          },
+          {
+            "model": "siamese",
+            "display_name": "暹罗",
+            "probability": 2.579922567204088e-09,
+            "profile_similarity": 0.3954859531096566,
+            "score": -0.28565013030564634,
+            "nuisance_score": -0.30190054286950335,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.05859108285566162
+          },
+          {
+            "model": "poodle",
+            "display_name": "贵宾",
+            "probability": 5.149188871663709e-10,
+            "profile_similarity": 0.3971305900517914,
+            "score": -0.48683303074456946,
+            "nuisance_score": -0.5068288740595609,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 5.14918909839632e-10
+          },
+          {
+            "model": "ragdoll",
+            "display_name": "布偶",
+            "probability": 3.6613400961608116e-10,
+            "profile_similarity": 0.39169111993253536,
+            "score": -0.5294052622901593,
+            "nuisance_score": -0.6626678047206176,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.008315051143933971
+          },
+          {
+            "model": "maine-coon",
+            "display_name": "缅因",
+            "probability": 1.4826824703378945e-10,
+            "profile_similarity": 0.3946008485497968,
+            "score": -0.6422591117217678,
+            "nuisance_score": -0.4381567303776951,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.0033672317368171815
+          },
+          {
+            "model": "scottish-fold",
+            "display_name": "苏格兰折耳",
+            "probability": 1.020708767959095e-10,
+            "profile_similarity": 0.39248095893314694,
+            "score": -0.6888694317624322,
+            "nuisance_score": -0.6143273930814602,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.0023180708117066804
+          },
+          {
+            "model": "norwegian-forest",
+            "display_name": "挪威森林猫",
+            "probability": 8.773354174663298e-11,
+            "profile_similarity": 0.3928067982875887,
+            "score": -0.7077658506682973,
+            "nuisance_score": -0.5403648511980339,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.001992464145646191
+          },
+          {
+            "model": "orange-tabby",
+            "display_name": "橘猫",
+            "probability": 2.6133312262244475e-12,
+            "profile_similarity": 0.38830311164748665,
+            "score": -1.1464191093971952,
+            "nuisance_score": -1.3254600699380126,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 5.934980698701404e-05
+          },
+          {
+            "model": "sphinx",
+            "display_name": "斯芬克斯",
+            "probability": 1.5740629684921932e-12,
+            "profile_similarity": 0.389219861655277,
+            "score": -1.2097095051668194,
+            "nuisance_score": -1.6685680288935592,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 3.574760536588582e-05
+          },
+          {
+            "model": "bengal",
+            "display_name": "孟加拉豹猫",
+            "probability": 1.74477277263906e-13,
+            "profile_similarity": 0.3866034834755093,
+            "score": -1.4843137042078716,
+            "nuisance_score": -1.6095904912207186,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 3.962449392300336e-06
+          },
+          {
+            "model": "russian-blue",
+            "display_name": "俄罗斯蓝猫",
+            "probability": 8.415961316821763e-14,
+            "profile_similarity": 0.3861458298101894,
+            "score": -1.575333140038472,
+            "nuisance_score": -1.67949050154466,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 1.9112987850574495e-06
+          }
+        ],
+        "diagnostics": [
+          {
+            "index": 0,
+            "parsed_numbers": 218,
+            "minimum_numbers": 120,
+            "accepted": true
+          }
+        ],
+        "calibration": {
+          "queries": "1",
+          "beta": 8.01015033398194,
+          "cv_accuracy": 0.8090277777777778
+        },
+        "method": "统一全局稳健数字指纹",
+        "family_prediction": "dog",
+        "family_prediction_name": "犬族",
+        "family_probability": 0.9999999559673172,
+        "family_probabilities": [
+          {
+            "family": "dog",
+            "display_name": "犬族",
+            "probability": 0.9999999559673172
+          },
+          {
+            "family": "cat",
+            "display_name": "猫族",
+            "probability": 4.403268281556929e-08
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "name": "dirty-out-of-range-and-letter-separators",
+      "outputs": [
+        {
+          "text": "这是一段脏文本：说明 甲 1 38 75 112 149 186 223 260 297 334 16 53 90 127 164 201 238 275 312 349 31 68 105 142 179 216 253 290 327 9 46 83 120 157 194 231 268 305 342 24 61 98 135 172 209 246 283 320 2 39 76 113 150 187 224 261 298 335 17 54 91 128 165 202 239 276 313 350 32 69 106 143 180 217 254 291 328 10 47 84 121 158 195 232 269 306 343 25 62 99 136 173 210 247 284 321 3 40 77 114 151 188 225 262 299 336 18 55 92 129 166 203 240 277 314 351 33 70 107 144 181 218 255 292 329 11 48 85 122 159 196 233 270 307 344 26 63 100 137 174 400 356 0 999999999999999999999 200 尾 注 "
+        }
+      ],
+      "result": {
+        "prediction": "beagle",
+        "prediction_name": "比格",
+        "probability": 0.7736706636618486,
+        "used_outputs": 1,
+        "results": [
+          {
+            "model": "beagle",
+            "display_name": "比格",
+            "probability": 0.7736706636618486,
+            "profile_similarity": 0.3630617296715557,
+            "score": 1.436614391943581,
+            "nuisance_score": 1.5802799980087636,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.7741542783230244
+          },
+          {
+            "model": "border-collie",
+            "display_name": "边牧",
+            "probability": 0.12912053924730607,
+            "profile_similarity": 0.36267494875138206,
+            "score": 1.2130979998155555,
+            "nuisance_score": 1.059988752857051,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.12920125134971844
+          },
+          {
+            "model": "samoyed",
+            "display_name": "萨摩耶",
+            "probability": 0.045072742133624534,
+            "profile_similarity": 0.3579918500399496,
+            "score": 1.08170612070653,
+            "nuisance_score": 0.6375314632565298,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.045100916704458135
+          },
+          {
+            "model": "bulldog",
+            "display_name": "斗牛犬",
+            "probability": 0.02219550712984679,
+            "profile_similarity": 0.36106927710426406,
+            "score": 0.9932698542049098,
+            "nuisance_score": 1.1980335918085416,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.022209381344243675
+          },
+          {
+            "model": "corgi",
+            "display_name": "柯基",
+            "probability": 0.020678229482560314,
+            "profile_similarity": 0.3600392465534301,
+            "score": 0.9844300131415437,
+            "nuisance_score": 0.8180486251145664,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.020691155260174256
+          },
+          {
+            "model": "shiba",
+            "display_name": "柴犬",
+            "probability": 0.004215226945533009,
+            "profile_similarity": 0.36256488574384094,
+            "score": 0.7858846759955089,
+            "nuisance_score": 0.7833746339545327,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.004217861846462811
+          },
+          {
+            "model": "husky",
+            "display_name": "哈士奇",
+            "probability": 0.00299408690069173,
+            "profile_similarity": 0.36019045325938326,
+            "score": 0.7431808430366642,
+            "nuisance_score": 0.8061903824085794,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.0029959584778239887
+          },
+          {
+            "model": "poodle",
+            "display_name": "贵宾",
+            "probability": 0.001329458169116966,
+            "profile_similarity": 0.3611963258533415,
+            "score": 0.6418259609075038,
+            "nuisance_score": 0.734659290959399,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.0013302892016120614
+          },
+          {
+            "model": "norwegian-forest",
+            "display_name": "挪威森林猫",
+            "probability": 0.0005737187987267662,
+            "profile_similarity": 0.36037698102968163,
+            "score": 0.5369106555841132,
+            "nuisance_score": 0.9326660286603181,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.9183899874102696
+          },
+          {
+            "model": "alaskan-malamute",
+            "display_name": "阿拉斯加",
+            "probability": 5.779165639924041e-05,
+            "profile_similarity": 0.35597972331814254,
+            "score": 0.2503623549173535,
+            "nuisance_score": 0.11888572985914564,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 5.782778145042953e-05
+          },
+          {
+            "model": "golden-retriever",
+            "display_name": "金毛",
+            "probability": 3.865800425366334e-05,
+            "profile_similarity": 0.35788869564225323,
+            "score": 0.2001647248952852,
+            "nuisance_score": 0.2806021706676498,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 3.868216902881506e-05
+          },
+          {
+            "model": "orange-tabby",
+            "display_name": "橘猫",
+            "probability": 2.9906322082343405e-05,
+            "profile_similarity": 0.3612207823453576,
+            "score": 0.16811988930692096,
+            "nuisance_score": 0.4596026700396531,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.04787304655459156
+          },
+          {
+            "model": "american-shorthair",
+            "display_name": "美短",
+            "probability": 1.0635803341964657e-05,
+            "profile_similarity": 0.36105516576524266,
+            "score": 0.03905315866385467,
+            "nuisance_score": 0.44579699855304933,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.017025440545093504
+          },
+          {
+            "model": "maine-coon",
+            "display_name": "缅因",
+            "probability": 1.0102294529371912e-05,
+            "profile_similarity": 0.35971856024828663,
+            "score": 0.03262838484020275,
+            "nuisance_score": 0.15504804597225713,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.016171417367244548
+          },
+          {
+            "model": "labrador",
+            "display_name": "拉布拉多",
+            "probability": 2.145132778395285e-06,
+            "profile_similarity": 0.35564860884783034,
+            "score": -0.1608213087047075,
+            "nuisance_score": -0.08561852578515428,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 2.1464736818449398e-06
+          },
+          {
+            "model": "schnauzer",
+            "display_name": "雪纳瑞",
+            "probability": 2.5091147867513283e-07,
+            "profile_similarity": 0.35226514728449954,
+            "score": -0.42871347539303906,
+            "nuisance_score": -0.4168068499135902,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 2.5106832121220185e-07
+          },
+          {
+            "model": "ragdoll",
+            "display_name": "布偶",
+            "probability": 2.4711760362614083e-07,
+            "profile_similarity": 0.35489134982848314,
+            "score": -0.43061554343609776,
+            "nuisance_score": -0.5952707268309554,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.0003955776477722715
+          },
+          {
+            "model": "bengal",
+            "display_name": "孟加拉豹猫",
+            "probability": 5.105810964394971e-08,
+            "profile_similarity": 0.3583468635369027,
+            "score": -0.627478260954343,
+            "nuisance_score": -0.27167854740132785,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 8.173212517554461e-05
+          },
+          {
+            "model": "sphinx",
+            "display_name": "斯芬克斯",
+            "probability": 2.1090676553593337e-08,
+            "profile_similarity": 0.3564057121470052,
+            "score": -0.7378548804538407,
+            "nuisance_score": -0.6419629129210915,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 3.3761254150142233e-05
+          },
+          {
+            "model": "british-shorthair",
+            "display_name": "英短",
+            "probability": 9.154173234377232e-09,
+            "profile_similarity": 0.35410246377934607,
+            "score": -0.842050328982689,
+            "nuisance_score": -0.9745077145185356,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 1.465369630580123e-05
+          },
+          {
+            "model": "russian-blue",
+            "display_name": "俄罗斯蓝猫",
+            "probability": 8.951291914968029e-09,
+            "profile_similarity": 0.35341560056104615,
+            "score": -0.8448482785408191,
+            "nuisance_score": -1.279651953150705,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 1.432893063176109e-05
+          },
+          {
+            "model": "scottish-fold",
+            "display_name": "苏格兰折耳",
+            "probability": 1.2539193293212226e-11,
+            "profile_similarity": 0.3492781346938115,
+            "score": -1.6651442371031644,
+            "nuisance_score": -2.1041587518299467,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 2.0072323926364054e-08
+          },
+          {
+            "model": "persian",
+            "display_name": "波斯",
+            "probability": 1.1628326225430218e-11,
+            "profile_similarity": 0.3512267692329979,
+            "score": -1.6745591871154075,
+            "nuisance_score": -1.7787310633932505,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 1.8614238193825342e-08
+          },
+          {
+            "model": "siamese",
+            "display_name": "暹罗",
+            "probability": 9.859152141895576e-12,
+            "profile_similarity": 0.3505867305894851,
+            "score": -1.6951635272754186,
+            "nuisance_score": -1.8623213363754796,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 1.5782203113382104e-08
+          }
+        ],
+        "diagnostics": [
+          {
+            "index": 0,
+            "parsed_numbers": 141,
+            "minimum_numbers": 80,
+            "accepted": true
+          }
+        ],
+        "calibration": {
+          "queries": "1",
+          "beta": 8.01015033398194,
+          "cv_accuracy": 0.8090277777777778
+        },
+        "method": "统一全局稳健数字指纹",
+        "family_prediction": "dog",
+        "family_prediction_name": "犬族",
+        "family_probability": 0.9993752993754379,
+        "family_probabilities": [
+          {
+            "family": "dog",
+            "display_name": "犬族",
+            "probability": 0.9993752993754379
+          },
+          {
+            "family": "cat",
+            "display_name": "猫族",
+            "probability": 0.0006247006245620909
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "name": "letter-separator-split-longest-run-wins",
+      "outputs": [
+        {
+          "text": "甲 1 54 107 160 213 乙 1 18 35 52 69 86 103 120 137 154 171 188 205 222 239 256 273 290 307 324 341 3 20 37 54 71 88 105 122 139 156 173 190 207 224 241 258 275 292 309 326 343 5 22 39 56 73 90 107 124 141 158 175 192 209 226 243 260 277 294 311 328 345 7 24 41 58 75 92 109 126 143 160 177 194 211 228 245 262 279 296 313 330 347 9 26 43 60 77 94 111 128 145 162 179 196 213 230 247 264"
+        }
+      ],
+      "result": {
+        "prediction": "schnauzer",
+        "prediction_name": "雪纳瑞",
+        "probability": 0.8266532539204653,
+        "used_outputs": 1,
+        "results": [
+          {
+            "model": "schnauzer",
+            "display_name": "雪纳瑞",
+            "probability": 0.8266532539204653,
+            "profile_similarity": 0.2839707274362261,
+            "score": 1.4607701304661667,
+            "nuisance_score": 1.4544565360458985,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.826672886234912
+          },
+          {
+            "model": "corgi",
+            "display_name": "柯基",
+            "probability": 0.11104932121746658,
+            "profile_similarity": 0.2830969069032717,
+            "score": 1.210161739406415,
+            "nuisance_score": 1.2874097184227737,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.11105195854476542
+          },
+          {
+            "model": "bulldog",
+            "display_name": "斗牛犬",
+            "probability": 0.027965451531482687,
+            "profile_similarity": 0.27964867649913805,
+            "score": 1.0380046005302028,
+            "nuisance_score": 0.9912355257142,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.027966115687264457
+          },
+          {
+            "model": "husky",
+            "display_name": "哈士奇",
+            "probability": 0.016454462665355878,
+            "profile_similarity": 0.2808299435887113,
+            "score": 0.9717919671501716,
+            "nuisance_score": 1.142887825002865,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.016454853444904095
+          },
+          {
+            "model": "poodle",
+            "display_name": "贵宾",
+            "probability": 0.006450504602899566,
+            "profile_similarity": 0.28255655933404666,
+            "score": 0.8548855013202415,
+            "nuisance_score": 1.0529589223988935,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.00645065779691907
+          },
+          {
+            "model": "border-collie",
+            "display_name": "边牧",
+            "probability": 0.005164116205464694,
+            "profile_similarity": 0.2778894966104708,
+            "score": 0.8271176847680604,
+            "nuisance_score": 0.31541415813438034,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.005164238848849576
+          },
+          {
+            "model": "golden-retriever",
+            "display_name": "金毛",
+            "probability": 0.0024325274793761983,
+            "profile_similarity": 0.2803499312411166,
+            "score": 0.7331365342826618,
+            "nuisance_score": 0.8179915274306466,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.002432585249843016
+          },
+          {
+            "model": "labrador",
+            "display_name": "拉布拉多",
+            "probability": 0.0017510743824204415,
+            "profile_similarity": 0.27898309237271,
+            "score": 0.6921009374830143,
+            "nuisance_score": 0.49550079215924747,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.001751115968953528
+          },
+          {
+            "model": "alaskan-malamute",
+            "display_name": "阿拉斯加",
+            "probability": 0.0010700950942372938,
+            "profile_similarity": 0.2832854855799446,
+            "score": 0.6306186938059677,
+            "nuisance_score": 0.9776463431189935,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.001070120508089206
+          },
+          {
+            "model": "samoyed",
+            "display_name": "萨摩耶",
+            "probability": 0.0006231805068380292,
+            "profile_similarity": 0.27720850194872215,
+            "score": 0.5631210115954375,
+            "nuisance_score": 0.47948504920171003,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.0006231953068471131
+          },
+          {
+            "model": "beagle",
+            "display_name": "比格",
+            "probability": 0.0003269038159248649,
+            "profile_similarity": 0.2787429096051218,
+            "score": 0.4825769267409465,
+            "nuisance_score": 0.7116617517270779,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.00032691157961354286
+          },
+          {
+            "model": "shiba",
+            "display_name": "柴犬",
+            "probability": 3.535998926918218e-05,
+            "profile_similarity": 0.2767902762948218,
+            "score": 0.2049185857987835,
+            "nuisance_score": 0.1874925860421075,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 3.536082903897063e-05
+          },
+          {
+            "model": "sphinx",
+            "display_name": "斯芬克斯",
+            "probability": 1.7409382861233184e-05,
+            "profile_similarity": 0.28043759682258507,
+            "score": 0.1164593685589563,
+            "nuisance_score": 0.32434860346539673,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.7330702050696962
+          },
+          {
+            "model": "norwegian-forest",
+            "display_name": "挪威森林猫",
+            "probability": 3.489168114682588e-06,
+            "profile_similarity": 0.2764533077407939,
+            "score": -0.08420427613112944,
+            "nuisance_score": 0.19771994612929747,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.14692107157047318
+          },
+          {
+            "model": "bengal",
+            "display_name": "孟加拉豹猫",
+            "probability": 2.5342188800762094e-06,
+            "profile_similarity": 0.278253161417929,
+            "score": -0.12412586017704495,
+            "nuisance_score": -0.3051229374740076,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.10671029346168157
+          },
+          {
+            "model": "russian-blue",
+            "display_name": "俄罗斯蓝猫",
+            "probability": 1.996745091768314e-07,
+            "profile_similarity": 0.27635816100643085,
+            "score": -0.44134239692295363,
+            "nuisance_score": -0.33205166750679166,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.008407847340493395
+          },
+          {
+            "model": "american-shorthair",
+            "display_name": "美短",
+            "probability": 5.353185139144283e-08,
+            "profile_similarity": 0.27561489129982353,
+            "score": -0.6056853495445519,
+            "nuisance_score": -0.6450006168393385,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.002254106626873606
+          },
+          {
+            "model": "siamese",
+            "display_name": "暹罗",
+            "probability": 4.923474704528983e-08,
+            "profile_similarity": 0.2733668297127493,
+            "score": -0.6161317471009322,
+            "nuisance_score": -0.8157840638504277,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.0020731651662055897
+          },
+          {
+            "model": "persian",
+            "display_name": "波斯",
+            "probability": 1.1306400117554838e-08,
+            "profile_similarity": 0.2731350860257208,
+            "score": -0.7998025405534657,
+            "nuisance_score": -0.8264829020848876,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.0004760872409344474
+          },
+          {
+            "model": "british-shorthair",
+            "display_name": "英短",
+            "probability": 9.207291454571823e-10,
+            "profile_similarity": 0.27191469051961403,
+            "score": -1.112900075097836,
+            "nuisance_score": -1.269884482451669,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 3.876984663120519e-05
+          },
+          {
+            "model": "orange-tabby",
+            "display_name": "橘猫",
+            "probability": 7.377696801443602e-10,
+            "profile_similarity": 0.27029165626243135,
+            "score": -1.1405567615454943,
+            "nuisance_score": -1.318062085671869,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 3.106583243234622e-05
+          },
+          {
+            "model": "ragdoll",
+            "display_name": "布偶",
+            "probability": 4.0656653454094184e-10,
+            "profile_similarity": 0.2711361310738959,
+            "score": -1.2149478868451449,
+            "nuisance_score": -1.0473625690610024,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 1.711960815762612e-05
+          },
+          {
+            "model": "maine-coon",
+            "display_name": "缅因",
+            "probability": 3.834047759352599e-12,
+            "profile_similarity": 0.2662223273584583,
+            "score": -1.797187457440362,
+            "nuisance_score": -1.8497549982695067,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 1.614431826560755e-07
+          },
+          {
+            "model": "scottish-fold",
+            "display_name": "苏格兰折耳",
+            "probability": 2.536188698508898e-12,
+            "profile_similarity": 0.26504379902804065,
+            "score": -1.848779330548111,
+            "nuisance_score": -2.026702961783988,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 1.0679323811364948e-07
+          }
+        ],
+        "diagnostics": [
+          {
+            "index": 0,
+            "parsed_numbers": 100,
+            "minimum_numbers": 80,
+            "accepted": true
+          }
+        ],
+        "calibration": {
+          "queries": "1",
+          "beta": 8.01015033398194,
+          "cv_accuracy": 0.8090277777777778
+        },
+        "method": "统一全局稳健数字指纹",
+        "family_prediction": "dog",
+        "family_prediction_name": "犬族",
+        "family_probability": 0.9999762514112007,
+        "family_probabilities": [
+          {
+            "family": "dog",
+            "display_name": "犬族",
+            "probability": 0.9999762514112007
+          },
+          {
+            "family": "cat",
+            "display_name": "猫族",
+            "probability": 2.3748588799319702e-05
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "name": "expected-count-raises-threshold-above-parsed",
+      "outputs": [
+        {
+          "text": "1 24 47 70 93 116 139 162 185 208 231 254 277 300 323 346 14 37 60 83 106 129 152 175 198 221 244 267 290 313 336 4 27 50 73 96 119 142 165 188 211 234 257 280 303 326 349 17 40 63 86 109 132 155 178 201 224 247 270 293 316 339 7 30 53 76 99 122 145 168 191 214 237 260 283 306 329 352 20 43 66 89 112 135 158 181 204 227 250 273 296 319 342 10 33 56 79 102 125 148",
+          "expected_count": 300
+        }
+      ],
+      "result": null,
+      "error": {
+        "type": "ValueError",
+        "message": "没有可用回答：请粘贴完整数字序列；拒答或严重截断的回答不会计入。"
+      }
+    },
+    {
+      "name": "expected-count-threshold-at-83",
+      "outputs": [
+        {
+          "text": "1 24 47 70 93 116 139 162 185 208 231 254 277 300 323 346 14 37 60 83 106 129 152 175 198 221 244 267 290 313 336 4 27 50 73 96 119 142 165 188 211 234 257 280 303 326 349 17 40 63 86 109 132 155 178 201 224 247 270 293 316 339 7 30 53 76 99 122 145 168 191 214 237 260 283 306 329 352 20 43 66 89 112 135 158 181 204 227 250 273 296 319 342 10 33 56 79 102 125 148",
+          "expected_count": 150
+        }
+      ],
+      "result": {
+        "prediction": "schnauzer",
+        "prediction_name": "雪纳瑞",
+        "probability": 0.7512781171563582,
+        "used_outputs": 1,
+        "results": [
+          {
+            "model": "schnauzer",
+            "display_name": "雪纳瑞",
+            "probability": 0.7512781171563582,
+            "profile_similarity": 0.28876015638071584,
+            "score": 1.8268013776297292,
+            "nuisance_score": 2.030895066086581,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.7512793763966585
+          },
+          {
+            "model": "border-collie",
+            "display_name": "边牧",
+            "probability": 0.2439810704368975,
+            "profile_similarity": 0.28862719018762584,
+            "score": 1.6863938667452119,
+            "nuisance_score": 1.9097977556709405,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.2439814793810547
+          },
+          {
+            "model": "husky",
+            "display_name": "哈士奇",
+            "probability": 0.002754064528521198,
+            "profile_similarity": 0.28468066334372677,
+            "score": 1.1266025239764363,
+            "nuisance_score": 1.2031384864022456,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.0027540691446932453
+          },
+          {
+            "model": "corgi",
+            "display_name": "柯基",
+            "probability": 0.0013686381438689054,
+            "profile_similarity": 0.28335631577197673,
+            "score": 1.0393055804931106,
+            "nuisance_score": 0.9245450361511914,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.0013686404378852864
+          },
+          {
+            "model": "shiba",
+            "display_name": "柴犬",
+            "probability": 0.0002036011122542454,
+            "profile_similarity": 0.2831741551851894,
+            "score": 0.8014313032566511,
+            "nuisance_score": 0.9251111297536148,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.00020360145351631587
+          },
+          {
+            "model": "alaskan-malamute",
+            "display_name": "阿拉斯加",
+            "probability": 0.0001881979904619243,
+            "profile_similarity": 0.28020347860559636,
+            "score": 0.7916102393691404,
+            "nuisance_score": 0.6410028134224974,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.0001881983059063498
+          },
+          {
+            "model": "labrador",
+            "display_name": "拉布拉多",
+            "probability": 0.0001381306542202131,
+            "profile_similarity": 0.2808976349844694,
+            "score": 0.7529974131973385,
+            "nuisance_score": 0.6800528406662818,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.00013813088574524032
+          },
+          {
+            "model": "beagle",
+            "display_name": "比格",
+            "probability": 5.207834617086339e-05,
+            "profile_similarity": 0.2779487854095539,
+            "score": 0.6312205770020669,
+            "nuisance_score": 0.4299870155954336,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 5.2078433460977105e-05
+          },
+          {
+            "model": "golden-retriever",
+            "display_name": "金毛",
+            "probability": 3.301307783432748e-05,
+            "profile_similarity": 0.27936609041055827,
+            "score": 0.5743120993996716,
+            "nuisance_score": 0.5022414888140012,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 3.301313316856004e-05
+          },
+          {
+            "model": "orange-tabby",
+            "display_name": "橘猫",
+            "probability": 1.289296049179641e-06,
+            "profile_similarity": 0.2792442122661962,
+            "score": 0.16947482735769526,
+            "nuisance_score": 0.34413953923904284,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.7692110326404812
+          },
+          {
+            "model": "samoyed",
+            "display_name": "萨摩耶",
+            "probability": 6.162777060985738e-07,
+            "profile_similarity": 0.27302438349859015,
+            "score": 0.07732250364490016,
+            "nuisance_score": -0.10070810332757918,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 6.162787390605436e-07
+          },
+          {
+            "model": "bulldog",
+            "display_name": "斗牛犬",
+            "probability": 4.3174192585031136e-07,
+            "profile_similarity": 0.2728719453426034,
+            "score": 0.032895164228486484,
+            "nuisance_score": -0.2330324558233371,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 4.3174264950619854e-07
+          },
+          {
+            "model": "poodle",
+            "display_name": "贵宾",
+            "probability": 3.6440591141098193e-07,
+            "profile_similarity": 0.27882455701249786,
+            "score": 0.01172706859595137,
+            "nuisance_score": 0.001487269349479299,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 3.6440652220290955e-07
+          },
+          {
+            "model": "american-shorthair",
+            "display_name": "美短",
+            "probability": 2.6202736631892707e-07,
+            "profile_similarity": 0.27866322454371406,
+            "score": -0.02944811837438374,
+            "nuisance_score": 0.24961914422636264,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.15632898367639725
+          },
+          {
+            "model": "ragdoll",
+            "display_name": "布偶",
+            "probability": 6.282930320618972e-08,
+            "profile_similarity": 0.2760899445914895,
+            "score": -0.2077253434145682,
+            "nuisance_score": 0.07383408950557445,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.03748479120064479
+          },
+          {
+            "model": "sphinx",
+            "display_name": "斯芬克斯",
+            "probability": 6.111409816784234e-08,
+            "profile_similarity": 0.27716069175709146,
+            "score": -0.21118083379220026,
+            "nuisance_score": -0.08970717133706163,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.03646147724604388
+          },
+          {
+            "model": "norwegian-forest",
+            "display_name": "挪威森林猫",
+            "probability": 4.927863939645042e-10,
+            "profile_similarity": 0.26819499472163666,
+            "score": -0.812970045556412,
+            "nuisance_score": -0.9550797168973802,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.00029400286397666633
+          },
+          {
+            "model": "british-shorthair",
+            "display_name": "英短",
+            "probability": 1.2017641183342556e-10,
+            "profile_similarity": 0.2697434458820692,
+            "score": -0.9891359078055758,
+            "nuisance_score": -1.2180128852230614,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 7.169883278881977e-05
+          },
+          {
+            "model": "siamese",
+            "display_name": "暹罗",
+            "probability": 7.262368208380075e-11,
+            "profile_similarity": 0.2699125649384525,
+            "score": -1.0520148392507764,
+            "nuisance_score": -1.0657544878502088,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 4.332824685639819e-05
+          },
+          {
+            "model": "scottish-fold",
+            "display_name": "苏格兰折耳",
+            "probability": 4.932569421642301e-11,
+            "profile_similarity": 0.26857876973358663,
+            "score": -1.100309306379306,
+            "nuisance_score": -1.0499461095765328,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 2.9428359924057145e-05
+          },
+          {
+            "model": "russian-blue",
+            "display_name": "俄罗斯蓝猫",
+            "probability": 4.5622138626396206e-11,
+            "profile_similarity": 0.26852319505295696,
+            "score": -1.1100534469995338,
+            "nuisance_score": -1.2299297718979751,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 2.7218769797989048e-05
+          },
+          {
+            "model": "bengal",
+            "display_name": "孟加拉豹猫",
+            "probability": 4.4338165166947155e-11,
+            "profile_similarity": 0.2709598005498193,
+            "score": -1.1136173342382099,
+            "nuisance_score": -1.1334642502573749,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 2.6452734292602834e-05
+          },
+          {
+            "model": "persian",
+            "display_name": "波斯",
+            "probability": 3.592112749407236e-11,
+            "profile_similarity": 0.26852188394021637,
+            "score": -1.139899012058321,
+            "nuisance_score": -1.2860105067156553,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 2.1431018570875874e-05
+          },
+          {
+            "model": "maine-coon",
+            "display_name": "缅因",
+            "probability": 2.588112821785939e-13,
+            "profile_similarity": 0.26759678484808946,
+            "score": -1.7557403570271028,
+            "nuisance_score": -1.554206215977081,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 1.5441022544843368e-07
+          }
+        ],
+        "diagnostics": [
+          {
+            "index": 0,
+            "parsed_numbers": 100,
+            "minimum_numbers": 83,
+            "accepted": true
+          }
+        ],
+        "calibration": {
+          "queries": "1",
+          "beta": 8.01015033398194,
+          "cv_accuracy": 0.8090277777777778
+        },
+        "method": "统一全局稳健数字指纹",
+        "family_prediction": "dog",
+        "family_prediction_name": "犬族",
+        "family_probability": 0.9999983238721307,
+        "family_probabilities": [
+          {
+            "family": "dog",
+            "display_name": "犬族",
+            "probability": 0.9999983238721307
+          },
+          {
+            "family": "cat",
+            "display_name": "猫族",
+            "probability": 1.6761278692972678e-06
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "name": "mixed-one-rejected-one-used",
+      "outputs": [
+        {
+          "text": "本轮拒答，不作答。"
+        },
+        {
+          "text": "262 255 64 38 187 49 324 340 329 242 63 277 347 45 149 136 93 86 334 123 198 203 270 71 119 108 237 345 42 220 61 43 135 59 321 309 44 259 204 254 113 268 79 189 41 80 92 114 180 199 254 43 188 258 318 186 206 153 206 133 269 137 192 176 168 274 189 136 62 66 68 271 216 52 64 338 264 266 11 126 50 201 206 89 142 157 107 88 153 243 322 83 68 17 136 40 179 61 162 179 102 25 48 31 307 300 345 282 216 190 129 150 33 240 186 285 41 10 194 3 109 131 243 199 268 254 207 65 59 237 187 127 289 258 306 278 7 159 336 116 180 65 238 43 192 146 163 230 99 203 107 71 337 147 200 333 245 294 277 300 32 170 37 66 187 317 98 29 78 27 277 72 234 240 300 296 200 11 12 320 275 267 278 26 220 272 315 210 102 21 59 50 142 46 104 288 32 112 311 101 205 300 191 270 119 48 256 217 106 101 293 156 1 196 255 125 110 124",
+          "expected_count": 218
+        }
+      ],
+      "result": {
+        "prediction": "husky",
+        "prediction_name": "哈士奇",
+        "probability": 0.9908771168724666,
+        "used_outputs": 1,
+        "results": [
+          {
+            "model": "husky",
+            "display_name": "哈士奇",
+            "probability": 0.9908771168724666,
+            "profile_similarity": 0.4106634668143301,
+            "score": 2.182011633276823,
+            "nuisance_score": 2.0453301602036715,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.9908771605034463
+          },
+          {
+            "model": "alaskan-malamute",
+            "display_name": "阿拉斯加",
+            "probability": 0.005505176357283456,
+            "profile_similarity": 0.4104779500724355,
+            "score": 1.5337214632418057,
+            "nuisance_score": 1.565415677984541,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.005505176599691151
+          },
+          {
+            "model": "border-collie",
+            "display_name": "边牧",
+            "probability": 0.0034355989797507833,
+            "profile_similarity": 0.40874852768783876,
+            "score": 1.4748589575591835,
+            "nuisance_score": 1.505155269917982,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.00343559913102943
+          },
+          {
+            "model": "labrador",
+            "display_name": "拉布拉多",
+            "probability": 0.00010715384760660956,
+            "profile_similarity": 0.4064474742500811,
+            "score": 1.0419481143829998,
+            "nuisance_score": 1.239541384576994,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 0.00010715385232488115
+          },
+          {
+            "model": "shiba",
+            "display_name": "柴犬",
+            "probability": 5.990128525749976e-05,
+            "profile_similarity": 0.40550744724105925,
+            "score": 0.9693442750021031,
+            "nuisance_score": 0.8996735679645802,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 5.990128789511417e-05
+          },
+          {
+            "model": "schnauzer",
+            "display_name": "雪纳瑞",
+            "probability": 1.3767256261419081e-05,
+            "profile_similarity": 0.4015503672086246,
+            "score": 0.7857765687525748,
+            "nuisance_score": 0.7384503929453012,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 1.3767256867628337e-05
+          },
+          {
+            "model": "bulldog",
+            "display_name": "斗牛犬",
+            "probability": 6.457047737309952e-07,
+            "profile_similarity": 0.4015477992576314,
+            "score": 0.40379797949006646,
+            "nuisance_score": 0.6744164267179519,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 6.4570480216311e-07
+          },
+          {
+            "model": "golden-retriever",
+            "display_name": "金毛",
+            "probability": 2.773718625651141e-07,
+            "profile_similarity": 0.3990611522241655,
+            "score": 0.2983089078170716,
+            "nuisance_score": 0.21106761022826867,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 2.773718747785419e-07
+          },
+          {
+            "model": "samoyed",
+            "display_name": "萨摩耶",
+            "probability": 2.3056793131899496e-07,
+            "profile_similarity": 0.3978909521064047,
+            "score": 0.27523648964535596,
+            "nuisance_score": 0.15955827488830734,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 2.3056794147152e-07
+          },
+          {
+            "model": "beagle",
+            "display_name": "比格",
+            "probability": 7.5791294006316e-08,
+            "profile_similarity": 0.3941920675144973,
+            "score": 0.13634245467024333,
+            "nuisance_score": -0.09390440331604283,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 7.579129734361015e-08
+          },
+          {
+            "model": "british-shorthair",
+            "display_name": "英短",
+            "probability": 1.7049233475525462e-08,
+            "profile_similarity": 0.4012251300965207,
+            "score": -0.04990600806500167,
+            "nuisance_score": 0.23495029488645885,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.3871949739455146
+          },
+          {
+            "model": "persian",
+            "display_name": "波斯",
+            "probability": 1.4009807550806008e-08,
+            "profile_similarity": 0.3967938839519415,
+            "score": -0.07441835969257969,
+            "nuisance_score": -0.0261519668188075,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.3181683843677213
+          },
+          {
+            "model": "corgi",
+            "display_name": "柯基",
+            "probability": 1.1417910244734605e-08,
+            "profile_similarity": 0.39722827716141174,
+            "score": -0.0999577588937856,
+            "nuisance_score": 0.08894592361427227,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 1.1417910747495849e-08
+          },
+          {
+            "model": "american-shorthair",
+            "display_name": "美短",
+            "probability": 9.685066515756174e-09,
+            "profile_similarity": 0.3994223807469319,
+            "score": -0.12050644088363033,
+            "nuisance_score": 0.1049066741103425,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.2199517698324682
+          },
+          {
+            "model": "siamese",
+            "display_name": "暹罗",
+            "probability": 2.579922567204088e-09,
+            "profile_similarity": 0.3954859531096566,
+            "score": -0.28565013030564634,
+            "nuisance_score": -0.30190054286950335,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.05859108285566162
+          },
+          {
+            "model": "poodle",
+            "display_name": "贵宾",
+            "probability": 5.149188871663709e-10,
+            "profile_similarity": 0.3971305900517914,
+            "score": -0.48683303074456946,
+            "nuisance_score": -0.5068288740595609,
+            "family": "dog",
+            "family_name": "犬族",
+            "conditional_probability": 5.14918909839632e-10
+          },
+          {
+            "model": "ragdoll",
+            "display_name": "布偶",
+            "probability": 3.6613400961608116e-10,
+            "profile_similarity": 0.39169111993253536,
+            "score": -0.5294052622901593,
+            "nuisance_score": -0.6626678047206176,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.008315051143933971
+          },
+          {
+            "model": "maine-coon",
+            "display_name": "缅因",
+            "probability": 1.4826824703378945e-10,
+            "profile_similarity": 0.3946008485497968,
+            "score": -0.6422591117217678,
+            "nuisance_score": -0.4381567303776951,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.0033672317368171815
+          },
+          {
+            "model": "scottish-fold",
+            "display_name": "苏格兰折耳",
+            "probability": 1.020708767959095e-10,
+            "profile_similarity": 0.39248095893314694,
+            "score": -0.6888694317624322,
+            "nuisance_score": -0.6143273930814602,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.0023180708117066804
+          },
+          {
+            "model": "norwegian-forest",
+            "display_name": "挪威森林猫",
+            "probability": 8.773354174663298e-11,
+            "profile_similarity": 0.3928067982875887,
+            "score": -0.7077658506682973,
+            "nuisance_score": -0.5403648511980339,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 0.001992464145646191
+          },
+          {
+            "model": "orange-tabby",
+            "display_name": "橘猫",
+            "probability": 2.6133312262244475e-12,
+            "profile_similarity": 0.38830311164748665,
+            "score": -1.1464191093971952,
+            "nuisance_score": -1.3254600699380126,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 5.934980698701404e-05
+          },
+          {
+            "model": "sphinx",
+            "display_name": "斯芬克斯",
+            "probability": 1.5740629684921932e-12,
+            "profile_similarity": 0.389219861655277,
+            "score": -1.2097095051668194,
+            "nuisance_score": -1.6685680288935592,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 3.574760536588582e-05
+          },
+          {
+            "model": "bengal",
+            "display_name": "孟加拉豹猫",
+            "probability": 1.74477277263906e-13,
+            "profile_similarity": 0.3866034834755093,
+            "score": -1.4843137042078716,
+            "nuisance_score": -1.6095904912207186,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 3.962449392300336e-06
+          },
+          {
+            "model": "russian-blue",
+            "display_name": "俄罗斯蓝猫",
+            "probability": 8.415961316821763e-14,
+            "profile_similarity": 0.3861458298101894,
+            "score": -1.575333140038472,
+            "nuisance_score": -1.67949050154466,
+            "family": "cat",
+            "family_name": "猫族",
+            "conditional_probability": 1.9112987850574495e-06
+          }
+        ],
+        "diagnostics": [
+          {
+            "index": 0,
+            "parsed_numbers": 0,
+            "minimum_numbers": 80,
+            "accepted": false
+          },
+          {
+            "index": 1,
+            "parsed_numbers": 218,
+            "minimum_numbers": 120,
+            "accepted": true
+          }
+        ],
+        "calibration": {
+          "queries": "1",
+          "beta": 8.01015033398194,
+          "cv_accuracy": 0.8090277777777778
+        },
+        "method": "统一全局稳健数字指纹",
+        "family_prediction": "dog",
+        "family_prediction_name": "犬族",
+        "family_probability": 0.9999999559673172,
+        "family_probabilities": [
+          {
+            "family": "dog",
+            "display_name": "犬族",
+            "probability": 0.9999999559673172
+          },
+          {
+            "family": "cat",
+            "display_name": "猫族",
+            "probability": 4.403268281556929e-08
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "name": "all-rejected-raises",
+      "outputs": [
+        {
+          "text": "没有数字的回答。"
+        },
+        {
+          "text": "1 2 3"
+        }
+      ],
+      "result": null,
+      "error": {
+        "type": "ValueError",
+        "message": "没有可用回答：请粘贴完整数字序列；拒答或严重截断的回答不会计入。"
+      }
+    },
+    {
+      "name": "short-text-raises",
+      "outputs": [
+        {
+          "text": "只给了几个 7 9 11"
+        }
+      ],
+      "result": null,
+      "error": {
+        "type": "ValueError",
+        "message": "没有可用回答：请粘贴完整数字序列；拒答或严重截断的回答不会计入。"
+      }
+    }
+  ]
+}

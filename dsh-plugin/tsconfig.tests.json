@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // Tests run in Node under vitest; the shipped halves keep `types: []`.
+    "types": ["node"],
+    // tests/core/parity.test.ts imports its fixture JSON directly.
+    "resolveJsonModule": true
+  },
+  "include": [
+    "tests/core/**/*.ts",
+    "tests/client/**/*.ts",
+    "tests/**/*.json",
+    "vitest.config.ts",
+    "tsdown.config.ts"
+  ]
+}
