@@ -4,44 +4,62 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="DogCatTrace：在浏览器本地对整数序列做品种归因">
+  <meta name="theme-color" content="#faf9f6">
   <title>DogCatTrace</title>
+  <link rel="icon" href="./assets/favicon.png" type="image/png">
   <link rel="stylesheet" href="./styles.css">
   <link rel="stylesheet" href="./repository-link.css">
 </head>
 <body>
 
   <header class="topbar">
-    <div class="product-name"><span class="product-mark">DC</span><strong>DogCatTrace</strong></div>
-    <div class="topbar-actions">
-      <div class="topbar-status"><span id="topbar-bank-count">正在读取指纹库</span></div>
-      <a class="topbar-github" href="https://github.com/" target="_blank" rel="noopener noreferrer" aria-label="在新标签页打开 DogCatTrace 的代码仓库" title="代码仓库"><svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.65 7.65 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg></a>
+    <span class="brand">DogCatTrace</span>
+    <div class="topbar-meta">
+      <span id="topbar-bank-count">正在读取指纹库</span>
+      <a class="topbar-link" href="https://github.com/xiebaiyuan/CatDogTrace" target="_blank" rel="noopener noreferrer">代码仓库</a>
     </div>
   </header>
 
-  <main class="main-content">
-    <section class="workspace active">
-      <div class="page-header">
-        <h1>品种归因</h1>
-        <div id="active-bank-badge" class="privacy-badge">本地计算</div>
+  <main class="page">
+    <section class="hero">
+      <h1>品种归因</h1>
+      <p class="hero-lede">把一段整数序列和 24 个犬猫品种的数字指纹逐一对齐，算它最像谁。计算在本地完成，序列不离开这台机器。</p>
+      <p class="hero-status"><span id="active-bank-badge">正在读取指纹库</span><span class="sep">·</span>本地计算</p>
+    </section>
+
+    <section class="section workspace">
+      <div class="section-head">
+        <h2 class="section-title">工作区</h2>
+        <button id="regenerate" class="btn btn-quiet" type="button" disabled>重新生成挑战</button>
       </div>
+      <div id="challenge-list" class="challenges" aria-live="polite">
+        <div class="skeleton-challenge"><span class="skeleton skeleton-line"></span><span class="skeleton skeleton-field"></span></div>
+        <div class="skeleton-challenge"><span class="skeleton skeleton-line"></span><span class="skeleton skeleton-field"></span></div>
+        <div class="skeleton-challenge"><span class="skeleton skeleton-line"></span><span class="skeleton skeleton-field"></span></div>
+      </div>
+      <div class="action-row">
+        <button id="analyze" class="btn btn-primary" type="button" disabled>计算归因概率</button>
+      </div>
+      <p id="test-message" class="message working">正在读取指纹库……</p>
+      <section id="result" class="result" hidden aria-live="polite"></section>
+    </section>
 
-      <p class="lede">本页对一段整数序列做品种归因。序列来自三次独立的取值挑战，计算在本地完成，不发送任何数据到远端。</p>
-
-      <section id="test-manual" class="mode-panel active">
-        <div class="panel-toolbar">
-          <strong>三次挑战</strong>
-          <button id="regenerate" class="button secondary" type="button" disabled>重新生成</button>
-        </div>
-        <div id="challenge-list" class="challenge-list" aria-live="polite"></div>
-        <div class="action-row"><button id="analyze" class="button primary" type="button" disabled>计算归因概率</button></div>
-      </section>
-
-      <div id="test-message" class="message working">正在读取指纹库……</div>
-      <section id="result" class="result-panel" hidden aria-live="polite"></section>
+    <section class="section roster-section">
+      <div class="section-head">
+        <h2 class="section-title">候选名册</h2>
+      </div>
+      <p class="section-note">闭集候选：指纹库里的 24 只犬猫。库外品种也会被归到最相似的一只，概率不为零。</p>
+      <div id="roster-grid" class="roster" aria-busy="true">
+        <div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div>
+        <div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div>
+        <div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div>
+        <div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div>
+      </div>
     </section>
 
     <footer class="page-footer">
-      <span class="repository-link">方法：有序块特征 + nuisance-Hellinger 融合，softmax 温度由分组交叉验证确定。</span>
+      <span class="footer-method">方法：有序块特征 + nuisance-Hellinger 融合，softmax 温度由分组交叉验证确定。</span>
+      <a class="repository-link" href="https://github.com/xiebaiyuan/CatDogTrace" target="_blank" rel="noopener noreferrer">代码仓库</a>
       <a class="repository-link" href="https://linux.do/" target="_blank" rel="noopener noreferrer">LINUX DO</a>
     </footer>
   </main>

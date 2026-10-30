@@ -5,24 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="DogCatTrace：在浏览器本地对整数序列做品种归因，单文件版可直接双击打开">
   <title>DogCatTrace</title>
+  <link rel="icon" href="data:image/png;base64,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" type="image/png">
   <!-- 本文件由 build_standalone.py 从仓库源文件拼装生成，不要手改。 -->
   <style>
-/* DogCatTrace 冷面学术样式：中性色、单列阅读、等宽数字。 */
+/* DogCatTrace 冷面学术体。
+ *
+ * 规则来自 .scratch/catdog-plugin/design-spec.md：
+ * 分隔靠背景色阶不画线；强调色只给主按钮和链接；一套 sans 字族，数字用 tabular-nums。
+ * 字号只有四级：56 / 28 / 17 / 15，页脚与注释 13。等宽字体只留给真实代码块（本页没有）。
+ */
 
 :root {
-  --ink: #16181c;
-  --ink-soft: #4a5058;
-  --ink-faint: #767d87;
-  --line: #d8dbe0;
-  --line-soft: #e8eaee;
-  --paper: #ffffff;
-  --paper-soft: #f7f8fa;
-  --paper-tint: #eef1f5;
+  --paper: #faf9f6;
+  --wash: #f2efe8;
+  --wash-deep: #e9e3d9;
+  --brick: #efe9e0;
+  --ink: #1b1d21;
+  --ink-soft: #5e646c;
+  --ink-faint: #8b9099;
   --accent: #2b4a6f;
-  --accent-soft: #e6edf5;
   --warn: #8a4b2a;
-  --radius: 3px;
-  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  --row-line: #e9e5dc;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -31,337 +35,440 @@ html { -webkit-text-size-adjust: 100%; }
 
 body {
   margin: 0;
-  background: var(--paper-soft);
+  background: var(--paper);
   color: var(--ink);
-  font: 15px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  font: 17px/1.6 var(--sans);
+  -webkit-font-smoothing: antialiased;
 }
+
+/* ---------- 顶栏与容器 ---------- */
 
 .topbar {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
-  gap: 16px;
-  padding: 14px 28px;
-  background: var(--paper);
-  border-bottom: 1px solid var(--line);
-}
-
-.product-name {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 15px;
-  letter-spacing: 0.01em;
-}
-
-.product-mark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 26px;
-  height: 26px;
-  border: 1px solid var(--accent);
-  border-radius: var(--radius);
-  color: var(--accent);
-  font: 600 11px/1 var(--mono);
-  letter-spacing: 0.06em;
-}
-
-.topbar-actions { display: flex; align-items: center; gap: 18px; }
-
-.topbar-status { color: var(--ink-faint); font-size: 13px; font-variant-numeric: tabular-nums; }
-
-.topbar-github { display: inline-flex; color: var(--ink-faint); }
-.topbar-github:hover { color: var(--accent); }
-
-.main-content {
-  max-width: 1080px;
+  gap: 24px;
+  max-width: 1040px;
   margin: 0 auto;
-  padding: 34px 28px 72px;
+  padding: 24px 24px 0;
 }
 
-.page-header {
+.brand { font-size: 15px; font-weight: 600; letter-spacing: 0.01em; }
+
+.topbar-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+  color: var(--ink-faint);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.topbar-link { color: var(--ink-soft); font-size: 13px; text-decoration: none; }
+.topbar-link:hover { color: var(--accent); text-decoration: underline; }
+
+.page { max-width: 1040px; margin: 0 auto; padding: 0 24px 96px; }
+
+h1, h2 { font-weight: 600; }
+
+/* ---------- 区块节奏：区块之间远，区块内部近 ---------- */
+
+.section { margin-top: 112px; }
+
+.section-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 16px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--line);
+  gap: 20px;
 }
 
-.page-header h1 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
+.section-title {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
 
-.privacy-badge {
-  padding: 3px 9px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--paper);
+.section-note {
+  margin: 10px 0 0;
+  max-width: 44em;
   color: var(--ink-faint);
-  font-size: 12px;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-
-.lede { margin: 18px 0 0; color: var(--ink-soft); max-width: 68ch; }
-
-.panel-toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin: 26px 0 12px;
-}
-
-.panel-toolbar strong { font-size: 14px; font-weight: 600; letter-spacing: 0.01em; }
-
-.challenge-list { display: grid; gap: 14px; }
-
-.challenge-item {
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-}
-
-.challenge-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--line-soft);
   font-size: 13px;
 }
 
-.challenge-header strong { font-weight: 600; }
-.challenge-header span { color: var(--ink-faint); font-variant-numeric: tabular-nums; }
-.challenge-header button { margin-left: auto; }
+/* ---------- 首屏 ---------- */
 
-.challenge-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+.hero { padding-top: 72px; }
 
-.challenge-columns > div { padding: 12px 14px; min-width: 0; }
-.challenge-columns > div + div { border-left: 1px solid var(--line-soft); }
-
-.challenge-columns label {
-  display: block;
-  margin-bottom: 6px;
-  color: var(--ink-faint);
-  font-size: 12px;
-  letter-spacing: 0.02em;
-}
-
-.challenge-columns pre {
+.hero h1 {
   margin: 0;
-  padding: 10px 12px;
-  max-height: 168px;
-  overflow: auto;
-  background: var(--paper-soft);
-  border: 1px solid var(--line-soft);
-  border-radius: var(--radius);
-  color: var(--ink-soft);
-  font: 12px/1.65 var(--mono);
-  white-space: pre-wrap;
-  word-break: break-word;
+  font-size: 56px;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
 }
 
-.challenge-columns textarea {
-  width: 100%;
-  height: 168px;
-  padding: 10px 12px;
-  resize: vertical;
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  color: var(--ink);
-  font: 12px/1.65 var(--mono);
+.hero-lede {
+  margin: 22px 0 0;
+  max-width: 32em;
+  color: var(--ink-soft);
 }
 
-.challenge-columns textarea:focus,
-input:focus,
-select:focus { outline: 2px solid var(--accent-soft); outline-offset: 0; border-color: var(--accent); }
+.hero-status {
+  margin: 24px 0 0;
+  color: var(--ink-faint);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
 
-button {
-  padding: 6px 12px;
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
+.hero-status .sep { margin: 0 8px; }
+
+/* ---------- 工作区：三次挑战 ---------- */
+
+.challenges { display: grid; gap: 56px; margin-top: 40px; }
+
+.challenge-head { display: flex; align-items: baseline; gap: 14px; }
+.challenge-index { font-size: 17px; font-weight: 600; }
+.challenge-count { color: var(--ink-faint); font-size: 13px; font-variant-numeric: tabular-nums; }
+.challenge-head .btn { margin-left: auto; }
+
+/* 提示词是给人复制的，不是给人读的：默认折叠，字号降到 13 */
+.challenge-prompt { margin-top: 14px; }
+
+.challenge-prompt summary {
   color: var(--ink-soft);
-  font: inherit;
   font-size: 13px;
   cursor: pointer;
 }
 
-button:hover:not(:disabled) { border-color: var(--ink-faint); color: var(--ink); }
-button:disabled { opacity: 0.45; cursor: not-allowed; }
+.challenge-prompt summary:hover { color: var(--ink); }
 
-.button.primary {
-  padding: 9px 22px;
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
-  font-size: 14px;
+.challenge-prompt-text {
+  margin: 12px 0 0;
+  max-height: 168px;
+  overflow: auto;
+  color: var(--ink-faint);
+  font: 13px/1.6 var(--sans);
+  font-variant-numeric: tabular-nums;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
-.button.primary:hover:not(:disabled) { background: #223c5c; border-color: #223c5c; color: #fff; }
-.button.secondary { font-size: 12px; }
-
-.action-row { display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-top: 18px; }
-
-.message {
-  margin-top: 16px;
-  padding: 10px 14px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--paper);
+.challenge-label {
+  display: block;
+  margin: 20px 0 8px;
+  color: var(--ink-faint);
   font-size: 13px;
 }
 
-.message.error { border-color: #d9bfae; background: #fdf6f1; color: var(--warn); }
-.message.working { color: var(--ink-soft); }
-.message.success { border-color: #bcd0c2; background: #f3f8f4; color: #2f5b3c; }
-
-.result-panel { margin-top: 26px; }
-
-.result-summary {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1px;
-  background: var(--line);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  overflow: hidden;
+/* 答案区是这三块里唯一要人动手的地方，所以只有它有底色 */
+.challenge-input {
+  width: 100%;
+  height: 132px;
+  padding: 16px;
+  background: var(--wash);
+  border: 0;
+  color: var(--ink);
+  font: 15px/1.65 var(--sans);
+  font-variant-numeric: tabular-nums;
+  resize: vertical;
 }
 
-.result-summary > div { padding: 14px 16px; background: var(--paper); }
-.result-summary span { display: block; color: var(--ink-faint); font-size: 12px; letter-spacing: 0.02em; }
-.result-summary strong { display: block; margin-top: 5px; font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; }
-.result-summary strong.breed-headline { display: flex; align-items: center; gap: 10px; }
+.challenge-input::placeholder { color: var(--ink-faint); }
 
-.diagnostics { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 0; }
+/* ---------- 加载骨架：占位先出来，数据到了再填 ---------- */
 
-.diagnostic {
-  padding: 4px 10px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--paper);
-  color: var(--ink-faint);
-  font-size: 12px;
+.skeleton { display: block; background: var(--wash); }
+
+.skeleton-challenge { display: grid; gap: 14px; }
+.skeleton-line { width: 140px; height: 17px; }
+.skeleton-field { height: 132px; }
+.skeleton-tile { aspect-ratio: 1 / 1; border-radius: 6px; }
+
+.challenge-input:focus,
+.topbar-link:focus-visible,
+.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.action-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+/* ---------- 按钮：强调色只给主按钮 ---------- */
+
+.btn {
+  padding: 10px 18px;
+  border: 0;
+  border-radius: 0;
+  background: var(--wash-deep);
+  color: var(--ink);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.btn:hover:not(:disabled) { background: #ded7c9; }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.btn-primary { padding: 12px 28px; background: var(--accent); color: #fff; }
+.btn-primary:hover:not(:disabled) { background: #223c5c; }
+
+.btn-quiet { padding: 4px 0; background: transparent; color: var(--ink-soft); font-size: 15px; }
+.btn-quiet:hover:not(:disabled) { background: transparent; color: var(--ink); text-decoration: underline; }
+
+.challenge-head .btn-quiet { font-size: 13px; }
+
+/* ---------- 提示条 ---------- */
+
+.message {
+  margin: 22px 0 0;
+  padding: 14px 16px;
+  background: var(--wash);
+  color: var(--ink-soft);
+  font-size: 15px;
+}
+
+.message.error { background: #f5ebe4; color: var(--warn); }
+.message.success { background: #edf1e9; color: #2f5b3c; }
+
+.notice {
+  margin: 40px 0 0;
+  padding: 16px 18px;
+  background: #f5ebe4;
+  color: var(--warn);
+  font-size: 15px;
+}
+
+/* ---------- 结果区 ---------- */
+
+.result { margin-top: 48px; }
+
+.verdict { display: flex; align-items: center; gap: 16px; }
+
+.verdict-line {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.verdict-prob {
+  margin-left: 12px;
+  color: var(--ink-soft);
   font-variant-numeric: tabular-nums;
 }
 
-.diagnostic.accepted { border-color: #c6d3c9; color: #2f5b3c; }
-.diagnostic.rejected { border-color: #dcc6b8; color: var(--warn); }
-
-.table-wrap {
-  margin-top: 16px;
-  overflow-x: auto;
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
+.verdict-meta {
+  margin: 12px 0 0;
+  color: var(--ink-faint);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
 }
 
-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.diagnostics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin: 24px 0 0;
+  color: var(--ink-faint);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
 
-thead th {
-  padding: 10px 14px;
-  background: var(--paper-tint);
-  border-bottom: 1px solid var(--line);
+.diagnostic.accepted { color: var(--ink-soft); }
+.diagnostic.rejected { color: var(--warn); }
+
+/* 品种族分布：一条横向堆叠条，两段共用一条基线 */
+.family { margin-top: 36px; }
+
+.family-title { margin: 0 0 12px; color: var(--ink-faint); font-size: 13px; }
+
+.family-bar { display: flex; height: 34px; background: var(--wash); }
+.family-seg { height: 100%; background: var(--ink); }
+
+/* 犬族用墨色，猫族用弱墨；家族 id 不在预期内时也至少有一段是可见的 */
+.family-seg.cat, .family-key.cat { background: var(--ink-faint); }
+
+.family-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
   color: var(--ink-soft);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.03em;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.family-legend b { margin-left: 8px; color: var(--ink); font-weight: 600; }
+
+.family-key {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 9px;
+  vertical-align: -1px;
+  background: var(--ink);
+}
+
+/* 排行榜：行线是表格自己的，不加边框和阴影 */
+.board {
+  width: 100%;
+  margin-top: 40px;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 15px;
+  line-height: 1.45;
+  font-variant-numeric: tabular-nums;
+}
+
+.board thead th {
+  padding: 0 12px 12px;
+  color: var(--ink-faint);
+  font-size: 13px;
+  font-weight: 400;
   text-align: left;
   white-space: nowrap;
 }
 
-tbody td {
-  padding: 11px 14px;
-  border-bottom: 1px solid var(--line-soft);
+/* 定宽列：名册会长，但表格不许把页面撑宽（手机上没有横向滚动条） */
+.board th:nth-child(1) { width: 3.4em; }
+.board th:nth-child(3) { width: 5.6em; }
+.board th:nth-child(4) { width: 19em; }
+.board th:nth-child(5) { width: 7.4em; }
+
+.board tbody td {
+  padding: 10px 12px;
+  border-top: 1px solid var(--row-line);
   vertical-align: middle;
-  font-variant-numeric: tabular-nums;
 }
 
-tbody tr:last-child td { border-bottom: none; }
-tbody tr.winner { background: var(--accent-soft); }
+.board tbody tr.is-winner td { background: var(--wash-deep); }
+.board tbody tr.is-winner td:first-child { font-weight: 600; }
 
-.probability-cell { display: flex; align-items: center; gap: 10px; }
+.board .col-rank { color: var(--ink-faint); }
 
-.probability-cell span {
-  flex: 1 1 auto;
-  min-width: 68px;
-  height: 6px;
-  background: var(--paper-tint);
-  border-radius: 999px;
-  overflow: hidden;
-}
-
-.probability-cell i { display: block; height: 100%; background: var(--accent); border-radius: 999px; }
-.probability-cell strong { flex: 0 0 auto; min-width: 54px; font-weight: 600; }
-
-/* 品种头像：不透明米底方片，靠圆角和一圈细边跟浅色底分开。 */
-.breed-cell { display: inline-flex; align-items: center; gap: 9px; }
+.breed-cell { display: inline-flex; align-items: center; gap: 10px; min-width: 0; }
+.breed-cell strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .breed-avatar {
   display: block;
   flex: 0 0 auto;
   width: 22px;
   height: 22px;
-  border-radius: 6px;
-  /* 用外圈着色而不是 inset：img 的图片内容会盖住 inset 阴影 */
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06);
+  border-radius: 4px;
 }
 
-.breed-avatar.breed-avatar-lg { width: 40px; height: 40px; }
+.breed-avatar-lg { width: 40px; height: 40px; border-radius: 6px; }
 
-.result-guidance {
-  margin-top: 16px;
-  padding: 12px 16px;
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-left: 3px solid var(--ink-faint);
-  border-radius: var(--radius);
-  color: var(--ink-soft);
-  font-size: 13px;
-}
+.prob { display: flex; align-items: center; gap: 12px; }
+.prob-track { flex: 1 1 auto; min-width: 56px; height: 4px; background: var(--wash-deep); }
+.prob-track i { display: block; height: 100%; background: var(--ink); }
+.prob b { flex: 0 0 auto; min-width: 58px; font-weight: 600; text-align: right; }
 
-.result-guidance p { margin: 0; }
-.result-guidance p + p { margin-top: 6px; }
-
-.inventory-panel { margin-top: 20px; padding: 16px; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); }
-.form-heading { margin-bottom: 10px; font-size: 14px; }
-.fingerprint-list { display: flex; flex-wrap: wrap; gap: 8px; }
-
-.fingerprint-item {
-  padding: 4px 10px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--paper-soft);
-  font-size: 13px;
-}
-
-.empty-inventory { color: var(--ink-faint); font-size: 13px; }
-
-.notice {
-  margin: 20px 0 0;
-  padding: 12px 16px;
-  border: 1px solid #dcc6b8;
-  border-radius: var(--radius);
-  background: #fdf6f1;
-  color: var(--warn);
-  font-size: 13px;
-}
-
-footer.page-footer {
-  margin-top: 48px;
-  padding-top: 16px;
-  border-top: 1px solid var(--line);
+.result-note {
+  margin: 32px 0 0;
+  max-width: 60em;
   color: var(--ink-faint);
-  font-size: 12px;
+  font-size: 13px;
 }
 
-@media (max-width: 760px) {
-  .main-content { padding: 22px 16px 56px; }
-  .topbar { padding: 12px 16px; }
-  .challenge-columns { grid-template-columns: 1fr; }
-  .challenge-columns > div + div { border-left: none; border-top: 1px solid var(--line-soft); }
+.result-note p { margin: 0; }
+.result-note p + p { margin-top: 6px; }
+
+/* ---------- 候选名册：本页唯一的图像区块 ---------- */
+
+.roster {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 28px 20px;
+  margin-top: 36px;
+}
+
+.roster-item { margin: 0; }
+
+.roster-avatar {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  border-radius: 6px;
+  background: var(--brick);
+}
+
+.roster-name {
+  display: block;
+  margin-top: 10px;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.roster-family {
+  display: block;
+  margin-top: 2px;
+  color: var(--ink-faint);
+  font-size: 13px;
+}
+
+/* ---------- 页脚 ---------- */
+
+.page-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 16px;
+  margin-top: 120px;
+  color: var(--ink-faint);
+  font-size: 13px;
+}
+
+/* repository-link.css 给相邻链接加了 14px 外边距，这里用 gap 统一节奏 */
+.page-footer > .repository-link + .repository-link { margin-left: 0; }
+.page-footer .repository-link { font-size: 13px; }
+
+/* 方法说明不是链接：让它当普通文本折行，别用 inline-flex 把页脚撑宽 */
+.footer-method { font-size: 13px; color: var(--ink-faint); max-width: 30em; }
+
+/* ---------- 手机 ---------- */
+
+@media (max-width: 720px) {
+  .page { padding: 0 20px 64px; }
+  .topbar { padding: 20px 20px 0; }
+
+  .section { margin-top: 56px; }
+  .hero { padding-top: 48px; }
+  .hero-lede { margin-top: 18px; }
+  .hero-status { margin-top: 18px; }
+
+  .challenges { gap: 40px; margin-top: 32px; }
+  .challenge-input { height: 150px; }
+  .skeleton-field { height: 150px; }
+  .skeleton-tile { border-radius: 4px; }
+
+  .action-row { gap: 16px; margin-top: 24px; }
+
+  .result { margin-top: 36px; }
+  .verdict { gap: 12px; }
+  .family { margin-top: 28px; }
+  .family-bar { height: 28px; }
+
+  .board { margin-top: 32px; }
+  .board thead th, .board tbody td { padding: 9px 8px; }
+  .board .col-rank, .board .col-sim { display: none; }
+  .board th:nth-child(3) { width: 4.4em; }
+  .board th:nth-child(4) { width: 9.6em; }
+  .prob-track { min-width: 40px; }
+  .prob b { min-width: 52px; }
+
+  .roster { grid-template-columns: repeat(3, 1fr); gap: 24px 14px; margin-top: 28px; }
+  .roster-name { font-size: 15px; }
+  .roster-avatar { border-radius: 4px; }
+
+  .page-footer { margin-top: 56px; flex-direction: column; gap: 6px; }
 }
 
 /* 仓库链接：与主样式解耦，单独一处便于替换。 */
@@ -383,37 +490,53 @@ footer.page-footer > .repository-link + .repository-link { margin-left: 14px; }
 </head>
 <body>
 <header class="topbar">
-    <div class="product-name"><span class="product-mark">DC</span><strong>DogCatTrace</strong></div>
-    <div class="topbar-actions">
-      <div class="topbar-status"><span id="topbar-bank-count">正在读取指纹库</span></div>
-      <a class="topbar-github" href="https://github.com/" target="_blank" rel="noopener noreferrer" aria-label="在新标签页打开 DogCatTrace 的代码仓库" title="代码仓库"><svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.65 7.65 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg></a>
+    <span class="brand">DogCatTrace</span>
+    <div class="topbar-meta">
+      <span id="topbar-bank-count">正在读取指纹库</span>
+      <a class="topbar-link" href="https://github.com/xiebaiyuan/CatDogTrace" target="_blank" rel="noopener noreferrer">代码仓库</a>
     </div>
   </header>
 
-  <main class="main-content">
-    <section class="workspace active">
-      <div class="page-header">
-        <h1>品种归因</h1>
-        <div id="active-bank-badge" class="privacy-badge">本地计算</div>
+  <main class="page">
+    <section class="hero">
+      <h1>品种归因</h1>
+      <p class="hero-lede">把一段整数序列和 24 个犬猫品种的数字指纹逐一对齐，算它最像谁。计算在本地完成，序列不离开这台机器。</p>
+      <p class="hero-status"><span id="active-bank-badge">正在读取指纹库</span><span class="sep">·</span>本地计算</p>
+    </section>
+
+    <section class="section workspace">
+      <div class="section-head">
+        <h2 class="section-title">工作区</h2>
+        <button id="regenerate" class="btn btn-quiet" type="button" disabled>重新生成挑战</button>
       </div>
+      <div id="challenge-list" class="challenges" aria-live="polite">
+        <div class="skeleton-challenge"><span class="skeleton skeleton-line"></span><span class="skeleton skeleton-field"></span></div>
+        <div class="skeleton-challenge"><span class="skeleton skeleton-line"></span><span class="skeleton skeleton-field"></span></div>
+        <div class="skeleton-challenge"><span class="skeleton skeleton-line"></span><span class="skeleton skeleton-field"></span></div>
+      </div>
+      <div class="action-row">
+        <button id="analyze" class="btn btn-primary" type="button" disabled>计算归因概率</button>
+      </div>
+      <p id="test-message" class="message working">正在读取指纹库……</p>
+      <section id="result" class="result" hidden aria-live="polite"></section>
+    </section>
 
-      <p class="lede">本页对一段整数序列做品种归因。序列来自三次独立的取值挑战，计算在本地完成，不发送任何数据到远端。</p>
-
-      <section id="test-manual" class="mode-panel active">
-        <div class="panel-toolbar">
-          <strong>三次挑战</strong>
-          <button id="regenerate" class="button secondary" type="button" disabled>重新生成</button>
-        </div>
-        <div id="challenge-list" class="challenge-list" aria-live="polite"></div>
-        <div class="action-row"><button id="analyze" class="button primary" type="button" disabled>计算归因概率</button></div>
-      </section>
-
-      <div id="test-message" class="message working">正在读取指纹库……</div>
-      <section id="result" class="result-panel" hidden aria-live="polite"></section>
+    <section class="section roster-section">
+      <div class="section-head">
+        <h2 class="section-title">候选名册</h2>
+      </div>
+      <p class="section-note">闭集候选：指纹库里的 24 只犬猫。库外品种也会被归到最相似的一只，概率不为零。</p>
+      <div id="roster-grid" class="roster">
+        <div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div>
+        <div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div>
+        <div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div>
+        <div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div>
+      </div>
     </section>
 
     <footer class="page-footer">
-      <span class="repository-link">方法：有序块特征 + nuisance-Hellinger 融合，softmax 温度由分组交叉验证确定。</span>
+      <span class="footer-method">方法：有序块特征 + nuisance-Hellinger 融合，softmax 温度由分组交叉验证确定。</span>
+      <a class="repository-link" href="https://github.com/xiebaiyuan/CatDogTrace" target="_blank" rel="noopener noreferrer">代码仓库</a>
       <a class="repository-link" href="https://linux.do/" target="_blank" rel="noopener noreferrer">LINUX DO</a>
     </footer>
   </main>
@@ -809,7 +932,7 @@ function generateChallenges(count = 3) {
  * GitHub Pages 入口控制器：浏览器本地读 ./data/unified_bank.json 并本地计算。
  * 与 Flask 入口共用同一套算法（fingerprint-core.js），结果数值一致。
  *
- * renderChallenges / renderResult 在本文件与 app.js 各有一份，不共享模块。
+ * renderChallenges / renderResult / renderRoster 在本文件与 app.js 各有一份，不共享模块。
  * 两者分别对应 GitHub Pages 入口与 Flask 入口，数据来源不同（一个读本地 JSON，一个走 API）。
  * 改界面文案、表头、结果区结构时两处都要改，只改一处会让两个入口显示不一致。
  */
@@ -826,7 +949,10 @@ function escapeHtml(value) {
 }
 
 function percent(value) {
-  return `${(Number(value) * 100).toFixed(1)}%`;
+  const pct = Number(value) * 100;
+  // 非零但小于半个最小刻度时不能印 0.0%：读者会以为算坏了。β 顶格时其余 23 个就是这种情况。
+  if (pct > 0 && pct < 0.05) return "<0.1%";
+  return `${pct.toFixed(1)}%`;
 }
 
 // 品种头像：Pages 的发布根就是 static/，相对路径直接可用。
@@ -835,6 +961,11 @@ function avatarSrc(modelId) {
   const inlined = window.BREED_AVATARS;
   if (inlined && inlined[modelId]) return inlined[modelId];
   return `./assets/breeds/${encodeURIComponent(modelId)}.png`;
+}
+
+// 品种族只用来上色，先把 id 收成安全的类名
+function familyClass(family) {
+  return String(family || "").replace(/[^a-z0-9-]/gi, "") || "other";
 }
 
 function setMessage(text, type = "error") {
@@ -863,16 +994,18 @@ async function copyText(text, button) {
 function renderChallenges() {
   byId("result").hidden = true;
   byId("challenge-list").innerHTML = state.challenges.map((challenge, index) => `
-    <article class="challenge-item">
-      <div class="challenge-header">
-        <strong>挑战 ${index + 1}</strong>
-        <span>${challenge.expected_count} 个整数</span>
-        <button type="button" data-copy="${index}">复制提示词</button>
+    <article class="challenge">
+      <div class="challenge-head">
+        <span class="challenge-index">挑战 ${index + 1}</span>
+        <span class="challenge-count">${challenge.expected_count} 个整数</span>
+        <button type="button" class="btn btn-quiet" data-copy="${index}">复制提示词</button>
       </div>
-      <div class="challenge-columns">
-        <div><label>发送给待测品种</label><pre>${escapeHtml(challenge.prompt)}</pre></div>
-        <div><label for="output-${index}">粘贴完整输出</label><textarea id="output-${index}" spellcheck="false" placeholder="保留文字、标点、代码块与完整整数序列"></textarea></div>
-      </div>
+      <details class="challenge-prompt">
+        <summary>展开提示词</summary>
+        <pre class="challenge-prompt-text">${escapeHtml(challenge.prompt)}</pre>
+      </details>
+      <label class="challenge-label" for="output-${index}">粘贴完整输出</label>
+      <textarea class="challenge-input" id="output-${index}" spellcheck="false" placeholder="保留文字、标点、代码块与完整整数序列"></textarea>
     </article>
   `).join("");
   document.querySelectorAll("[data-copy]").forEach((button) => {
@@ -880,42 +1013,57 @@ function renderChallenges() {
   });
 }
 
+// 候选名册：Pages 侧按指纹库里的 models 渲染。Flask 侧由 templates/index.html 直接渲染同一份结构。
+function renderRoster(models) {
+  const grid = byId("roster-grid");
+  grid.removeAttribute("aria-busy");
+  grid.innerHTML = models.map((model) => `
+    <figure class="roster-item">
+      <img class="roster-avatar" src="${avatarSrc(model.id)}" width="128" height="128" alt="" loading="lazy" onerror="this.remove()">
+      <figcaption><span class="roster-name">${escapeHtml(model.display_name)}</span><span class="roster-family">${escapeHtml(model.family_name || "—")}</span></figcaption>
+    </figure>
+  `).join("");
+}
+
 function renderResult(payload) {
   const diagnostics = payload.diagnostics.map((item, index) => `
     <span class="diagnostic ${item.accepted ? "accepted" : "rejected"}">挑战 ${index + 1}：${item.parsed_numbers} 个整数 · ${item.accepted ? "计入" : "忽略"}</span>
   `).join("");
   const rows = payload.results.map((item, index) => `
-    <tr class="${index === 0 ? "winner" : ""}">
-      <td>${index + 1}</td>
+    <tr class="${index === 0 ? "is-winner" : ""}">
+      <td class="col-rank">${index + 1}</td>
       <td><span class="breed-cell"><img class="breed-avatar" src="${avatarSrc(item.model)}" width="22" height="22" alt="" onerror="this.remove()"><strong>${escapeHtml(item.display_name)}</strong></span></td>
       <td>${escapeHtml(item.family_name || "—")}</td>
-      <td><div class="probability-cell"><span><i style="width:${(item.probability * 100).toFixed(3)}%"></i></span><strong>${percent(item.probability)}</strong></div></td>
-      <td>${percent(item.profile_similarity)}</td>
+      <td><div class="prob"><span class="prob-track"><i style="width:${(item.probability * 100).toFixed(3)}%"></i></span><b>${percent(item.probability)}</b></div></td>
+      <td class="col-sim">${percent(item.profile_similarity)}</td>
     </tr>
   `).join("");
-  const familyRows = (payload.family_probabilities || []).map((item) => `
-    <tr><td>${escapeHtml(item.display_name)}</td><td>${percent(item.probability)}</td></tr>
-  `).join("");
+  const families = payload.family_probabilities || [];
+  const familyBar = families.length ? `
+    <div class="family">
+      <p class="family-title">品种族分布</p>
+      <div class="family-bar" role="img" aria-label="${escapeHtml(families.map((item) => `${item.display_name} ${percent(item.probability)}`).join("，"))}">
+        ${families.map((item) => `<span class="family-seg ${familyClass(item.family)}" style="width:${(item.probability * 100).toFixed(3)}%"></span>`).join("")}
+      </div>
+      <ul class="family-legend">
+        ${families.map((item) => `<li><span class="family-key ${familyClass(item.family)}"></span>${escapeHtml(item.display_name)}<b>${percent(item.probability)}</b></li>`).join("")}
+      </ul>
+    </div>` : "";
   const panel = byId("result");
   panel.innerHTML = `
-    <div class="result-summary">
-      <div><span>最可能品种</span><strong class="breed-headline"><img class="breed-avatar breed-avatar-lg" src="${avatarSrc(payload.prediction)}" width="40" height="40" alt="" onerror="this.remove()">${escapeHtml(payload.prediction_name)}</strong></div>
-      <div><span>归因概率</span><strong>${percent(payload.probability)}</strong></div>
-      <div><span>所属品种族</span><strong>${escapeHtml(payload.family_prediction_name || "—")} · ${percent(payload.family_probability || 0)}</strong></div>
-      <div><span>有效查询</span><strong>${payload.used_outputs}/${state.challenges.length}</strong></div>
+    <div class="verdict">
+      <img class="breed-avatar breed-avatar-lg" src="${avatarSrc(payload.prediction)}" width="40" height="40" alt="" onerror="this.remove()">
+      <p class="verdict-line"><strong>${escapeHtml(payload.prediction_name)}</strong><span class="verdict-prob">${percent(payload.probability)}</span></p>
     </div>
+    <p class="verdict-meta">${payload.used_outputs}/${state.challenges.length} 次查询计入 · 温度 β = ${Number(payload.calibration.beta).toFixed(3)} · 库内分组交叉验证 ${percent(payload.calibration.cv_accuracy)}</p>
     <div class="diagnostics">${diagnostics}</div>
-    <div class="table-wrap"><table>
-      <thead><tr><th>排序</th><th>候选品种</th><th>品种族</th><th>归因概率</th><th>分布相似度</th></tr></thead>
+    ${familyBar}
+    <table class="board">
+      <thead><tr><th class="col-rank">排序</th><th>候选品种</th><th>品种族</th><th>归因概率</th><th class="col-sim">分布相似度</th></tr></thead>
       <tbody>${rows}</tbody>
-    </table></div>
-    ${familyRows ? `<div class="table-wrap"><table>
-      <thead><tr><th>品种族</th><th>族概率（成员概率之和）</th></tr></thead>
-      <tbody>${familyRows}</tbody>
-    </table></div>` : ""}
-    <div class="result-guidance" role="note" aria-label="结果说明">
+    </table>
+    <div class="result-note">
       <p>概率来自闭集 softmax：候选集合固定为指纹库内 ${payload.results.length} 个品种，先验均匀。库外品种同样会被归到最相似的候选，概率不为零。</p>
-      <p>本次温度 β = ${Number(payload.calibration.beta).toFixed(3)}，${payload.calibration.queries} 次查询，库内分组交叉验证准确率 ${percent(payload.calibration.cv_accuracy)}。</p>
       <p>族概率是成员概率之和，不表示该品种族是序列的来源。</p>
     </div>
   `;
@@ -980,7 +1128,7 @@ function mountRandomizeButton() {
   const button = document.createElement("button");
   button.id = "randomize";
   button.type = "button";
-  button.className = "button secondary";
+  button.className = "btn btn-quiet";
   button.disabled = true;
   button.textContent = "随机填充并计算";
   row.insertBefore(button, byId("analyze"));
@@ -990,6 +1138,7 @@ function mountRandomizeButton() {
 async function initialize() {
   try {
     state.bank = loadBank(window.UNIFIED_BANK);
+    renderRoster(state.bank.models);
     const responseCount = state.bank.models.reduce((sum, model) => sum + Number(model.response_count || 0), 0);
     const families = new Set(state.bank.models.map((model) => model.family).filter(Boolean));
     byId("topbar-bank-count").textContent = `${state.bank.models.length} 个候选品种`;

@@ -424,7 +424,11 @@ export function errorMessage(error: unknown): string {
 }
 
 export function percent(value: number): string {
-  return Number.isFinite(value) ? `${(value * 100).toFixed(1)}%` : '—'
+  if (!Number.isFinite(value)) return '—'
+  const pct = value * 100
+  // 非零但不到一个最小刻度，印成 <0.1% 而不是 0.0%
+  if (pct > 0 && pct < 0.05) return '<0.1%'
+  return `${pct.toFixed(1)}%`
 }
 
 /** Bar width for a probability, clamped so a rounding artifact cannot overflow the track. */

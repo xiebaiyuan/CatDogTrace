@@ -17,13 +17,21 @@ function escapeHtml(value) {
 }
 
 function percent(value) {
-  return `${(Number(value) * 100).toFixed(1)}%`;
+  const pct = Number(value) * 100;
+  // 非零但小于半个最小刻度时不能印 0.0%：读者会以为算坏了。β 顶格时其余 23 个就是这种情况。
+  if (pct > 0 && pct < 0.05) return "<0.1%";
+  return `${pct.toFixed(1)}%`;
 }
 
 // 品种头像：Flask 把 static/ 挂在 /static，页面本身在 /，
 // 所以这里不能照抄 Pages 的 ./assets/...，前缀要带 static/。
 function avatarSrc(modelId) {
   return `./static/assets/breeds/${encodeURIComponent(modelId)}.png`;
+}
+
+// 品种族只用来上色，先把 id 收成安全的类名
+function familyClass(family) {
+  return String(family || "").replace(/[^a-z0-9-]/gi, "") || "other";
 }
 
 function setMessage(text, type = "error") {
@@ -52,16 +60,18 @@ async function copyText(text, button) {
 function renderChallenges() {
   byId("result").hidden = true;
   byId("challenge-list").innerHTML = state.challenges.map((challenge, index) => `
-    <article class="challenge-item">
-      <div class="challenge-header">
-        <strong>挑战 ${index + 1}</strong>
-        <span>${challenge.expected_count} 个整数</span>
-        <button type="button" data-copy="${index}">复制提示词</button>
+    <article class="challenge">
+      <div class="challenge-head">
+        <span class="challenge-index">挑战 ${index + 1}</span>
+        <span class="challenge-count">${challenge.expected_count} 个整数</span>
+        <button type="button" class="btn btn-quiet" data-copy="${index}">复制提示词</button>
       </div>
-      <div class="challenge-columns">
-        <div><label>发送给待测品种</label><pre>${escapeHtml(challenge.prompt)}</pre></div>
-        <div><label for="output-${index}">粘贴完整输出</label><textarea id="output-${index}" spellcheck="false" placeholder="保留文字、标点、代码块与完整整数序列"></textarea></div>
-      </div>
+      <details class="challenge-prompt">
+        <summary>展开提示词</summary>
+        <pre class="challenge-prompt-text">${escapeHtml(challenge.prompt)}</pre>
+      </details>
+      <label class="challenge-label" for="output-${index}">粘贴完整输出</label>
+      <textarea class="challenge-input" id="output-${index}" spellcheck="false" placeholder="保留文字、标点、代码块与完整整数序列"></textarea>
     </article>
   `).join("");
   document.querySelectorAll("[data-copy]").forEach((button) => {
@@ -74,37 +84,40 @@ function renderResult(payload) {
     <span class="diagnostic ${item.accepted ? "accepted" : "rejected"}">挑战 ${index + 1}：${item.parsed_numbers} 个整数 · ${item.accepted ? "计入" : "忽略"}</span>
   `).join("");
   const rows = payload.results.map((item, index) => `
-    <tr class="${index === 0 ? "winner" : ""}">
-      <td>${index + 1}</td>
+    <tr class="${index === 0 ? "is-winner" : ""}">
+      <td class="col-rank">${index + 1}</td>
       <td><span class="breed-cell"><img class="breed-avatar" src="${avatarSrc(item.model)}" width="22" height="22" alt="" onerror="this.remove()"><strong>${escapeHtml(item.display_name)}</strong></span></td>
       <td>${escapeHtml(item.family_name || "—")}</td>
-      <td><div class="probability-cell"><span><i style="width:${(item.probability * 100).toFixed(3)}%"></i></span><strong>${percent(item.probability)}</strong></div></td>
-      <td>${percent(item.profile_similarity)}</td>
+      <td><div class="prob"><span class="prob-track"><i style="width:${(item.probability * 100).toFixed(3)}%"></i></span><b>${percent(item.probability)}</b></div></td>
+      <td class="col-sim">${percent(item.profile_similarity)}</td>
     </tr>
   `).join("");
-  const familyRows = (payload.family_probabilities || []).map((item) => `
-    <tr><td>${escapeHtml(item.display_name)}</td><td>${percent(item.probability)}</td></tr>
-  `).join("");
+  const families = payload.family_probabilities || [];
+  const familyBar = families.length ? `
+    <div class="family">
+      <p class="family-title">品种族分布</p>
+      <div class="family-bar" role="img" aria-label="${escapeHtml(families.map((item) => `${item.display_name} ${percent(item.probability)}`).join("，"))}">
+        ${families.map((item) => `<span class="family-seg ${familyClass(item.family)}" style="width:${(item.probability * 100).toFixed(3)}%"></span>`).join("")}
+      </div>
+      <ul class="family-legend">
+        ${families.map((item) => `<li><span class="family-key ${familyClass(item.family)}"></span>${escapeHtml(item.display_name)}<b>${percent(item.probability)}</b></li>`).join("")}
+      </ul>
+    </div>` : "";
   const panel = byId("result");
   panel.innerHTML = `
-    <div class="result-summary">
-      <div><span>最可能品种</span><strong class="breed-headline"><img class="breed-avatar breed-avatar-lg" src="${avatarSrc(payload.prediction)}" width="40" height="40" alt="" onerror="this.remove()">${escapeHtml(payload.prediction_name)}</strong></div>
-      <div><span>归因概率</span><strong>${percent(payload.probability)}</strong></div>
-      <div><span>所属品种族</span><strong>${escapeHtml(payload.family_prediction_name || "—")} · ${percent(payload.family_probability || 0)}</strong></div>
-      <div><span>有效查询</span><strong>${payload.used_outputs}/${state.challenges.length}</strong></div>
+    <div class="verdict">
+      <img class="breed-avatar breed-avatar-lg" src="${avatarSrc(payload.prediction)}" width="40" height="40" alt="" onerror="this.remove()">
+      <p class="verdict-line"><strong>${escapeHtml(payload.prediction_name)}</strong><span class="verdict-prob">${percent(payload.probability)}</span></p>
     </div>
+    <p class="verdict-meta">${payload.used_outputs}/${state.challenges.length} 次查询计入 · 温度 β = ${Number(payload.calibration.beta).toFixed(3)} · 库内分组交叉验证 ${percent(payload.calibration.cv_accuracy)}</p>
     <div class="diagnostics">${diagnostics}</div>
-    <div class="table-wrap"><table>
-      <thead><tr><th>排序</th><th>候选品种</th><th>品种族</th><th>归因概率</th><th>分布相似度</th></tr></thead>
+    ${familyBar}
+    <table class="board">
+      <thead><tr><th class="col-rank">排序</th><th>候选品种</th><th>品种族</th><th>归因概率</th><th class="col-sim">分布相似度</th></tr></thead>
       <tbody>${rows}</tbody>
-    </table></div>
-    ${familyRows ? `<div class="table-wrap"><table>
-      <thead><tr><th>品种族</th><th>族概率（成员概率之和）</th></tr></thead>
-      <tbody>${familyRows}</tbody>
-    </table></div>` : ""}
-    <div class="result-guidance" role="note" aria-label="结果说明">
+    </table>
+    <div class="result-note">
       <p>概率来自闭集 softmax：候选集合固定为指纹库内 ${payload.results.length} 个品种，先验均匀。库外品种同样会被归到最相似的候选，概率不为零。</p>
-      <p>本次温度 β = ${Number(payload.calibration.beta).toFixed(3)}，${payload.calibration.queries} 次查询，库内分组交叉验证准确率 ${percent(payload.calibration.cv_accuracy)}。</p>
       <p>族概率是成员概率之和，不表示该品种族是序列的来源。</p>
     </div>
   `;
@@ -198,7 +211,7 @@ function mountRandomizeButton() {
   const button = document.createElement("button");
   button.id = "randomize";
   button.type = "button";
-  button.className = "button secondary";
+  button.className = "btn btn-quiet";
   button.disabled = true;
   button.textContent = "随机填充并计算";
   row.insertBefore(button, byId("analyze"));

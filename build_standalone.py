@@ -8,6 +8,7 @@
   static/pages-app.js           -> 去掉 import，改写库读取，包进 IIFE
   static/data/unified_bank.json -> 内联 window.UNIFIED_BANK
   static/assets/breeds/*.png    -> 内联 window.BREED_AVATARS（每张一个 data URI）
+  static/assets/favicon.png     -> 内联 <link rel="icon"> 的 data URI
   templates/index.html          -> 提取 <body> 骨架
 
 源文件改了重跑本脚本即可同步。任一源文件的预期形态缺失时构建直接失败，
@@ -34,6 +35,7 @@ PROJECT = Path(__file__).resolve().parent
 STATIC = PROJECT / "static"
 TEMPLATES = PROJECT / "templates"
 BREEDS = STATIC / "assets" / "breeds"
+FAVICON = STATIC / "assets" / "favicon.png"
 OUTPUT = STATIC / "DogCatTrace-standalone.html"
 
 # 单文件版必须出现的 DOM 节点，缺一个就说明骨架提取错了
@@ -129,11 +131,17 @@ def inline_bank(bank: dict) -> str:
     return text
 
 
+def png_data_uri(path: Path) -> str:
+    """把一张 PNG 读成 data URI。base64 字母表只有 A-Za-z0-9+/=，不含引号和空格。"""
+    if not path.is_file():
+        raise BuildError(f"缺少图片：{path}")
+    return "data:image/png;base64," + base64.b64encode(path.read_bytes()).decode("ascii")
+
+
 def inline_avatars(directory: Path) -> list[str]:
     """把品种头像编码成 window.BREED_AVATARS 赋值语句，返回可拼进 <script> 的行。
 
     单文件版没有同目录的 assets/，图片只能内联；键就是指纹库里的 model.id。
-    base64 字母表只有 A-Za-z0-9+/=，不含 `<`、引号和空格，所以不需要额外转义。
     一行一张图：按文件名排序保证逐字节可复现，`grep -c` 也能直接数出内联了几张。
     """
     if not directory.is_dir():
@@ -143,8 +151,7 @@ def inline_avatars(directory: Path) -> list[str]:
         raise BuildError(f"{directory} 里没有 PNG 头像，单文件版的图片会全部裂开")
     lines = ["    window.BREED_AVATARS = {"]
     for path in paths:
-        uri = "data:image/png;base64," + base64.b64encode(path.read_bytes()).decode("ascii")
-        lines.append(f"      {json.dumps(path.stem)}: {json.dumps(uri)},")
+        lines.append(f"      {json.dumps(path.stem)}: {json.dumps(png_data_uri(path))},")
     lines.append("    };")
     return lines
 
@@ -171,6 +178,7 @@ def build() -> str:
     body = extract_body_skeleton(template)
     bank_literal = inline_bank(bank)
     avatar_lines = inline_avatars(BREEDS)
+    favicon_uri = png_data_uri(FAVICON)
 
     script = "\n".join(
         [
@@ -217,6 +225,7 @@ def build() -> str:
             '  <meta name="viewport" content="width=device-width, initial-scale=1">',
             '  <meta name="description" content="DogCatTrace：在浏览器本地对整数序列做品种归因，单文件版可直接双击打开">',
             "  <title>DogCatTrace</title>",
+            f'  <link rel="icon" href="{favicon_uri}" type="image/png">',
             "  <!-- 本文件由 build_standalone.py 从仓库源文件拼装生成，不要手改。 -->",
             "  <style>",
             styles.rstrip(),
@@ -241,7 +250,7 @@ def build() -> str:
 
 
 def verify(html: str) -> None:
-    """产物自检：单文件版不能残留模块语法与网络请求，品种头像必须每张都内联。"""
+    """产物自检：单文件版不能残留模块语法与网络请求，图片必须全部内联。"""
     lowered = html.lower()
     for banned, hint in (
         ("fetch(", "还有 fetch 调用，file:// 下会被拦"),
@@ -257,10 +266,13 @@ def verify(html: str) -> None:
         raise BuildError("产物里没有内联指纹库")
     if "<style>" not in lowered:
         raise BuildError("产物里没有内联样式")
-    expected_avatars = len(list(BREEDS.glob("*.png")))
-    inlined_avatars = html.count("data:image/png;base64,")
-    if inlined_avatars < expected_avatars:
-        raise BuildError(f"内联头像只有 {inlined_avatars} 张，源目录有 {expected_avatars} 张")
+    if 'rel="icon"' not in lowered:
+        raise BuildError("产物里没有内联站点图标")
+    # 24 张头像 + 1 张 favicon，少一张就说明内联环节漏了文件
+    expected_images = len(list(BREEDS.glob("*.png"))) + 1
+    inlined_images = html.count("data:image/png;base64,")
+    if inlined_images < expected_images:
+        raise BuildError(f"内联图片只有 {inlined_images} 张，应为 {expected_images} 张（头像 + 图标）")
 
 
 def main(argv: list[str] | None = None) -> int:
