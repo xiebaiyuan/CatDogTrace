@@ -59,6 +59,28 @@ DogCatTrace 是一个品种归因工具。它通过三条独立的整数生成�
 - 离线版：双击 static/DogCatTrace-standalone.html，单文件，不联网也能用。
 - 本地服务：见下一节，带完整接口。
 
+## DSH 插件
+
+`dsh-plugin/` 把同一套归因搬进 DeepSeek Harness 的弹层，不出输入框就能出题、收答、判定。数学部分与下文一致，未作改动。
+
+    dsh plugin --profile <你的 profile> add dsh-catdogtrace
+
+装完重启 `dsh`：宿主要在启动时组装浏览器模块图。插件要求宿主支持客户端 bundle（`dsh >=0.2.1-rc.2`，`platform: web`）。
+
+在输入框打 `/catdog`，选中 `/` 菜单候选。三种送数方式：
+
+| 入口 | 贴什么 | 准入门槛 |
+|---|---|---|
+| 先出题 | 点「生成 3 道挑战」，把三条 prompt 分别交给待测模型，再把每份完整回复贴进同一序号的框 | 该道挑战的 `expected_count` |
+| 裸文本 | 不出题，直接往框里贴 | 固定 80 |
+| JSON | 折叠的 JSON 区贴 `{"outputs":[{"text":"...","expected_count":218}]}`，非空时优先于上面三个框 | 每条自带的值，缺 `expected_count` 按 80 |
+
+点「判定」。结果给出两个品种族概率、冠军品种及其全局概率、24 品种的降序榜，以及被核心拒掉的每一份输入和它实际解析出的数字个数。`Esc`、`×` 按钮、点背景，三者任一关闭。
+
+963KB 的指纹库是独立懒加载 chunk（`lib/client.unified_bank.js`），只在浮层第一次打开时取。
+
+这是玩笑项目，不是研究工具：相似度分数不是谱系断言，两者之间那一步正是本仓库要摆出来的东西。见下文「现实检查」，内部实现见 [dsh-plugin/README.md](dsh-plugin/README.md)。
+
 ## 运行
 
     python3 -m pip install -r requirements.txt
@@ -143,6 +165,7 @@ DogCatTrace 是一个品种归因工具。它通过三条独立的整数生成�
     static/                  页面资源
     templates/               页面模板
     tests/                   契约测试
+    dsh-plugin/              DSH 客户端插件（/catdog 浮层）
 
 挑战套件共 12 个环境，每个环境 3 条查询，合计 36 条。环境之间只改外层包装语（无包装、system 前缀、user 前缀）与目标计数，任务内容固定。
 

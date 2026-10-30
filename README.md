@@ -59,6 +59,28 @@ This verdict is like whatever card you pull. It's computed, not measured.
 - Offline: double-click static/DogCatTrace-standalone.html. One self-contained file, works without a network.
 - Local server: see the next section, full API included.
 
+## DSH plugin
+
+`dsh-plugin/` carries the same attribution into a DeepSeek Harness overlay, so the challenges can be drawn and answered without leaving the chat box. The math is the one described below, unchanged.
+
+    dsh plugin --profile <your-profile> add dsh-catdogtrace
+
+Restart `dsh` after installing: the host composes its browser module graph at boot. The plugin needs a host that serves client bundles (`dsh` `>=0.2.1-rc.2`, `platform: web`).
+
+Type `/catdog` in the input box and pick the `/`-menu candidate. Three ways to feed the dialog:
+
+| Entry | What you paste | Admission threshold |
+|---|---|---|
+| Draw first | Click 「生成 3 道挑战」, send each prompt to the model under test, paste each full reply into the box at the same index | That challenge's `expected_count` |
+| Bare text | Paste into the boxes without drawing challenges | Flat 80 |
+| JSON | `{"outputs":[{"text":"...","expected_count":218}]}` in the collapsed JSON section; it wins over the three boxes when non-empty | Whatever each entry carries, 80 when missing |
+
+Press 「判定」. The dialog reports the two family shares, the champion breed with its global share, the descending ranking of all 24 breeds, and every input the core rejected together with the count it parsed. `Esc`, the `×` button, or a click on the backdrop closes it.
+
+The 963KB fingerprint bank is a separate lazy chunk (`lib/client.unified_bank.js`), fetched only the first time the dialog opens.
+
+This is a joke project, not a research tool: a similarity score is not a lineage claim, and the step between them is the one this repository exists to make visible. See the Reality check section below, and [dsh-plugin/README.md](dsh-plugin/README.md) for the internals.
+
 ## Running
 
     python3 -m pip install -r requirements.txt
@@ -143,6 +165,7 @@ Uniform random integers have no generative relationship to any breed in the bank
     static/                  page assets
     templates/               page templates
     tests/                   contract tests
+    dsh-plugin/              DSH client plugin (the /catdog overlay)
 
 The challenge suite has 12 environments with 3 queries each, 36 in total. Environments differ only in the outer wrapper (none, system prefix, user prefix) and the target count. The task text is fixed.
 
