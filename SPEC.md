@@ -52,8 +52,15 @@ CatDogTrace/
 │   ├── satire-targets.md           ← 逐条拆解 T1-T4
 │   └── adr/
 │       ├── 0001-synthetic-corpus.md
-│       └── 0002-family-is-a-label.md
-└── tests/test_fingerprint.py
+│       ├── 0002-family-is-a-label.md
+│       └── 0003-plugin-shares-the-browser-core.md
+├── tests/test_fingerprint.py
+└── dsh-plugin/                     ← DSH Web 插件包 dsh-catdogtrace（见 §9）
+    ├── package.json  tsdown.config.ts  cordis.patch.yml  dsh-plugin.naming.json
+    ├── src/core/                   ← 移植自 static/fingerprint-core.js，接缝 api.ts
+    ├── src/client/                 ← /catdog 浮层
+    ├── scripts/gen-bank.mjs        ← data/unified_bank.json → 懒加载 chunk
+    └── tests/
 ```
 
 ## 3. 冻结契约：数据 schema
@@ -291,6 +298,9 @@ clapt 权重 = `0.80 * dog_profile + 0.20 * cat_profile`，再叠加 `(111, 1.4)
 | corpus | `enrollment.py` `data/`（除 `unified_bank.json`） |
 | web | `app.py` `start.py` `templates/` `static/`（除 `static/data/`） |
 | docs | `report.py` `README.md` `GLOSSARY.md` `LICENSE` `requirements.txt` `.gitignore` `docs/` `tests/` |
+| plugin-core | `dsh-plugin/src/core/` `dsh-plugin/tests/core/` `dsh-plugin/scripts/` |
+| plugin-shell | `dsh-plugin/package.json` `dsh-plugin/tsconfig*.json` `dsh-plugin/tsdown.config.ts` `dsh-plugin/vitest.config.ts` `dsh-plugin/cordis.patch.yml` `dsh-plugin/dsh-plugin.naming.json` `dsh-plugin/src/client/` `dsh-plugin/src/index.ts` `dsh-plugin/README.md` `dsh-plugin/pnpm-lock.yaml` |
+| plugin-release | `dsh-plugin/CHANGELOG.md` `.github/workflows/plugin.yml` `README.md` `README.zh-CN.md` |
 
 ## 7. 验收
 
@@ -304,6 +314,41 @@ clapt 权重 = `0.80 * dog_profile + 0.20 * cat_profile`，再叠加 `(111, 1.4)
 
 ## 8. 语气约束
 
-- 代码注释与 README：冷面学术体，不出现"这是个玩笑""讽刺"等自我说明
-- 唯一的例外：`docs/satire-targets.md` 与 README 末节"现实检查"，那里明着拆
+- 代码注释与正文：冷面学术体，不出现"这是个玩笑""讽刺"等自我说明
+- 允许自我说明的四处在：README 顶部的声明块、插件节里指向「现实检查」的那一句、`docs/satire-targets.md`、README 末节"现实检查"。这条原先只列了后两处，是写下时漏了顶部声明块（`03ea81e` 之后才有的），2026-10-29 补齐
 - 不编造量化数据：报告里每个百分号都来自一次真实运行
+
+## 9. DSH 插件（`dsh-plugin/`）
+
+插件是同一套算法的第三个入口，不是第六个靶子。它不改数学，不改判定口径，只把「出题 → 收答 → 判定 → 看榜」搬进 DSH 的弹层。
+
+### 9.1 冻结：插件的接缝是 `src/core/api.ts`
+
+`dsh-plugin/src/core/api.ts` 里的字段名照抄 `fingerprint.py:215-229` 与 `:284-297` 的冻结键，一个不改。理由：本仓库已经有两份逐字段一致的实现（Python 与 `static/fingerprint-core.js`），插件再发明第三套拼写，就正好是 `GLOSSARY.md` 里抱怨的那种把同一个东西说成两个词的做法。
+
+### 9.2 冻结：三个入口互不改变彼此的数字
+
+同一个指纹库、同一段文本，三个入口必须给出同一个 `prediction` 与同一个 `family_prediction`，逐品种 `probability` 差 < 1e-12（浮点累加顺序差异，不是零容差）。这条由 `dsh-plugin/tests/core/` 的对拍用例守。
+
+### 9.3 判定：插件不自动调用模型
+
+DSH 浏览器侧没有「给一个 prompt、用指定模型跑一次、拿回文本」的一次性端点；能列模型（`remote.session.modelCatalog`），不能一次性补全。所以插件只做三件事：出题、收答、判定。要跑模型，用户自己把题贴到任意会话或任意模型，再把输出贴回来。这条不是妥协，是产品决定：它让插件永远不随宿主模型接口改动而失效。
+
+### 9.4 指纹库是懒加载 chunk
+
+`data/unified_bank.json`（1,224,671 字节）经 `dsh-plugin/scripts/gen-bank.mjs` 生成为 `src/core/bank/unified_bank.ts`，由 `loadBankChunk()` 动态 `import()`。它不进主 bundle，第一次打开弹层或第一次判定时才加载。
+
+### 9.5 验收
+
+1. `pnpm --dir dsh-plugin exec tsc --noEmit` 通过
+2. `pnpm --dir dsh-plugin exec vitest run` 全绿，含与 Python 的对拍
+3. `pnpm --dir dsh-plugin run build` 产出 `lib/index.js` 与 `lib/client.js`，指纹库在独立 chunk
+4. naming 校验通过。**不要**用 `node ~/.dsh/skills/plugin-write/scripts/validate-names.mjs --manifest ...`：那个脚本用 `invokedPath === import.meta.url` 判断是否主模块，而 `~/.dsh/skills/plugin-write` 是软链，node 把 `import.meta.url` 解成真实路径、`argv[1]` 仍是软链路径，两者不等 → 整个校验被静默跳过，退出码 0 但什么都没验。用真实路径调导出函数：
+   ```
+   node --input-type=module -e "
+   const p = await import(require('node:fs').realpathSync(process.env.HOME+'/.dsh/skills/plugin-write/scripts/validate-names.mjs'));
+   console.log(JSON.stringify(await p.validateManifestFile({manifestPath:'dsh-plugin/dsh-plugin.naming.json'})))"
+   ```
+   期望 `"valid": true` 与一条 `recommended-prefix` 告警（包名是不带 scope 的 `dsh-*`，告警已预批）
+5. `pnpm --dir dsh-plugin pack` 的 tarball 里没有 `src/`、没有 `node_modules/`
+6. 装进一个非 desktop 的临时 profile，输入 `/catdog` 能弹出浮层并算出结果（这条由 Lead 执行并记录）
