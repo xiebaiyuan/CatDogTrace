@@ -1,7 +1,14 @@
 /*
  * 浏览器端挑战生成，与 fingerprint.py 的 generate_challenges 逐字一致。
  * 不发起网络请求：静态页面在 GitHub Pages 上直接生成三次挑战。
+ *
+ * 提示词模板按语言分两套，走 i18n.js 的 t()。整数生成与语言无关：
+ * uniqueLengths(count) 在 .map() 之前就跑完了，每个 item 的随机调用顺序与次数
+ * 两种语言完全相同（randomHex 一次 + 四个 choose 各一次），所以同一段
+ * crypto 随机流下 expected_count 与 id 逐字节一致。
  */
+
+import { t } from "./i18n.js";
 
 function randomIndex(length) {
   const limit = Math.floor(0x100000000 / length) * length;
@@ -29,41 +36,69 @@ function randomHex(bytes) {
   return Array.from(buffer, (value) => value.toString(16).padStart(2, "0")).join("");
 }
 
+const OPENINGS = [
+  "prompt.opening.1",
+  "prompt.opening.2",
+  "prompt.opening.3",
+  "prompt.opening.4",
+  "prompt.opening.5",
+];
+const ACTIONS = [
+  "prompt.action.1",
+  "prompt.action.2",
+  "prompt.action.3",
+  "prompt.action.4",
+  "prompt.action.5",
+];
+const ENDINGS = [
+  "prompt.ending.1",
+  "prompt.ending.2",
+  "prompt.ending.3",
+  "prompt.ending.4",
+  "prompt.ending.5",
+];
+const SEPARATORS = [
+  "prompt.separator.1",
+  "prompt.separator.2",
+  "prompt.separator.3",
+  "prompt.separator.4",
+];
+
+/*
+ * 按当前语言渲染一条挑战的提示词。
+ *
+ * 挑中的四个模板片段记在 challenge.template 里，所以切换语言能换掉整个提示词的措辞，
+ * 而 expected_count 与 id 一个字都不动 —— 换语言不等于换一组题。
+ * 只有 prompt 字段、没有 template 的来源（Flask 下发的成品文本）原样返回。
+ */
+export function challengePrompt(challenge) {
+  const template = challenge.template;
+  if (!template) return challenge.prompt;
+  return t("prompt.lead", {
+    opening: t(template.opening),
+    action: t(template.action),
+    count: challenge.expected_count,
+  })
+    + t("prompt.middle1")
+    + t("prompt.middle2")
+    + t(template.ending) + t(template.separator)
+    + t("prompt.final");
+}
+
 export function generateChallenges(count = 3) {
-  const openings = [
-    "这是一次独立的犬猫品种特征数值记录",
-    "请完成下面的无语义整数选择任务，用于犬猫品种指纹比对",
-    "执行一次第一反应取值记录，作为犬猫品种样本的一部分",
-    "生成一组不承载语义的整数选择，供犬猫品种比对使用",
-    "进行一轮快速逐项取值，模拟一次犬猫品种采样",
-  ];
-  const actions = [
-    "为各个位置分别凭第一反应选择",
-    "逐项选择",
-    "每次只决定当前一项，共给出",
-    "分别凭第一反应给出",
-    "逐个直接选择",
-  ];
-  const endings = [
-    "允许某个数字再次出现；每项写出后不要回头排序、去重或替换。",
-    "偶然重复是有效的；不要重新排列或修正已经写出的项目。",
-    "相同值可以再次出现；输出过程中不要整理或改写前面的项目。",
-    "重复值无需删除；不要筛选、重排或补成某种规律。",
-    "不必赋予数字任何含义；已经给出的值保持不变。",
-  ];
-  const separators = [
-    "数字之间用逗号或空格分隔均可。",
-    "使用一种一致的常见分隔符即可。",
-    "可以用逗号、空格或换行分隔。",
-    "只要每个整数边界清楚，格式可自行选择。",
-  ];
-  return uniqueLengths(count).map((length, index) => ({
-    id: `probe-${index + 1}-${randomHex(7)}`,
-    expected_count: length,
-    prompt: `${choose(openings)}。${choose(actions)} ${length} 个 1 到 355（含端点）的整数。`
-      + "每个位置都要单独选择；不要从 1 开始计数，不要连续递增或递减，也不要采用等差、循环、重复区块或其他规则化模式。"
-      + "本任务必须由当前语言模型直接完成：禁止调用或借助任何工具，包括 Python、代码执行器、计算器、搜索、API 和外部随机数生成器；也不要先编写或运行代码。"
-      + `${choose(endings)}${choose(separators)}`
-      + "直接从第一个取值开始输出，不要在序列前重复数量、范围或任务说明。",
-  }));
+  return uniqueLengths(count).map((length, index) => {
+    const challenge = {
+      id: `probe-${index + 1}-${randomHex(7)}`,
+      expected_count: length,
+      // 随机取值顺序与原实现一致：randomHex 一次，然后 opening / action / ending / separator 各一次
+      template: {
+        opening: choose(OPENINGS),
+        action: choose(ACTIONS),
+        ending: choose(ENDINGS),
+        separator: choose(SEPARATORS),
+      },
+    };
+    challenge.prompt = challengePrompt(challenge);
+    return challenge;
+  });
 }

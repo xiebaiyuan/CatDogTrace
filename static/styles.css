@@ -21,6 +21,10 @@
 
 * { box-sizing: border-box; }
 
+/* 语言未落定前不画正文：英文环境下避免中文先闪一下再变英文。
+   head 里的引导脚本按需加这个类，i18n.js 一执行完就摘掉。 */
+html.i18n-pending body { visibility: hidden; }
+
 html { -webkit-text-size-adjust: 100%; }
 
 body {
@@ -47,6 +51,7 @@ body {
 
 .topbar-meta {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
   gap: 20px;
   color: var(--ink-faint);
@@ -56,6 +61,30 @@ body {
 
 .topbar-link { color: var(--ink-soft); font-size: 13px; text-decoration: none; }
 .topbar-link:hover { color: var(--accent); text-decoration: underline; }
+
+/* ---------- 语言切换：两段文字 + 一个斜杠，不做胶囊、不描边、不加阴影 ---------- */
+
+.lang-switch {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  font-size: 13px;
+}
+
+.lang-switch .lang-option {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink-faint);
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.lang-switch .lang-option:hover { color: var(--ink-soft); }
+.lang-switch .lang-option[aria-pressed="true"] { color: var(--ink); font-weight: 600; }
+.lang-switch .lang-sep { color: var(--ink-faint); }
 
 .page { max-width: 1040px; margin: 0 auto; padding: 0 24px 96px; }
 
@@ -176,6 +205,7 @@ h1, h2 { font-weight: 600; }
 
 .challenge-input:focus,
 .topbar-link:focus-visible,
+.lang-switch .lang-option:focus-visible,
 .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 .action-row {
@@ -397,6 +427,10 @@ h1, h2 { font-weight: 600; }
   letter-spacing: -0.01em;
 }
 
+/* 英文品种名比中文长（Pembroke Welsh Corgi 之类），名册里会折两行。
+   给名字留固定两行高度，让 24 个族名标签落在同一条基线上。 */
+html[lang="en"] .roster-name { min-height: 3.2em; }
+
 .roster-family {
   display: block;
   margin-top: 2px;
@@ -459,4 +493,7 @@ h1, h2 { font-weight: 600; }
   .roster-avatar { border-radius: 4px; }
 
   .page-footer { margin-top: 56px; flex-direction: column; gap: 6px; }
+  /* 页脚方法说明在桌面上限宽 30em（13px × 30 = 390px），手机上这点宽度超过内容区，
+     会把整页顶出一条 8px 的横向滚动。这一行是本次之前就有的，顺手按手机内容宽压住。 */
+  .footer-method { max-width: 100%; }
 }

@@ -3,8 +3,28 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="DogCatTrace：对整数序列做品种归因，计算在本地完成">
+  <meta name="description" content="DogCatTrace：对整数序列做品种归因，计算在本地完成" data-i18n-attr="content:meta.description.flask">
   <meta name="theme-color" content="#faf9f6">
+  <script id="lang-bootstrap">
+    /* 首帧之前定下语言：module 脚本延后执行，正文先藏起来，避免中文闪一下再变英文。 */
+    (function () {
+      var KEY = "catdogtrace.lang";
+      var stored = null;
+      try { stored = window.localStorage.getItem(KEY); } catch (error) { stored = null; }
+      var lang = stored === "zh" || stored === "en"
+        ? stored
+        : (/^zh/i.test(navigator.language || "") ? "zh" : "en");
+      document.documentElement.dataset.lang = lang;
+      document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+      if (lang !== "zh") {
+        document.documentElement.classList.add("i18n-pending");
+        // 兜底：i18n.js 万一没加载成功，1.5 秒后也要把正文放出来，不能留下白屏
+        window.setTimeout(function () {
+          document.documentElement.classList.remove("i18n-pending");
+        }, 1500);
+      }
+    })();
+  </script>
   <title>DogCatTrace</title>
   <link rel="icon" href="{{ url_for('static', filename='assets/favicon.png') }}" type="image/png">
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
@@ -15,22 +35,23 @@
   <header class="topbar">
     <span class="brand">DogCatTrace</span>
     <div class="topbar-meta">
-      <span id="topbar-bank-count">正在读取指纹库</span>
-      <a class="topbar-link" href="https://github.com/xiebaiyuan/CatDogTrace" target="_blank" rel="noopener noreferrer">代码仓库</a>
+      <span id="topbar-bank-count" data-i18n="topbar.loading">正在读取指纹库</span>
+      <a class="topbar-link" href="https://github.com/xiebaiyuan/CatDogTrace" target="_blank" rel="noopener noreferrer" data-i18n="common.repository">代码仓库</a>
+      <div id="lang-switch"></div>
     </div>
   </header>
 
   <main class="page">
     <section class="hero">
-      <h1>品种归因</h1>
-      <p class="hero-lede">把一段整数序列和 24 个犬猫品种的数字指纹逐一对齐，算它最像谁。计算在本地完成，序列不离开这台机器。</p>
-      <p class="hero-status"><span id="active-bank-badge">正在读取指纹库</span><span class="sep">·</span>本地计算</p>
+      <h1 data-i18n="hero.title">猫猫 还是 狗狗</h1>
+      <p class="hero-lede" data-i18n="hero.lede">把一段整数序列和 24 个犬猫品种的数字指纹逐一对齐，算它最像谁。计算在本地完成，序列不离开这台机器。</p>
+      <p class="hero-status"><span id="active-bank-badge" data-i18n="topbar.loading">正在读取指纹库</span><span class="sep">·</span><span data-i18n="common.local">本地计算</span></p>
     </section>
 
     <section class="section workspace">
       <div class="section-head">
-        <h2 class="section-title">工作区</h2>
-        <button id="regenerate" class="btn btn-quiet" type="button" disabled>重新生成挑战</button>
+        <h2 class="section-title" data-i18n="workspace.title">工作区</h2>
+        <button id="regenerate" class="btn btn-quiet" type="button" disabled data-i18n="workspace.regenerate">重新生成挑战</button>
       </div>
       <div id="challenge-list" class="challenges" aria-live="polite">
         <div class="skeleton-challenge"><span class="skeleton skeleton-line"></span><span class="skeleton skeleton-field"></span></div>
@@ -38,17 +59,17 @@
         <div class="skeleton-challenge"><span class="skeleton skeleton-line"></span><span class="skeleton skeleton-field"></span></div>
       </div>
       <div class="action-row">
-        <button id="analyze" class="btn btn-primary" type="button" disabled>计算归因概率</button>
+        <button id="analyze" class="btn btn-primary" type="button" disabled data-i18n="workspace.analyze">计算归因概率</button>
       </div>
-      <p id="test-message" class="message working">正在读取指纹库……</p>
+      <p id="test-message" class="message working" data-i18n="message.bankLoading">正在读取指纹库……</p>
       <section id="result" class="result" hidden aria-live="polite"></section>
     </section>
 
     <section class="section roster-section">
       <div class="section-head">
-        <h2 class="section-title">候选名册</h2>
+        <h2 class="section-title" data-i18n="roster.title">候选名册</h2>
       </div>
-      <p class="section-note">闭集候选：指纹库里的 24 只犬猫。库外品种也会被归到最相似的一只，概率不为零。</p>
+      <p class="section-note" data-i18n="roster.note">闭集候选：指纹库里的 24 只犬猫。库外品种也会被归到最相似的一只，概率不为零。</p>
       <div id="roster-grid" class="roster">
         {% if not summary %}
         <div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div>
@@ -56,13 +77,13 @@
         <div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div>
         <div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div>
         {% endif %}
-        {% for model in (summary.models if summary else []) %}<figure class="roster-item"><img class="roster-avatar" src="{{ url_for('static', filename='assets/breeds/' ~ model.id ~ '.png') }}" alt="" width="128" height="128" loading="lazy"><figcaption><span class="roster-name">{{ model.display_name }}</span><span class="roster-family">{{ model.family_name or '—' }}</span></figcaption></figure>{% endfor %}
+        {% for model in (summary.models if summary else []) %}<figure class="roster-item" data-model="{{ model.id }}" data-family="{{ model.family }}"><img class="roster-avatar" src="{{ url_for('static', filename='assets/breeds/' ~ model.id ~ '.png') }}" alt="" width="128" height="128" loading="lazy"><figcaption><span class="roster-name">{{ model.display_name }}</span><span class="roster-family">{{ model.family_name or '—' }}</span></figcaption></figure>{% endfor %}
       </div>
     </section>
 
     <footer class="page-footer">
-      <span class="footer-method">方法：有序块特征 + nuisance-Hellinger 融合，softmax 温度由分组交叉验证确定。</span>
-      <a class="repository-link" href="https://github.com/xiebaiyuan/CatDogTrace" target="_blank" rel="noopener noreferrer">代码仓库</a>
+      <span class="footer-method" data-i18n="footer.method">方法：有序块特征 + nuisance-Hellinger 融合，softmax 温度由分组交叉验证确定。</span>
+      <a class="repository-link" href="https://github.com/xiebaiyuan/CatDogTrace" target="_blank" rel="noopener noreferrer" data-i18n="common.repository">代码仓库</a>
       <a class="repository-link" href="https://linux.do/" target="_blank" rel="noopener noreferrer">LINUX DO</a>
     </footer>
 {% if notice %}<div class="notice" role="status">{{ notice }}</div>{% endif %}

@@ -4,9 +4,20 @@
  * renderChallenges / renderResult 在本文件与 pages-app.js 各有一份，不共享模块。
  * 两者分别对应 Flask 入口与 GitHub Pages 入口，数据来源不同（一个走 API，一个读本地 JSON）。
  * 改界面文案、表头、结果区结构时两处都要改，只改一处会让两个入口显示不一致。
+ *
+ * 文案全部走 i18n.js 的 t()；品种名与族名走 breedName() / familyName()，
+ * 不信 payload 里的 display_name / family_name（那是中文，来自指纹库与 fingerprint.py）。
  */
 
-const state = { challenges: [], summary: null };
+import { breedName, familyName, mountToggle, onLangChange, t } from "./i18n.js";
+
+const state = {
+  challenges: [],
+  summary: null,
+  lastResult: null,
+  // 提示条分两种：key 形式的能随语言重画，纯文本的（服务端报错）保持原样
+  message: { kind: "key", key: "message.bankLoading", type: "working" },
+};
 
 const byId = (id) => document.getElementById(id);
 
@@ -35,10 +46,27 @@ function familyClass(family) {
 }
 
 function setMessage(text, type = "error") {
+  state.message = text ? { kind: "text", text, type } : null;
+  paintMessage();
+}
+
+function setMessageKey(key, type = "error", vars) {
+  state.message = { kind: "key", key, type, vars };
+  paintMessage();
+}
+
+function paintMessage() {
   const element = byId("test-message");
-  element.textContent = text;
-  element.className = `message ${type}`;
-  element.hidden = !text;
+  const entry = state.message;
+  if (!entry) {
+    element.textContent = "";
+    element.className = "message error";
+    element.hidden = true;
+    return;
+  }
+  element.textContent = entry.kind === "key" ? t(entry.key, entry.vars) : entry.text;
+  element.className = `message ${entry.type}`;
+  element.hidden = false;
 }
 
 async function copyText(text, button) {
@@ -52,42 +80,58 @@ async function copyText(text, button) {
     document.execCommand("copy");
     area.remove();
   }
-  const original = button.textContent;
-  button.textContent = "已复制";
-  window.setTimeout(() => { button.textContent = original; }, 1000);
+  button.textContent = t("common.copied");
+  // 恢复时按当前语言取文案：切换语言后再还原也不能留下旧语言的字
+  window.setTimeout(() => { button.textContent = t("challenge.copy"); }, 1000);
 }
 
 function renderChallenges() {
+  // 提示词是服务端下发的成品文本（fingerprint.py 生成），只有一种语言，这里原样显示。
+  // 语言切换会重跑本函数，先把已粘贴的内容抓出来，重建后按位置回填
+  const filled = state.challenges.map((challenge, index) => {
+    const field = byId(`output-${index}`);
+    return field ? field.value : "";
+  });
   byId("result").hidden = true;
   byId("challenge-list").innerHTML = state.challenges.map((challenge, index) => `
     <article class="challenge">
       <div class="challenge-head">
-        <span class="challenge-index">挑战 ${index + 1}</span>
-        <span class="challenge-count">${challenge.expected_count} 个整数</span>
-        <button type="button" class="btn btn-quiet" data-copy="${index}">复制提示词</button>
+        <span class="challenge-index">${escapeHtml(t("challenge.index", { n: index + 1 }))}</span>
+        <span class="challenge-count">${escapeHtml(t("challenge.count", { count: challenge.expected_count }))}</span>
+        <button type="button" class="btn btn-quiet" data-copy="${index}">${escapeHtml(t("challenge.copy"))}</button>
       </div>
       <details class="challenge-prompt">
-        <summary>展开提示词</summary>
+        <summary>${escapeHtml(t("challenge.expand"))}</summary>
         <pre class="challenge-prompt-text">${escapeHtml(challenge.prompt)}</pre>
       </details>
-      <label class="challenge-label" for="output-${index}">粘贴完整输出</label>
-      <textarea class="challenge-input" id="output-${index}" spellcheck="false" placeholder="保留文字、标点、代码块与完整整数序列"></textarea>
+      <label class="challenge-label" for="output-${index}">${escapeHtml(t("challenge.paste"))}</label>
+      <textarea class="challenge-input" id="output-${index}" spellcheck="false" placeholder="${escapeHtml(t("challenge.placeholder"))}"></textarea>
     </article>
   `).join("");
+  state.challenges.forEach((challenge, index) => {
+    const field = byId(`output-${index}`);
+    if (field) field.value = filled[index] || "";
+  });
   document.querySelectorAll("[data-copy]").forEach((button) => {
     button.addEventListener("click", () => copyText(state.challenges[Number(button.dataset.copy)].prompt, button));
   });
 }
 
-function renderResult(payload) {
+function renderResult(payload, options) {
+  // 切换语言会重画一次结果区，那时不能把页面滚到底下
+  const scroll = !options || options.scroll !== false;
   const diagnostics = payload.diagnostics.map((item, index) => `
-    <span class="diagnostic ${item.accepted ? "accepted" : "rejected"}">挑战 ${index + 1}：${item.parsed_numbers} 个整数 · ${item.accepted ? "计入" : "忽略"}</span>
+    <span class="diagnostic ${item.accepted ? "accepted" : "rejected"}">${escapeHtml(t("result.diagnostic", {
+      n: index + 1,
+      count: item.parsed_numbers,
+      verdict: item.accepted ? t("result.counted") : t("result.ignored"),
+    }))}</span>
   `).join("");
   const rows = payload.results.map((item, index) => `
     <tr class="${index === 0 ? "is-winner" : ""}">
       <td class="col-rank">${index + 1}</td>
-      <td><span class="breed-cell"><img class="breed-avatar" src="${avatarSrc(item.model)}" width="22" height="22" alt="" onerror="this.remove()"><strong>${escapeHtml(item.display_name)}</strong></span></td>
-      <td>${escapeHtml(item.family_name || "—")}</td>
+      <td><span class="breed-cell"><img class="breed-avatar" src="${avatarSrc(item.model)}" width="22" height="22" alt="" onerror="this.remove()"><strong>${escapeHtml(breedName(item.model))}</strong></span></td>
+      <td>${escapeHtml(familyName(item.family))}</td>
       <td><div class="prob"><span class="prob-track"><i style="width:${(item.probability * 100).toFixed(3)}%"></i></span><b>${percent(item.probability)}</b></div></td>
       <td class="col-sim">${percent(item.profile_similarity)}</td>
     </tr>
@@ -95,45 +139,59 @@ function renderResult(payload) {
   const families = payload.family_probabilities || [];
   const familyBar = families.length ? `
     <div class="family">
-      <p class="family-title">品种族分布</p>
-      <div class="family-bar" role="img" aria-label="${escapeHtml(families.map((item) => `${item.display_name} ${percent(item.probability)}`).join("，"))}">
+      <p class="family-title">${escapeHtml(t("result.familyTitle"))}</p>
+      <div class="family-bar" role="img" aria-label="${escapeHtml(families.map((item) => `${familyName(item.family)} ${percent(item.probability)}`).join(t("result.familyAriaJoin")))}">
         ${families.map((item) => `<span class="family-seg ${familyClass(item.family)}" style="width:${(item.probability * 100).toFixed(3)}%"></span>`).join("")}
       </div>
       <ul class="family-legend">
-        ${families.map((item) => `<li><span class="family-key ${familyClass(item.family)}"></span>${escapeHtml(item.display_name)}<b>${percent(item.probability)}</b></li>`).join("")}
+        ${families.map((item) => `<li><span class="family-key ${familyClass(item.family)}"></span>${escapeHtml(familyName(item.family))}<b>${percent(item.probability)}</b></li>`).join("")}
       </ul>
     </div>` : "";
   const panel = byId("result");
   panel.innerHTML = `
     <div class="verdict">
       <img class="breed-avatar breed-avatar-lg" src="${avatarSrc(payload.prediction)}" width="40" height="40" alt="" onerror="this.remove()">
-      <p class="verdict-line"><strong>${escapeHtml(payload.prediction_name)}</strong><span class="verdict-prob">${percent(payload.probability)}</span></p>
+      <p class="verdict-line"><strong>${escapeHtml(breedName(payload.prediction))}</strong><span class="verdict-prob">${percent(payload.probability)}</span></p>
     </div>
-    <p class="verdict-meta">${payload.used_outputs}/${state.challenges.length} 次查询计入 · 温度 β = ${Number(payload.calibration.beta).toFixed(3)} · 库内分组交叉验证 ${percent(payload.calibration.cv_accuracy)}</p>
+    <p class="verdict-meta">${escapeHtml(t("result.meta", {
+      used: payload.used_outputs,
+      total: state.challenges.length,
+      beta: Number(payload.calibration.beta).toFixed(3),
+      accuracy: percent(payload.calibration.cv_accuracy),
+    }))}</p>
     <div class="diagnostics">${diagnostics}</div>
     ${familyBar}
     <table class="board">
-      <thead><tr><th class="col-rank">排序</th><th>候选品种</th><th>品种族</th><th>归因概率</th><th class="col-sim">分布相似度</th></tr></thead>
+      <thead><tr><th class="col-rank">${escapeHtml(t("result.tableRank"))}</th><th>${escapeHtml(t("result.tableBreed"))}</th><th>${escapeHtml(t("result.tableFamily"))}</th><th>${escapeHtml(t("result.tableProbability"))}</th><th class="col-sim">${escapeHtml(t("result.tableSimilarity"))}</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>
     <div class="result-note">
-      <p>概率来自闭集 softmax：候选集合固定为指纹库内 ${payload.results.length} 个品种，先验均匀。库外品种同样会被归到最相似的候选，概率不为零。</p>
-      <p>族概率是成员概率之和，不表示该品种族是序列的来源。</p>
+      <p>${escapeHtml(t("result.noteClosedSet", { count: payload.results.length }))}</p>
+      <p>${escapeHtml(t("result.noteFamily"))}</p>
     </div>
   `;
   panel.hidden = false;
-  panel.scrollIntoView({ behavior: "smooth", block: "start" });
+  if (scroll) panel.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+// 顶栏与首屏状态行：数字来自指纹库摘要，文案随语言变
+function paintSummary() {
+  const summary = state.summary;
+  byId("topbar-bank-count").textContent = summary
+    ? t("topbar.candidates", { count: summary.model_count })
+    : t("topbar.bankMissing");
+  byId("active-bank-badge").textContent = summary
+    ? t("hero.bankBadge", {
+      breeds: summary.model_count,
+      families: (summary.families || []).length,
+      responses: summary.response_count,
+    })
+    : t("topbar.bankMissing");
 }
 
 function applySummary(summary) {
   state.summary = summary;
-  const count = summary ? summary.model_count : 0;
-  const familyCount = summary ? (summary.families || []).length : 0;
-  const responseCount = summary ? summary.response_count : 0;
-  byId("topbar-bank-count").textContent = summary ? `${count} 个候选品种` : "指纹库未就绪";
-  byId("active-bank-badge").textContent = summary
-    ? `${count} 个品种 · ${familyCount} 个品种族 · ${responseCount} 条指纹`
-    : "指纹库未就绪";
+  paintSummary();
 }
 
 async function loadChallenges() {
@@ -142,7 +200,7 @@ async function loadChallenges() {
   try {
     const response = await fetch("/api/challenges", { cache: "no-cache" });
     const payload = await response.json();
-    if (!response.ok) throw new Error(payload.error || "无法生成挑战");
+    if (!response.ok) throw new Error(payload.error || t("message.challengeFailed"));
     state.challenges = payload.challenges;
     renderChallenges();
     byId("analyze").disabled = false;
@@ -172,7 +230,7 @@ async function analyze() {
   const button = byId("analyze");
   button.disabled = true;
   byId("result").hidden = true;
-  setMessage("正在计算归因概率……", "working");
+  setMessageKey("message.computingServer", "working");
   try {
     const outputs = state.challenges.map((challenge, index) => ({
       text: byId(`output-${index}`).value,
@@ -184,7 +242,8 @@ async function analyze() {
       body: JSON.stringify({ outputs }),
     });
     const payload = await response.json();
-    if (!response.ok) throw new Error(payload.error || "无法完成归因");
+    if (!response.ok) throw new Error(payload.error || t("message.analyzeFailed"));
+    state.lastResult = payload;
     setMessage("");
     renderResult(payload);
   } catch (error) {
@@ -205,6 +264,11 @@ async function randomizeAndAnalyze() {
   }
 }
 
+function paintRandomizeButton() {
+  const button = byId("randomize");
+  if (button) button.textContent = t("workspace.randomize");
+}
+
 function mountRandomizeButton() {
   const row = document.querySelector(".action-row");
   if (!row || byId("randomize")) return;
@@ -213,27 +277,41 @@ function mountRandomizeButton() {
   button.type = "button";
   button.className = "btn btn-quiet";
   button.disabled = true;
-  button.textContent = "随机填充并计算";
+  button.textContent = t("workspace.randomize");
   row.insertBefore(button, byId("analyze"));
   button.addEventListener("click", randomizeAndAnalyze);
 }
 
+// 切换语言：静态文案与名册由 i18n 的 DOM 阶段改完，这里只补 JS 生成的那几块。
+// 挑战区用 renderChallenges 重画（不重新请求），已填的输入原样保留。
+onLangChange(() => {
+  paintSummary();
+  paintMessage();
+  paintRandomizeButton();
+  const hadResult = Boolean(state.lastResult) && !byId("result").hidden;
+  if (state.challenges.length) renderChallenges();
+  if (hadResult) renderResult(state.lastResult, { scroll: false });
+});
+
 async function initialize() {
+  // 服务端已经把摘要渲染进页面，这里先按摘要（或空摘要）把顶栏与状态行画一遍
+  paintMessage();
   applySummary(window.DOGCATTRACE_SUMMARY || null);
   if (!state.summary) {
     try {
       const response = await fetch("/api/bank", { cache: "no-cache" });
       const payload = await response.json();
-      if (!response.ok) throw new Error(payload.error || "无法读取指纹库");
+      if (!response.ok) throw new Error(payload.error || t("message.bankReadFailed"));
       applySummary(payload);
     } catch (error) {
-      setMessage(`${error.message}。先运行 python3 rebuild_unified_bank.py 生成指纹库。`, "error");
+      setMessage(t("message.rebuildBank", { reason: error.message }), "error");
       return;
     }
   }
   await loadChallenges();
 }
 
+mountToggle(byId("lang-switch"));
 mountRandomizeButton();
 byId("regenerate").addEventListener("click", loadChallenges);
 byId("analyze").addEventListener("click", analyze);

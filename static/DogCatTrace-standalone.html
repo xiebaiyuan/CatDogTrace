@@ -3,7 +3,27 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="DogCatTrace：在浏览器本地对整数序列做品种归因，单文件版可直接双击打开">
+  <meta name="description" content="DogCatTrace：在浏览器本地对整数序列做品种归因，单文件版可直接双击打开" data-i18n-attr="content:meta.description.standalone">
+  <script id="lang-bootstrap">
+    /* 首帧之前定下语言：module 脚本延后执行，正文先藏起来，避免中文闪一下再变英文。 */
+    (function () {
+      var KEY = "catdogtrace.lang";
+      var stored = null;
+      try { stored = window.localStorage.getItem(KEY); } catch (error) { stored = null; }
+      var lang = stored === "zh" || stored === "en"
+        ? stored
+        : (/^zh/i.test(navigator.language || "") ? "zh" : "en");
+      document.documentElement.dataset.lang = lang;
+      document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+      if (lang !== "zh") {
+        document.documentElement.classList.add("i18n-pending");
+        // 兜底：i18n.js 万一没加载成功，1.5 秒后也要把正文放出来，不能留下白屏
+        window.setTimeout(function () {
+          document.documentElement.classList.remove("i18n-pending");
+        }, 1500);
+      }
+    })();
+  </script>
   <title>DogCatTrace</title>
   <link rel="icon" href="data:image/png;base64,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" type="image/png">
   <!-- 本文件由 build_standalone.py 从仓库源文件拼装生成，不要手改。 -->
@@ -31,6 +51,10 @@
 
 * { box-sizing: border-box; }
 
+/* 语言未落定前不画正文：英文环境下避免中文先闪一下再变英文。
+   head 里的引导脚本按需加这个类，i18n.js 一执行完就摘掉。 */
+html.i18n-pending body { visibility: hidden; }
+
 html { -webkit-text-size-adjust: 100%; }
 
 body {
@@ -57,6 +81,7 @@ body {
 
 .topbar-meta {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
   gap: 20px;
   color: var(--ink-faint);
@@ -66,6 +91,30 @@ body {
 
 .topbar-link { color: var(--ink-soft); font-size: 13px; text-decoration: none; }
 .topbar-link:hover { color: var(--accent); text-decoration: underline; }
+
+/* ---------- 语言切换：两段文字 + 一个斜杠，不做胶囊、不描边、不加阴影 ---------- */
+
+.lang-switch {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  font-size: 13px;
+}
+
+.lang-switch .lang-option {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink-faint);
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.lang-switch .lang-option:hover { color: var(--ink-soft); }
+.lang-switch .lang-option[aria-pressed="true"] { color: var(--ink); font-weight: 600; }
+.lang-switch .lang-sep { color: var(--ink-faint); }
 
 .page { max-width: 1040px; margin: 0 auto; padding: 0 24px 96px; }
 
@@ -186,6 +235,7 @@ h1, h2 { font-weight: 600; }
 
 .challenge-input:focus,
 .topbar-link:focus-visible,
+.lang-switch .lang-option:focus-visible,
 .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 .action-row {
@@ -407,6 +457,10 @@ h1, h2 { font-weight: 600; }
   letter-spacing: -0.01em;
 }
 
+/* 英文品种名比中文长（Pembroke Welsh Corgi 之类），名册里会折两行。
+   给名字留固定两行高度，让 24 个族名标签落在同一条基线上。 */
+html[lang="en"] .roster-name { min-height: 3.2em; }
+
 .roster-family {
   display: block;
   margin-top: 2px;
@@ -469,6 +523,9 @@ h1, h2 { font-weight: 600; }
   .roster-avatar { border-radius: 4px; }
 
   .page-footer { margin-top: 56px; flex-direction: column; gap: 6px; }
+  /* 页脚方法说明在桌面上限宽 30em（13px × 30 = 390px），手机上这点宽度超过内容区，
+     会把整页顶出一条 8px 的横向滚动。这一行是本次之前就有的，顺手按手机内容宽压住。 */
+  .footer-method { max-width: 100%; }
 }
 
 /* 仓库链接：与主样式解耦，单独一处便于替换。 */
@@ -492,22 +549,23 @@ footer.page-footer > .repository-link + .repository-link { margin-left: 14px; }
 <header class="topbar">
     <span class="brand">DogCatTrace</span>
     <div class="topbar-meta">
-      <span id="topbar-bank-count">正在读取指纹库</span>
-      <a class="topbar-link" href="https://github.com/xiebaiyuan/CatDogTrace" target="_blank" rel="noopener noreferrer">代码仓库</a>
+      <span id="topbar-bank-count" data-i18n="topbar.loading">正在读取指纹库</span>
+      <a class="topbar-link" href="https://github.com/xiebaiyuan/CatDogTrace" target="_blank" rel="noopener noreferrer" data-i18n="common.repository">代码仓库</a>
+      <div id="lang-switch"></div>
     </div>
   </header>
 
   <main class="page">
     <section class="hero">
-      <h1>品种归因</h1>
-      <p class="hero-lede">把一段整数序列和 24 个犬猫品种的数字指纹逐一对齐，算它最像谁。计算在本地完成，序列不离开这台机器。</p>
-      <p class="hero-status"><span id="active-bank-badge">正在读取指纹库</span><span class="sep">·</span>本地计算</p>
+      <h1 data-i18n="hero.title">猫猫 还是 狗狗</h1>
+      <p class="hero-lede" data-i18n="hero.lede">把一段整数序列和 24 个犬猫品种的数字指纹逐一对齐，算它最像谁。计算在本地完成，序列不离开这台机器。</p>
+      <p class="hero-status"><span id="active-bank-badge" data-i18n="topbar.loading">正在读取指纹库</span><span class="sep">·</span><span data-i18n="common.local">本地计算</span></p>
     </section>
 
     <section class="section workspace">
       <div class="section-head">
-        <h2 class="section-title">工作区</h2>
-        <button id="regenerate" class="btn btn-quiet" type="button" disabled>重新生成挑战</button>
+        <h2 class="section-title" data-i18n="workspace.title">工作区</h2>
+        <button id="regenerate" class="btn btn-quiet" type="button" disabled data-i18n="workspace.regenerate">重新生成挑战</button>
       </div>
       <div id="challenge-list" class="challenges" aria-live="polite">
         <div class="skeleton-challenge"><span class="skeleton skeleton-line"></span><span class="skeleton skeleton-field"></span></div>
@@ -515,17 +573,17 @@ footer.page-footer > .repository-link + .repository-link { margin-left: 14px; }
         <div class="skeleton-challenge"><span class="skeleton skeleton-line"></span><span class="skeleton skeleton-field"></span></div>
       </div>
       <div class="action-row">
-        <button id="analyze" class="btn btn-primary" type="button" disabled>计算归因概率</button>
+        <button id="analyze" class="btn btn-primary" type="button" disabled data-i18n="workspace.analyze">计算归因概率</button>
       </div>
-      <p id="test-message" class="message working">正在读取指纹库……</p>
+      <p id="test-message" class="message working" data-i18n="message.bankLoading">正在读取指纹库……</p>
       <section id="result" class="result" hidden aria-live="polite"></section>
     </section>
 
     <section class="section roster-section">
       <div class="section-head">
-        <h2 class="section-title">候选名册</h2>
+        <h2 class="section-title" data-i18n="roster.title">候选名册</h2>
       </div>
-      <p class="section-note">闭集候选：指纹库里的 24 只犬猫。库外品种也会被归到最相似的一只，概率不为零。</p>
+      <p class="section-note" data-i18n="roster.note">闭集候选：指纹库里的 24 只犬猫。库外品种也会被归到最相似的一只，概率不为零。</p>
       <div id="roster-grid" class="roster">
         <div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div>
         <div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div><div class="skeleton skeleton-tile"></div>
@@ -535,8 +593,8 @@ footer.page-footer > .repository-link + .repository-link { margin-left: 14px; }
     </section>
 
     <footer class="page-footer">
-      <span class="footer-method">方法：有序块特征 + nuisance-Hellinger 融合，softmax 温度由分组交叉验证确定。</span>
-      <a class="repository-link" href="https://github.com/xiebaiyuan/CatDogTrace" target="_blank" rel="noopener noreferrer">代码仓库</a>
+      <span class="footer-method" data-i18n="footer.method">方法：有序块特征 + nuisance-Hellinger 融合，softmax 温度由分组交叉验证确定。</span>
+      <a class="repository-link" href="https://github.com/xiebaiyuan/CatDogTrace" target="_blank" rel="noopener noreferrer" data-i18n="common.repository">代码仓库</a>
       <a class="repository-link" href="https://linux.do/" target="_blank" rel="noopener noreferrer">LINUX DO</a>
     </footer>
   </main>
@@ -574,6 +632,401 @@ footer.page-footer > .repository-link + .repository-link { margin-left: 14px; }
 (function () {
   "use strict";
   var DogCatTraceModules = {};
+
+  // ---- static/i18n.js ----
+  (function () {
+/*
+ * 站点文案与语言切换：中（zh）/ 英（en）两套字典，加一层 DOM 改写。
+ *
+ * 三个入口共用这一份：
+ *   - static/index.html   直接以 module 引用
+ *   - templates/index.html（Flask）同上
+ *   - static/DogCatTrace-standalone.html 由 build_standalone.py 去掉导出后内联
+ * 所以这里既不能有模块导入，也不能在顶层碰 document 以外的东西；DOM 访问一律
+ * 走 typeof 判断，Node 里加载本文件不会抛错（确定性断言要在 Node 里跑）。
+ */
+
+const LANGS = ["zh", "en"];
+
+const STORAGE_KEY = "catdogtrace.lang";
+const TOGGLE_TEXT = { zh: "中文", en: "EN" };
+
+// 24 个品种：zh 一栏逐字抄指纹库的 display_name，en 一栏是专业品种名。
+const BREEDS = {
+  "husky": { zh: "哈士奇", en: "Siberian Husky" },
+  "labrador": { zh: "拉布拉多", en: "Labrador Retriever" },
+  "schnauzer": { zh: "雪纳瑞", en: "Schnauzer" },
+  "corgi": { zh: "柯基", en: "Pembroke Welsh Corgi" },
+  "golden-retriever": { zh: "金毛", en: "Golden Retriever" },
+  "border-collie": { zh: "边牧", en: "Border Collie" },
+  "shiba": { zh: "柴犬", en: "Shiba Inu" },
+  "samoyed": { zh: "萨摩耶", en: "Samoyed" },
+  "alaskan-malamute": { zh: "阿拉斯加", en: "Alaskan Malamute" },
+  "beagle": { zh: "比格", en: "Beagle" },
+  "poodle": { zh: "贵宾", en: "Poodle" },
+  "bulldog": { zh: "斗牛犬", en: "Bulldog" },
+  "ragdoll": { zh: "布偶", en: "Ragdoll" },
+  "siamese": { zh: "暹罗", en: "Siamese" },
+  "orange-tabby": { zh: "橘猫", en: "Orange Tabby" },
+  "british-shorthair": { zh: "英短", en: "British Shorthair" },
+  "maine-coon": { zh: "缅因", en: "Maine Coon" },
+  "persian": { zh: "波斯", en: "Persian" },
+  "american-shorthair": { zh: "美短", en: "American Shorthair" },
+  "russian-blue": { zh: "俄罗斯蓝猫", en: "Russian Blue" },
+  "scottish-fold": { zh: "苏格兰折耳", en: "Scottish Fold" },
+  "sphinx": { zh: "斯芬克斯", en: "Sphynx" },
+  "bengal": { zh: "孟加拉豹猫", en: "Bengal" },
+  "norwegian-forest": { zh: "挪威森林猫", en: "Norwegian Forest Cat" },
+};
+
+const FAMILIES = {
+  dog: { zh: "犬族", en: "Dog" },
+  cat: { zh: "猫族", en: "Cat" },
+};
+
+const DICT = {
+  zh: {
+    "meta.description.pages": "DogCatTrace：在浏览器本地对整数序列做品种归因",
+    "meta.description.flask": "DogCatTrace：对整数序列做品种归因，计算在本地完成",
+    "meta.description.standalone": "DogCatTrace：在浏览器本地对整数序列做品种归因，单文件版可直接双击打开",
+
+    "topbar.loading": "正在读取指纹库",
+    "topbar.candidates": "{count} 个候选品种",
+    "topbar.bankMissing": "指纹库未就绪",
+
+    "common.repository": "代码仓库",
+    "common.copied": "已复制",
+    "common.local": "本地计算",
+
+    "hero.title": "猫猫 还是 狗狗",
+    "hero.lede": "把一段整数序列和 24 个犬猫品种的数字指纹逐一对齐，算它最像谁。计算在本地完成，序列不离开这台机器。",
+    "hero.bankBadge": "{breeds} 个品种 · {families} 个品种族 · {responses} 条指纹",
+
+    "workspace.title": "工作区",
+    "workspace.regenerate": "重新生成挑战",
+    "workspace.analyze": "计算归因概率",
+    "workspace.randomize": "随机填充并计算",
+
+    "lang.label": "语言",
+
+    "challenge.index": "挑战 {n}",
+    "challenge.count": "{count} 个整数",
+    "challenge.copy": "复制提示词",
+    "challenge.expand": "展开提示词",
+    "challenge.paste": "粘贴完整输出",
+    "challenge.placeholder": "保留文字、标点、代码块与完整整数序列",
+
+    "message.bankLoading": "正在读取指纹库……",
+    "message.computingBrowser": "正在浏览器本地计算……",
+    "message.computingServer": "正在计算归因概率……",
+    "message.challengeFailed": "无法生成挑战",
+    "message.analyzeFailed": "无法完成归因",
+    "message.bankHttp": "指纹库加载失败（HTTP {status}）",
+    "message.needHttp": "{reason}。请通过 HTTP 服务或 GitHub Pages 打开本页。",
+    "message.bankReadFailed": "无法读取指纹库",
+    "message.rebuildBank": "{reason}。先运行 python3 rebuild_unified_bank.py 生成指纹库。",
+
+    "roster.title": "候选名册",
+    "roster.note": "闭集候选：指纹库里的 24 只犬猫。库外品种也会被归到最相似的一只，概率不为零。",
+
+    "result.familyTitle": "品种族分布",
+    "result.familyAriaJoin": "，",
+    "result.diagnostic": "挑战 {n}：{count} 个整数 · {verdict}",
+    "result.counted": "计入",
+    "result.ignored": "忽略",
+    "result.meta": "{used}/{total} 次查询计入 · 温度 β = {beta} · 库内分组交叉验证 {accuracy}",
+    "result.noteClosedSet": "概率来自闭集 softmax：候选集合固定为指纹库内 {count} 个品种，先验均匀。库外品种同样会被归到最相似的候选，概率不为零。",
+    "result.noteFamily": "族概率是成员概率之和，不表示该品种族是序列的来源。",
+    "result.tableRank": "排序",
+    "result.tableBreed": "候选品种",
+    "result.tableFamily": "品种族",
+    "result.tableProbability": "归因概率",
+    "result.tableSimilarity": "分布相似度",
+
+    "footer.method": "方法：有序块特征 + nuisance-Hellinger 融合，softmax 温度由分组交叉验证确定。",
+
+    "prompt.lead": "{opening}。{action} {count} 个 1 到 355（含端点）的整数。",
+    "prompt.middle1": "每个位置都要单独选择；不要从 1 开始计数，不要连续递增或递减，也不要采用等差、循环、重复区块或其他规则化模式。",
+    "prompt.middle2": "本任务必须由当前语言模型直接完成：禁止调用或借助任何工具，包括 Python、代码执行器、计算器、搜索、API 和外部随机数生成器；也不要先编写或运行代码。",
+    "prompt.final": "直接从第一个取值开始输出，不要在序列前重复数量、范围或任务说明。",
+    "prompt.opening.1": "这是一次独立的犬猫品种特征数值记录",
+    "prompt.opening.2": "请完成下面的无语义整数选择任务，用于犬猫品种指纹比对",
+    "prompt.opening.3": "执行一次第一反应取值记录，作为犬猫品种样本的一部分",
+    "prompt.opening.4": "生成一组不承载语义的整数选择，供犬猫品种比对使用",
+    "prompt.opening.5": "进行一轮快速逐项取值，模拟一次犬猫品种采样",
+    "prompt.action.1": "为各个位置分别凭第一反应选择",
+    "prompt.action.2": "逐项选择",
+    "prompt.action.3": "每次只决定当前一项，共给出",
+    "prompt.action.4": "分别凭第一反应给出",
+    "prompt.action.5": "逐个直接选择",
+    "prompt.ending.1": "允许某个数字再次出现；每项写出后不要回头排序、去重或替换。",
+    "prompt.ending.2": "偶然重复是有效的；不要重新排列或修正已经写出的项目。",
+    "prompt.ending.3": "相同值可以再次出现；输出过程中不要整理或改写前面的项目。",
+    "prompt.ending.4": "重复值无需删除；不要筛选、重排或补成某种规律。",
+    "prompt.ending.5": "不必赋予数字任何含义；已经给出的值保持不变。",
+    "prompt.separator.1": "数字之间用逗号或空格分隔均可。",
+    "prompt.separator.2": "使用一种一致的常见分隔符即可。",
+    "prompt.separator.3": "可以用逗号、空格或换行分隔。",
+    "prompt.separator.4": "只要每个整数边界清楚，格式可自行选择。",
+  },
+
+  en: {
+    "meta.description.pages": "DogCatTrace: breed attribution for integer sequences, computed in the browser",
+    "meta.description.flask": "DogCatTrace: breed attribution for integer sequences, computed locally",
+    "meta.description.standalone": "DogCatTrace: breed attribution for integer sequences in the browser; a single file you can open directly",
+
+    "topbar.loading": "Reading the fingerprint bank",
+    "topbar.candidates": "{count} candidate breeds",
+    "topbar.bankMissing": "Fingerprint bank not ready",
+
+    "common.repository": "Repository",
+    "common.copied": "Copied",
+    "common.local": "Computed locally",
+
+    "hero.title": "DOG or CAT",
+    "hero.lede": "Match an integer sequence against the numeric fingerprint of each of 24 dog and cat breeds, and see which one it most resembles. All computation runs locally; the sequence never leaves this machine.",
+    "hero.bankBadge": "{breeds} breeds · {families} families · {responses} fingerprints",
+
+    "workspace.title": "Workspace",
+    "workspace.regenerate": "Regenerate challenges",
+    "workspace.analyze": "Compute attribution",
+    "workspace.randomize": "Fill at random, then compute",
+
+    "lang.label": "Language",
+
+    "challenge.index": "Challenge {n}",
+    "challenge.count": "{count} integers",
+    "challenge.copy": "Copy prompt",
+    "challenge.expand": "Show prompt",
+    "challenge.paste": "Paste the full output",
+    "challenge.placeholder": "Keep the text, punctuation, code fences and the complete integer sequence",
+
+    "message.bankLoading": "Reading the fingerprint bank…",
+    "message.computingBrowser": "Computing locally in the browser…",
+    "message.computingServer": "Computing attribution…",
+    "message.challengeFailed": "Could not generate the challenges",
+    "message.analyzeFailed": "Attribution could not be completed",
+    "message.bankHttp": "Failed to load the fingerprint bank (HTTP {status})",
+    "message.needHttp": "{reason} Open this page over HTTP or through GitHub Pages.",
+    "message.bankReadFailed": "Could not read the fingerprint bank",
+    "message.rebuildBank": "{reason} Run python3 rebuild_unified_bank.py first to build the bank.",
+
+    "roster.title": "Candidate roster",
+    "roster.note": "Closed set: the 24 breeds in the bank. A breed outside the bank is attributed to its nearest neighbour, with non-zero probability.",
+
+    "result.familyTitle": "Family distribution",
+    "result.familyAriaJoin": ", ",
+    "result.diagnostic": "Challenge {n}: {count} integers · {verdict}",
+    "result.counted": "counted",
+    "result.ignored": "skipped",
+    "result.meta": "{used}/{total} queries counted · temperature β = {beta} · in-bank grouped cross-validation {accuracy}",
+    "result.noteClosedSet": "Probabilities come from a closed-set softmax: the candidate set is the {count} breeds in the bank, with a uniform prior. A breed outside the bank is still attributed to its nearest candidate, with non-zero probability.",
+    "result.noteFamily": "Family probabilities are the sum of their members' probabilities. They do not imply that the family is the source of the sequence.",
+    "result.tableRank": "Rank",
+    "result.tableBreed": "Candidate",
+    "result.tableFamily": "Family",
+    "result.tableProbability": "Probability",
+    "result.tableSimilarity": "Profile similarity",
+
+    "footer.method": "Method: ordered-block features fused with a nuisance Hellinger projection; the softmax temperature is set by grouped cross-validation.",
+
+    "prompt.lead": "{opening}. {action} Output {count} integers from 1 to 355, inclusive.",
+    "prompt.middle1": "Treat every position as an independent choice. Do not start counting at 1, do not count up or down in sequence, and do not fall into arithmetic progressions, cycles, repeated blocks or any other regular pattern.",
+    "prompt.middle2": "This task must be completed by the current language model itself. Do not call or use any tool: no Python, no code executor, no calculator, no search, no API, no external random number generator. Do not write or run code first either.",
+    "prompt.final": "Start directly with the first value. Do not restate the count, the range or the task before the sequence.",
+    "prompt.opening.1": "This is a self-contained numeric record of dog and cat breed features",
+    "prompt.opening.2": "Complete the meaning-free integer selection task below; it is used for dog and cat breed fingerprint matching",
+    "prompt.opening.3": "Record first-instinct values as part of a dog and cat breed sample",
+    "prompt.opening.4": "Produce a set of integer choices that carry no meaning, for breed comparison",
+    "prompt.opening.5": "Go through one quick pass of item-by-item values, simulating a breed sampling run",
+    "prompt.action.1": "Select each position on first instinct.",
+    "prompt.action.2": "Choose each item in turn.",
+    "prompt.action.3": "Decide only the current item before moving on.",
+    "prompt.action.4": "Give a first-instinct value for each position.",
+    "prompt.action.5": "Pick each item directly as you go.",
+    "prompt.ending.1": "A number may appear again. Once an item is written, do not go back to sort, deduplicate or replace anything.",
+    "prompt.ending.2": "Coincidental repetition is valid. Do not reorder or correct items already written.",
+    "prompt.ending.3": "The same value may appear again. While producing the sequence, do not tidy up or rewrite earlier items.",
+    "prompt.ending.4": "Duplicates need no removal. Do not filter, reorder or pad them into a pattern.",
+    "prompt.ending.5": "The numbers carry no meaning. Values already given stay as written.",
+    "prompt.separator.1": "Separate the numbers with commas or spaces, whichever you prefer.",
+    "prompt.separator.2": "Use one common separator consistently.",
+    "prompt.separator.3": "Commas, spaces or line breaks all work as separators.",
+    "prompt.separator.4": "Any format is fine as long as each integer boundary is clear.",
+  },
+};
+
+// 内存里的当前语言。Node 里跑断言时靠它，浏览器里则由 setLang 写入。
+let activeLang = null;
+const listeners = [];
+
+function detectLang() {
+  if (typeof navigator === "undefined") return "zh";
+  const candidate = navigator.language || (navigator.languages && navigator.languages[0]) || "";
+  return /^zh/i.test(String(candidate)) ? "zh" : "en";
+}
+
+function readStore() {
+  try {
+    if (typeof window === "undefined" || !window.localStorage) return null;
+    return window.localStorage.getItem(STORAGE_KEY);
+  } catch (error) {
+    // 隐私模式下 localStorage 会直接抛错，退回浏览器语言
+    return null;
+  }
+}
+
+function writeStore(lang) {
+  try {
+    if (typeof window === "undefined" || !window.localStorage) return;
+    window.localStorage.setItem(STORAGE_KEY, lang);
+  } catch (error) {
+    // 写不进去就不记住，本次会话内仍然生效
+  }
+}
+
+function currentLang() {
+  if (activeLang) return activeLang;
+  const stored = readStore();
+  if (stored === "zh" || stored === "en") return stored;
+  return detectLang();
+}
+
+function t(key, vars) {
+  const lang = currentLang();
+  const table = DICT[lang] || DICT.zh;
+  const template = table[key];
+  if (typeof template !== "string") throw new Error(`i18n 缺少文案：${lang}.${key}`);
+  if (!vars) return template;
+  return template.replace(/\{(\w+)\}/g, (match, name) => (name in vars ? String(vars[name]) : match));
+}
+
+function breedName(modelId) {
+  const entry = BREEDS[modelId];
+  if (!entry) return String(modelId || "—");
+  return entry[currentLang()] || entry.zh;
+}
+
+function familyName(familyId) {
+  const entry = FAMILIES[familyId];
+  if (!entry) return "—";
+  return entry[currentLang()] || entry.zh;
+}
+
+/*
+ * 一次性把 root 下带标记的节点改成当前语言：
+ *   [data-i18n="key"]                  改 textContent
+ *   [data-i18n-attr="attr:key"]        改指定属性（meta description、title 等）
+ *   [data-i18n-placeholder="key"]      改 placeholder
+ *   [data-model="id"]                  改子节点 .roster-name / .roster-family
+ * 最后一条让 Flask 的服务端渲染名册和 Pages 的 JS 渲染名册走同一条改写路径。
+ */
+function applyDom(root) {
+  const scope = root || (typeof document === "undefined" ? null : document);
+  if (!scope) return;
+
+  scope.querySelectorAll("[data-i18n]").forEach((element) => {
+    element.textContent = t(element.dataset.i18n);
+  });
+
+  scope.querySelectorAll("[data-i18n-attr]").forEach((element) => {
+    const parts = String(element.dataset.i18nAttr).split(":");
+    const attribute = (parts[0] || "").trim();
+    const key = (parts[1] || "").trim();
+    if (attribute && key) element.setAttribute(attribute, t(key));
+  });
+
+  scope.querySelectorAll("[data-i18n-placeholder]").forEach((element) => {
+    element.setAttribute("placeholder", t(element.dataset.i18nPlaceholder));
+  });
+
+  scope.querySelectorAll("[data-model]").forEach((element) => {
+    const name = element.querySelector(".roster-name");
+    if (name) name.textContent = breedName(element.dataset.model);
+    const family = element.querySelector(".roster-family");
+    if (family) family.textContent = familyName(element.dataset.family);
+  });
+}
+
+// 把 <html lang>、dataset.lang、正文文案、切换器状态一次改完。
+function paintDocument() {
+  if (typeof document === "undefined") return;
+  const lang = currentLang();
+  document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+  document.documentElement.dataset.lang = lang;
+  applyDom(document);
+  document.querySelectorAll("[data-lang-option]").forEach((button) => {
+    button.setAttribute("aria-pressed", String(button.dataset.langOption === lang));
+  });
+  document.querySelectorAll(".lang-switch").forEach((element) => {
+    element.setAttribute("aria-label", t("lang.label"));
+  });
+}
+
+function setLang(lang) {
+  if (LANGS.indexOf(lang) < 0) throw new Error(`i18n 不认识的语言：${lang}`);
+  activeLang = lang;
+  writeStore(lang);
+  paintDocument();
+  // JS 生成的那几块（挑战区、结果区、名册摘要）由各入口自己注册重画函数
+  listeners.forEach((fn) => fn(lang));
+  return lang;
+}
+
+function onLangChange(fn) {
+  if (typeof fn !== "function") return () => {};
+  listeners.push(fn);
+  return () => {
+    const index = listeners.indexOf(fn);
+    if (index >= 0) listeners.splice(index, 1);
+  };
+}
+
+/*
+ * 语言切换器：两个并排的文字按钮，中间一个斜杠文本。
+ * 不做胶囊、不描边、不加阴影（设计稿禁止），当前语言用墨色，另一档用弱墨。
+ */
+function mountToggle(el) {
+  if (!el) return null;
+  el.classList.add("lang-switch");
+  el.setAttribute("role", "group");
+  el.innerHTML = LANGS.map(
+    (lang) => `<button type="button" class="lang-option" data-lang-option="${lang}" aria-pressed="false">${TOGGLE_TEXT[lang]}</button>`
+  ).join('<span class="lang-sep" aria-hidden="true">/</span>');
+  if (!el.dataset.bound) {
+    el.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-lang-option]");
+      if (button && el.contains(button)) setLang(button.dataset.langOption);
+    });
+    el.dataset.bound = "1";
+  }
+  paintDocument();
+  return el;
+}
+
+/*
+ * 模块一执行就应用一次。module 脚本是延后执行的，head 里的引导脚本已经先定好
+ * documentElement.dataset.lang 并把正文藏起来（html.i18n-pending），这里改完文案
+ * 再把门槛摘掉，读者看不到中文闪一下。
+ */
+if (typeof document !== "undefined") {
+  try {
+    paintDocument();
+  } finally {
+    document.documentElement.classList.remove("i18n-pending");
+  }
+}
+
+    DogCatTraceModules.LANGS = LANGS;
+    DogCatTraceModules.currentLang = currentLang;
+    DogCatTraceModules.t = t;
+    DogCatTraceModules.breedName = breedName;
+    DogCatTraceModules.familyName = familyName;
+    DogCatTraceModules.applyDom = applyDom;
+    DogCatTraceModules.setLang = setLang;
+    DogCatTraceModules.onLangChange = onLangChange;
+    DogCatTraceModules.mountToggle = mountToggle;
+  })();
 
   // ---- static/fingerprint-core.js ----
   (function () {
@@ -852,10 +1305,17 @@ function analyzeGlobalOutputs(outputs, bank) {
 
   // ---- static/challenge-browser.js ----
   (function () {
+    const { t } = DogCatTraceModules;
 /*
  * 浏览器端挑战生成，与 fingerprint.py 的 generate_challenges 逐字一致。
  * 不发起网络请求：静态页面在 GitHub Pages 上直接生成三次挑战。
+ *
+ * 提示词模板按语言分两套，走 i18n.js 的 t()。整数生成与语言无关：
+ * uniqueLengths(count) 在 .map() 之前就跑完了，每个 item 的随机调用顺序与次数
+ * 两种语言完全相同（randomHex 一次 + 四个 choose 各一次），所以同一段
+ * crypto 随机流下 expected_count 与 id 逐字节一致。
  */
+
 
 function randomIndex(length) {
   const limit = Math.floor(0x100000000 / length) * length;
@@ -883,51 +1343,80 @@ function randomHex(bytes) {
   return Array.from(buffer, (value) => value.toString(16).padStart(2, "0")).join("");
 }
 
-function generateChallenges(count = 3) {
-  const openings = [
-    "这是一次独立的犬猫品种特征数值记录",
-    "请完成下面的无语义整数选择任务，用于犬猫品种指纹比对",
-    "执行一次第一反应取值记录，作为犬猫品种样本的一部分",
-    "生成一组不承载语义的整数选择，供犬猫品种比对使用",
-    "进行一轮快速逐项取值，模拟一次犬猫品种采样",
-  ];
-  const actions = [
-    "为各个位置分别凭第一反应选择",
-    "逐项选择",
-    "每次只决定当前一项，共给出",
-    "分别凭第一反应给出",
-    "逐个直接选择",
-  ];
-  const endings = [
-    "允许某个数字再次出现；每项写出后不要回头排序、去重或替换。",
-    "偶然重复是有效的；不要重新排列或修正已经写出的项目。",
-    "相同值可以再次出现；输出过程中不要整理或改写前面的项目。",
-    "重复值无需删除；不要筛选、重排或补成某种规律。",
-    "不必赋予数字任何含义；已经给出的值保持不变。",
-  ];
-  const separators = [
-    "数字之间用逗号或空格分隔均可。",
-    "使用一种一致的常见分隔符即可。",
-    "可以用逗号、空格或换行分隔。",
-    "只要每个整数边界清楚，格式可自行选择。",
-  ];
-  return uniqueLengths(count).map((length, index) => ({
-    id: `probe-${index + 1}-${randomHex(7)}`,
-    expected_count: length,
-    prompt: `${choose(openings)}。${choose(actions)} ${length} 个 1 到 355（含端点）的整数。`
-      + "每个位置都要单独选择；不要从 1 开始计数，不要连续递增或递减，也不要采用等差、循环、重复区块或其他规则化模式。"
-      + "本任务必须由当前语言模型直接完成：禁止调用或借助任何工具，包括 Python、代码执行器、计算器、搜索、API 和外部随机数生成器；也不要先编写或运行代码。"
-      + `${choose(endings)}${choose(separators)}`
-      + "直接从第一个取值开始输出，不要在序列前重复数量、范围或任务说明。",
-  }));
+const OPENINGS = [
+  "prompt.opening.1",
+  "prompt.opening.2",
+  "prompt.opening.3",
+  "prompt.opening.4",
+  "prompt.opening.5",
+];
+const ACTIONS = [
+  "prompt.action.1",
+  "prompt.action.2",
+  "prompt.action.3",
+  "prompt.action.4",
+  "prompt.action.5",
+];
+const ENDINGS = [
+  "prompt.ending.1",
+  "prompt.ending.2",
+  "prompt.ending.3",
+  "prompt.ending.4",
+  "prompt.ending.5",
+];
+const SEPARATORS = [
+  "prompt.separator.1",
+  "prompt.separator.2",
+  "prompt.separator.3",
+  "prompt.separator.4",
+];
+
+/*
+ * 按当前语言渲染一条挑战的提示词。
+ *
+ * 挑中的四个模板片段记在 challenge.template 里，所以切换语言能换掉整个提示词的措辞，
+ * 而 expected_count 与 id 一个字都不动 —— 换语言不等于换一组题。
+ * 只有 prompt 字段、没有 template 的来源（Flask 下发的成品文本）原样返回。
+ */
+function challengePrompt(challenge) {
+  const template = challenge.template;
+  if (!template) return challenge.prompt;
+  return t("prompt.lead", {
+    opening: t(template.opening),
+    action: t(template.action),
+    count: challenge.expected_count,
+  })
+    + t("prompt.middle1")
+    + t("prompt.middle2")
+    + t(template.ending) + t(template.separator)
+    + t("prompt.final");
 }
 
+function generateChallenges(count = 3) {
+  return uniqueLengths(count).map((length, index) => {
+    const challenge = {
+      id: `probe-${index + 1}-${randomHex(7)}`,
+      expected_count: length,
+      // 随机取值顺序与原实现一致：randomHex 一次，然后 opening / action / ending / separator 各一次
+      template: {
+        opening: choose(OPENINGS),
+        action: choose(ACTIONS),
+        ending: choose(ENDINGS),
+        separator: choose(SEPARATORS),
+      },
+    };
+    challenge.prompt = challengePrompt(challenge);
+    return challenge;
+  });
+}
+
+    DogCatTraceModules.challengePrompt = challengePrompt;
     DogCatTraceModules.generateChallenges = generateChallenges;
   })();
 
   // ---- static/pages-app.js ----
   (function () {
-    const { analyzeGlobalOutputs, loadBank, generateChallenges } = DogCatTraceModules;
+    const { analyzeGlobalOutputs, loadBank, challengePrompt, generateChallenges, breedName, familyName, mountToggle, onLangChange, t } = DogCatTraceModules;
 /*
  * GitHub Pages 入口控制器：浏览器本地读 ./data/unified_bank.json 并本地计算。
  * 与 Flask 入口共用同一套算法（fingerprint-core.js），结果数值一致。
@@ -935,11 +1424,21 @@ function generateChallenges(count = 3) {
  * renderChallenges / renderResult / renderRoster 在本文件与 app.js 各有一份，不共享模块。
  * 两者分别对应 GitHub Pages 入口与 Flask 入口，数据来源不同（一个读本地 JSON，一个走 API）。
  * 改界面文案、表头、结果区结构时两处都要改，只改一处会让两个入口显示不一致。
+ *
+ * 文案全部走 i18n.js 的 t()；品种名与族名走 breedName() / familyName()，
+ * 不信 payload 里的 display_name（那是中文，来自指纹库与 Python）。
  */
 
 
 
-const state = { bank: null, challenges: [] };
+
+const state = {
+  bank: null,
+  challenges: [],
+  lastResult: null,
+  // 提示条分两种：key 形式的能随语言重画，纯文本的（指纹库/core 的报错）保持原样
+  message: { kind: "key", key: "message.bankLoading", type: "working" },
+};
 const byId = (id) => document.getElementById(id);
 
 function escapeHtml(value) {
@@ -969,10 +1468,27 @@ function familyClass(family) {
 }
 
 function setMessage(text, type = "error") {
+  state.message = text ? { kind: "text", text, type } : null;
+  paintMessage();
+}
+
+function setMessageKey(key, type = "error", vars) {
+  state.message = { kind: "key", key, type, vars };
+  paintMessage();
+}
+
+function paintMessage() {
   const element = byId("test-message");
-  element.textContent = text;
-  element.className = `message ${type}`;
-  element.hidden = !text;
+  const entry = state.message;
+  if (!entry) {
+    element.textContent = "";
+    element.className = "message error";
+    element.hidden = true;
+    return;
+  }
+  element.textContent = entry.kind === "key" ? t(entry.key, entry.vars) : entry.text;
+  element.className = `message ${entry.type}`;
+  element.hidden = false;
 }
 
 async function copyText(text, button) {
@@ -986,54 +1502,71 @@ async function copyText(text, button) {
     document.execCommand("copy");
     area.remove();
   }
-  const original = button.textContent;
-  button.textContent = "已复制";
-  window.setTimeout(() => { button.textContent = original; }, 1000);
+  button.textContent = t("common.copied");
+  // 恢复时按当前语言取文案：切换语言后再还原也不能留下旧语言的字
+  window.setTimeout(() => { button.textContent = t("challenge.copy"); }, 1000);
 }
 
 function renderChallenges() {
+  // 语言切换会重跑本函数，先把已粘贴的内容抓出来，重建后按位置回填
+  const filled = state.challenges.map((challenge, index) => {
+    const field = byId(`output-${index}`);
+    return field ? field.value : "";
+  });
   byId("result").hidden = true;
   byId("challenge-list").innerHTML = state.challenges.map((challenge, index) => `
     <article class="challenge">
       <div class="challenge-head">
-        <span class="challenge-index">挑战 ${index + 1}</span>
-        <span class="challenge-count">${challenge.expected_count} 个整数</span>
-        <button type="button" class="btn btn-quiet" data-copy="${index}">复制提示词</button>
+        <span class="challenge-index">${escapeHtml(t("challenge.index", { n: index + 1 }))}</span>
+        <span class="challenge-count">${escapeHtml(t("challenge.count", { count: challenge.expected_count }))}</span>
+        <button type="button" class="btn btn-quiet" data-copy="${index}">${escapeHtml(t("challenge.copy"))}</button>
       </div>
       <details class="challenge-prompt">
-        <summary>展开提示词</summary>
-        <pre class="challenge-prompt-text">${escapeHtml(challenge.prompt)}</pre>
+        <summary>${escapeHtml(t("challenge.expand"))}</summary>
+        <pre class="challenge-prompt-text">${escapeHtml(challengePrompt(challenge))}</pre>
       </details>
-      <label class="challenge-label" for="output-${index}">粘贴完整输出</label>
-      <textarea class="challenge-input" id="output-${index}" spellcheck="false" placeholder="保留文字、标点、代码块与完整整数序列"></textarea>
+      <label class="challenge-label" for="output-${index}">${escapeHtml(t("challenge.paste"))}</label>
+      <textarea class="challenge-input" id="output-${index}" spellcheck="false" placeholder="${escapeHtml(t("challenge.placeholder"))}"></textarea>
     </article>
   `).join("");
+  state.challenges.forEach((challenge, index) => {
+    const field = byId(`output-${index}`);
+    if (field) field.value = filled[index] || "";
+  });
   document.querySelectorAll("[data-copy]").forEach((button) => {
-    button.addEventListener("click", () => copyText(state.challenges[Number(button.dataset.copy)].prompt, button));
+    // 复制时现渲染：用户切到英文后复制，拿到的也该是英文提示词
+    button.addEventListener("click", () => copyText(challengePrompt(state.challenges[Number(button.dataset.copy)]), button));
   });
 }
 
 // 候选名册：Pages 侧按指纹库里的 models 渲染。Flask 侧由 templates/index.html 直接渲染同一份结构。
+// data-model / data-family 让 i18n 的 DOM 阶段能就地改写名字，两个入口共用一条路径。
 function renderRoster(models) {
   const grid = byId("roster-grid");
   grid.removeAttribute("aria-busy");
   grid.innerHTML = models.map((model) => `
-    <figure class="roster-item">
+    <figure class="roster-item" data-model="${escapeHtml(model.id)}" data-family="${escapeHtml(model.family || "")}">
       <img class="roster-avatar" src="${avatarSrc(model.id)}" width="128" height="128" alt="" loading="lazy" onerror="this.remove()">
-      <figcaption><span class="roster-name">${escapeHtml(model.display_name)}</span><span class="roster-family">${escapeHtml(model.family_name || "—")}</span></figcaption>
+      <figcaption><span class="roster-name">${escapeHtml(breedName(model.id))}</span><span class="roster-family">${escapeHtml(familyName(model.family))}</span></figcaption>
     </figure>
   `).join("");
 }
 
-function renderResult(payload) {
+function renderResult(payload, options) {
+  // 切换语言会重画一次结果区，那时不能把页面滚到底下
+  const scroll = !options || options.scroll !== false;
   const diagnostics = payload.diagnostics.map((item, index) => `
-    <span class="diagnostic ${item.accepted ? "accepted" : "rejected"}">挑战 ${index + 1}：${item.parsed_numbers} 个整数 · ${item.accepted ? "计入" : "忽略"}</span>
+    <span class="diagnostic ${item.accepted ? "accepted" : "rejected"}">${escapeHtml(t("result.diagnostic", {
+      n: index + 1,
+      count: item.parsed_numbers,
+      verdict: item.accepted ? t("result.counted") : t("result.ignored"),
+    }))}</span>
   `).join("");
   const rows = payload.results.map((item, index) => `
     <tr class="${index === 0 ? "is-winner" : ""}">
       <td class="col-rank">${index + 1}</td>
-      <td><span class="breed-cell"><img class="breed-avatar" src="${avatarSrc(item.model)}" width="22" height="22" alt="" onerror="this.remove()"><strong>${escapeHtml(item.display_name)}</strong></span></td>
-      <td>${escapeHtml(item.family_name || "—")}</td>
+      <td><span class="breed-cell"><img class="breed-avatar" src="${avatarSrc(item.model)}" width="22" height="22" alt="" onerror="this.remove()"><strong>${escapeHtml(breedName(item.model))}</strong></span></td>
+      <td>${escapeHtml(familyName(item.family))}</td>
       <td><div class="prob"><span class="prob-track"><i style="width:${(item.probability * 100).toFixed(3)}%"></i></span><b>${percent(item.probability)}</b></div></td>
       <td class="col-sim">${percent(item.profile_similarity)}</td>
     </tr>
@@ -1041,34 +1574,58 @@ function renderResult(payload) {
   const families = payload.family_probabilities || [];
   const familyBar = families.length ? `
     <div class="family">
-      <p class="family-title">品种族分布</p>
-      <div class="family-bar" role="img" aria-label="${escapeHtml(families.map((item) => `${item.display_name} ${percent(item.probability)}`).join("，"))}">
+      <p class="family-title">${escapeHtml(t("result.familyTitle"))}</p>
+      <div class="family-bar" role="img" aria-label="${escapeHtml(families.map((item) => `${familyName(item.family)} ${percent(item.probability)}`).join(t("result.familyAriaJoin")))}">
         ${families.map((item) => `<span class="family-seg ${familyClass(item.family)}" style="width:${(item.probability * 100).toFixed(3)}%"></span>`).join("")}
       </div>
       <ul class="family-legend">
-        ${families.map((item) => `<li><span class="family-key ${familyClass(item.family)}"></span>${escapeHtml(item.display_name)}<b>${percent(item.probability)}</b></li>`).join("")}
+        ${families.map((item) => `<li><span class="family-key ${familyClass(item.family)}"></span>${escapeHtml(familyName(item.family))}<b>${percent(item.probability)}</b></li>`).join("")}
       </ul>
     </div>` : "";
   const panel = byId("result");
   panel.innerHTML = `
     <div class="verdict">
       <img class="breed-avatar breed-avatar-lg" src="${avatarSrc(payload.prediction)}" width="40" height="40" alt="" onerror="this.remove()">
-      <p class="verdict-line"><strong>${escapeHtml(payload.prediction_name)}</strong><span class="verdict-prob">${percent(payload.probability)}</span></p>
+      <p class="verdict-line"><strong>${escapeHtml(breedName(payload.prediction))}</strong><span class="verdict-prob">${percent(payload.probability)}</span></p>
     </div>
-    <p class="verdict-meta">${payload.used_outputs}/${state.challenges.length} 次查询计入 · 温度 β = ${Number(payload.calibration.beta).toFixed(3)} · 库内分组交叉验证 ${percent(payload.calibration.cv_accuracy)}</p>
+    <p class="verdict-meta">${escapeHtml(t("result.meta", {
+      used: payload.used_outputs,
+      total: state.challenges.length,
+      beta: Number(payload.calibration.beta).toFixed(3),
+      accuracy: percent(payload.calibration.cv_accuracy),
+    }))}</p>
     <div class="diagnostics">${diagnostics}</div>
     ${familyBar}
     <table class="board">
-      <thead><tr><th class="col-rank">排序</th><th>候选品种</th><th>品种族</th><th>归因概率</th><th class="col-sim">分布相似度</th></tr></thead>
+      <thead><tr><th class="col-rank">${escapeHtml(t("result.tableRank"))}</th><th>${escapeHtml(t("result.tableBreed"))}</th><th>${escapeHtml(t("result.tableFamily"))}</th><th>${escapeHtml(t("result.tableProbability"))}</th><th class="col-sim">${escapeHtml(t("result.tableSimilarity"))}</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>
     <div class="result-note">
-      <p>概率来自闭集 softmax：候选集合固定为指纹库内 ${payload.results.length} 个品种，先验均匀。库外品种同样会被归到最相似的候选，概率不为零。</p>
-      <p>族概率是成员概率之和，不表示该品种族是序列的来源。</p>
+      <p>${escapeHtml(t("result.noteClosedSet", { count: payload.results.length }))}</p>
+      <p>${escapeHtml(t("result.noteFamily"))}</p>
     </div>
   `;
   panel.hidden = false;
-  panel.scrollIntoView({ behavior: "smooth", block: "start" });
+  if (scroll) panel.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+// 顶栏与首屏状态行：数字来自指纹库，文案随语言变
+function paintBankSummary() {
+  const bank = state.bank;
+  if (!bank) {
+    const missing = t("topbar.bankMissing");
+    byId("topbar-bank-count").textContent = missing;
+    byId("active-bank-badge").textContent = missing;
+    return;
+  }
+  const responseCount = bank.models.reduce((sum, model) => sum + Number(model.response_count || 0), 0);
+  const families = new Set(bank.models.map((model) => model.family).filter(Boolean));
+  byId("topbar-bank-count").textContent = t("topbar.candidates", { count: bank.models.length });
+  byId("active-bank-badge").textContent = t("hero.bankBadge", {
+    breeds: bank.models.length,
+    families: families.size,
+    responses: responseCount,
+  });
 }
 
 function regenerate() {
@@ -1095,17 +1652,19 @@ async function analyze() {
   const button = byId("analyze");
   button.disabled = true;
   byId("result").hidden = true;
-  setMessage("正在浏览器本地计算……", "working");
+  setMessageKey("message.computingBrowser", "working");
   await new Promise((resolve) => requestAnimationFrame(resolve));
   try {
     const outputs = state.challenges.map((challenge, index) => ({
       text: byId(`output-${index}`).value,
       expected_count: challenge.expected_count,
     }));
-    renderResult(analyzeGlobalOutputs(outputs, state.bank));
+    const payload = analyzeGlobalOutputs(outputs, state.bank);
+    state.lastResult = payload;
+    renderResult(payload);
     setMessage("");
   } catch (error) {
-    setMessage(error.message || "无法完成归因", "error");
+    setMessage(error.message || t("message.analyzeFailed"), "error");
   } finally {
     button.disabled = false;
   }
@@ -1122,6 +1681,11 @@ async function randomizeAndAnalyze() {
   }
 }
 
+function paintRandomizeButton() {
+  const button = byId("randomize");
+  if (button) button.textContent = t("workspace.randomize");
+}
+
 function mountRandomizeButton() {
   const row = document.querySelector(".action-row");
   if (!row || byId("randomize")) return;
@@ -1130,28 +1694,39 @@ function mountRandomizeButton() {
   button.type = "button";
   button.className = "btn btn-quiet";
   button.disabled = true;
-  button.textContent = "随机填充并计算";
+  button.textContent = t("workspace.randomize");
   row.insertBefore(button, byId("analyze"));
   button.addEventListener("click", randomizeAndAnalyze);
 }
 
+// 切换语言：静态文案由 i18n 自己改完，这里只补 JS 生成的那几块。
+// 挑战区用 renderChallenges 重画（不重新生成，整数不能变），已填的输入原样保留。
+onLangChange(() => {
+  paintBankSummary();
+  paintMessage();
+  paintRandomizeButton();
+  const hadResult = Boolean(state.lastResult) && !byId("result").hidden;
+  if (state.challenges.length) renderChallenges();
+  if (hadResult) renderResult(state.lastResult, { scroll: false });
+});
+
 async function initialize() {
+  // 读库期间顶栏保持 HTML 里的「正在读取指纹库」，不要提前换成「指纹库未就绪」
+  paintMessage();
   try {
     state.bank = loadBank(window.UNIFIED_BANK);
     renderRoster(state.bank.models);
-    const responseCount = state.bank.models.reduce((sum, model) => sum + Number(model.response_count || 0), 0);
-    const families = new Set(state.bank.models.map((model) => model.family).filter(Boolean));
-    byId("topbar-bank-count").textContent = `${state.bank.models.length} 个候选品种`;
-    byId("active-bank-badge").textContent = `${state.bank.models.length} 个品种 · ${families.size} 个品种族 · ${responseCount} 条指纹`;
+    paintBankSummary();
     byId("regenerate").disabled = false;
     byId("analyze").disabled = false;
     if (byId("randomize")) byId("randomize").disabled = false;
     regenerate();
   } catch (error) {
-    setMessage(`${error.message}。请通过 HTTP 服务或 GitHub Pages 打开本页。`, "error");
+    setMessage(t("message.needHttp", { reason: error.message }), "error");
   }
 }
 
+mountToggle(byId("lang-switch"));
 mountRandomizeButton();
 byId("regenerate").addEventListener("click", regenerate);
 byId("analyze").addEventListener("click", analyze);

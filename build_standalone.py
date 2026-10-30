@@ -3,9 +3,11 @@
 源文件全部来自仓库现有文件，本脚本不复制任何业务逻辑：
   static/styles.css             -> 内联 <style>
   static/repository-link.css    -> 内联 <style>
+  static/i18n.js                -> 去掉 export，包进 IIFE（必须在 pages-app.js 之前）
   static/fingerprint-core.js    -> 去掉 export，包进 IIFE
-  static/challenge-browser.js   -> 去掉 export，包进 IIFE
+  static/challenge-browser.js   -> 去掉 import 与 export，包进 IIFE
   static/pages-app.js           -> 去掉 import，改写库读取，包进 IIFE
+  static/index.html             -> 抠出 <head> 里的语言引导脚本复用一份
   static/data/unified_bank.json -> 内联 window.UNIFIED_BANK
   static/assets/breeds/*.png    -> 内联 window.BREED_AVATARS（每张一个 data URI）
   static/assets/favicon.png     -> 内联 <link rel="icon"> 的 data URI
@@ -107,6 +109,21 @@ def replace_bank_loading(source: str, name: str) -> str:
     return updated
 
 
+def extract_lang_bootstrap(pages_entry: str) -> str:
+    """从 static/index.html 的 <head> 里抠出语言引导脚本。
+
+    单文件版的 head 由本脚本拼装，不能凭记忆再写一份；引导脚本必须在首帧之前
+    定下 dataset.lang 并藏住正文，否则英文环境下会先看到一眼中文。
+    """
+    match = re.search(r'<script id="lang-bootstrap">(.*?)</script>', pages_entry, flags=re.DOTALL)
+    if not match:
+        raise BuildError("static/index.html 里没找到 id=lang-bootstrap 的引导脚本")
+    body = match.group(1).strip("\n").rstrip()
+    if not body.strip():
+        raise BuildError("static/index.html 的引导脚本是空的")
+    return body
+
+
 def extract_body_skeleton(template: str) -> str:
     """从 templates/index.html 取出 <body> 骨架，去掉 Jinja 与脚本标签。"""
     match = re.search(r"<body>(.*)</body>", template, flags=re.DOTALL)
@@ -159,21 +176,29 @@ def inline_avatars(directory: Path) -> list[str]:
 def build() -> str:
     """返回单文件 HTML 全文。"""
     styles = read(STATIC / "styles.css") + "\n" + read(STATIC / "repository-link.css")
+    i18n_source = read(STATIC / "i18n.js")
     core_source = read(STATIC / "fingerprint-core.js")
     challenge_source = read(STATIC / "challenge-browser.js")
     controller_source = read(STATIC / "pages-app.js")
     template = read(TEMPLATES / "index.html")
+    pages_entry = read(STATIC / "index.html")
     bank = json.loads(read(STATIC / "data" / "unified_bank.json"))
 
+    i18n_js = strip_module_keywords(i18n_source, "i18n.js")
     core_js = strip_module_keywords(core_source, "fingerprint-core.js")
-    challenge_js = strip_module_keywords(challenge_source, "challenge-browser.js")
+    # challenge-browser.js 会引入 i18n 的 t()，先剥 import 再剥 export
+    challenge_symbols, challenge_body = extract_imports(challenge_source, "challenge-browser.js")
+    challenge_js = strip_module_keywords(challenge_body, "challenge-browser.js")
     controller_symbols, controller_js = extract_imports(controller_source, "pages-app.js")
     controller_js = replace_bank_loading(controller_js, "pages-app.js")
 
-    core_exports = re.findall(r"^export\s+(?:function|const|let|var)\s+([A-Za-z_$][\w$]*)", core_source, flags=re.MULTILINE)
-    challenge_exports = re.findall(r"^export\s+(?:function|const|let|var)\s+([A-Za-z_$][\w$]*)", challenge_source, flags=re.MULTILINE)
-    if not core_exports or not challenge_exports:
+    export_pattern = r"^export\s+(?:function|const|let|var)\s+([A-Za-z_$][\w$]*)"
+    i18n_exports = re.findall(export_pattern, i18n_source, flags=re.MULTILINE)
+    core_exports = re.findall(export_pattern, core_source, flags=re.MULTILINE)
+    challenge_exports = re.findall(export_pattern, challenge_source, flags=re.MULTILINE)
+    if not i18n_exports or not core_exports or not challenge_exports:
         raise BuildError("导出名解析失败")
+    bootstrap = extract_lang_bootstrap(pages_entry)
 
     body = extract_body_skeleton(template)
     bank_literal = inline_bank(bank)
@@ -186,6 +211,15 @@ def build() -> str:
             '  "use strict";',
             "  var DogCatTraceModules = {};",
             "",
+            "  // ---- static/i18n.js ----",
+            "  (function () {",
+            i18n_js.rstrip(),
+            "",
+        ]
+        + [f"    DogCatTraceModules.{name} = {name};" for name in i18n_exports]
+        + [
+            "  })();",
+            "",
             "  // ---- static/fingerprint-core.js ----",
             "  (function () {",
             core_js.rstrip(),
@@ -197,6 +231,7 @@ def build() -> str:
             "",
             "  // ---- static/challenge-browser.js ----",
             "  (function () {",
+            f"    const {{ {', '.join(challenge_symbols)} }} = DogCatTraceModules;",
             challenge_js.rstrip(),
             "",
         ]
@@ -223,7 +258,10 @@ def build() -> str:
             "<head>",
             '  <meta charset="utf-8">',
             '  <meta name="viewport" content="width=device-width, initial-scale=1">',
-            '  <meta name="description" content="DogCatTrace：在浏览器本地对整数序列做品种归因，单文件版可直接双击打开">',
+            '  <meta name="description" content="DogCatTrace：在浏览器本地对整数序列做品种归因，单文件版可直接双击打开" data-i18n-attr="content:meta.description.standalone">',
+            "  <script id=\"lang-bootstrap\">",
+            bootstrap,
+            "  </script>",
             "  <title>DogCatTrace</title>",
             f'  <link rel="icon" href="{favicon_uri}" type="image/png">',
             "  <!-- 本文件由 build_standalone.py 从仓库源文件拼装生成，不要手改。 -->",
@@ -273,6 +311,15 @@ def verify(html: str) -> None:
     inlined_images = html.count("data:image/png;base64,")
     if inlined_images < expected_images:
         raise BuildError(f"内联图片只有 {inlined_images} 张，应为 {expected_images} 张（头像 + 图标）")
+    # 双语：引导脚本、文案标记、i18n 模块本体都得在产物里，少一个就切不了语言
+    if 'data-i18n="hero.title"' not in html:
+        raise BuildError("产物里没有首屏标题的语言标记，骨架里的文案节点没接上")
+    if 'data-i18n-attr="content:meta.description.standalone"' not in html:
+        raise BuildError("产物里的 meta description 没挂语言标记")
+    if "catdogtrace.lang" not in html:
+        raise BuildError("产物里没有语言存储键，i18n.js 没有被内联")
+    if "data-lang-option" not in html:
+        raise BuildError("产物里没有语言切换器，i18n.js 的 mountToggle 没有被内联")
 
 
 def main(argv: list[str] | None = None) -> int:
