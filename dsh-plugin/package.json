@@ -5,12 +5,12 @@
   "author": "xiebaiyuan",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/xiebaiyuan/DogCatTrace.git",
+    "url": "git+https://github.com/xiebaiyuan/CatDogTrace.git",
     "directory": "dsh-plugin"
   },
-  "homepage": "https://github.com/xiebaiyuan/DogCatTrace/tree/main/dsh-plugin",
+  "homepage": "https://github.com/xiebaiyuan/CatDogTrace/tree/main/dsh-plugin",
   "bugs": {
-    "url": "https://github.com/xiebaiyuan/DogCatTrace/issues"
+    "url": "https://github.com/xiebaiyuan/CatDogTrace/issues"
   },
   "type": "module",
   "license": "MIT",

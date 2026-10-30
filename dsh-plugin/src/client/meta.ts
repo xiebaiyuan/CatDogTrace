@@ -38,7 +38,7 @@ export const COMMAND_NAME = 'catdog'
 export const STYLE_TAG_ID = `${PACKAGE_NAME}/panel.css`
 
 /** The repository this plugin is a shell over. */
-export const REPO_URL = 'https://github.com/xiebaiyuan/DogCatTrace'
+export const REPO_URL = 'https://github.com/xiebaiyuan/CatDogTrace'
 
 /** The "what this cannot prove" section the disclaimer points at. */
 export const GLOSSARY_URL = `${REPO_URL}/blob/main/GLOSSARY.md`
