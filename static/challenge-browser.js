@@ -8,7 +8,7 @@
  * crypto 随机流下 expected_count 与 id 逐字节一致。
  */
 
-import { t } from "./i18n.js";
+import { joinSegments, t } from "./i18n.js";
 
 function randomIndex(length) {
   const limit = Math.floor(0x100000000 / length) * length;
@@ -74,15 +74,18 @@ const SEPARATORS = [
 export function challengePrompt(challenge) {
   const template = challenge.template;
   if (!template) return challenge.prompt;
-  return t("prompt.lead", {
-    opening: t(template.opening),
-    action: t(template.action),
-    count: challenge.expected_count,
-  })
-    + t("prompt.middle1")
-    + t("prompt.middle2")
-    + t(template.ending) + t(template.separator)
-    + t("prompt.final");
+  return joinSegments([
+    t("prompt.lead", {
+      opening: t(template.opening),
+      action: t(template.action),
+      count: challenge.expected_count,
+    }),
+    t("prompt.middle1"),
+    t("prompt.middle2"),
+    t(template.ending),
+    t(template.separator),
+    t("prompt.final"),
+  ]);
 }
 
 export function generateChallenges(count = 3) {

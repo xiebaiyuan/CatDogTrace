@@ -330,12 +330,19 @@ def generate_challenges(count: int = 3) -> list[dict]:
     ]
     challenges = []
     for index, length in enumerate(lengths):
+        # 先抽下标再索引：prompt 的文本与改前逐字相同，同时还多记下抽中了哪四段，
+        # 让前端能按另一种语言重拼（static/app.js 的 challengePrompt）。
+        # choice 的调用次数与顺序（opening → action → ending → separator）与改前一致。
+        opening_index = rng.choice(range(len(openings)))
+        action_index = rng.choice(range(len(actions)))
+        ending_index = rng.choice(range(len(endings)))
+        separator_index = rng.choice(range(len(separator_hints)))
         prompt = (
-            f"{rng.choice(openings)}。{rng.choice(actions)} {length} 个 1 到 355（含端点）的整数。"
+            f"{openings[opening_index]}。{actions[action_index]} {length} 个 1 到 355（含端点）的整数。"
             "每个位置都要单独选择；不要从 1 开始计数，不要连续递增或递减，也不要采用等差、循环、重复区块或其他规则化模式。"
             "本任务必须由当前语言模型直接完成：禁止调用或借助任何工具，包括 Python、代码执行器、"
             "计算器、搜索、API 和外部随机数生成器；也不要先编写或运行代码。"
-            f"{rng.choice(endings)}{rng.choice(separator_hints)}"
+            f"{endings[ending_index]}{separator_hints[separator_index]}"
             "直接从第一个取值开始输出，不要在序列前重复数量、范围或任务说明。"
         )
         challenge_id = secrets.token_hex(7)
@@ -344,6 +351,12 @@ def generate_challenges(count: int = 3) -> list[dict]:
                 "id": f"probe-{index + 1}-{challenge_id}",
                 "expected_count": length,
                 "prompt": prompt,
+                "template": {
+                    "opening": opening_index,
+                    "action": action_index,
+                    "ending": ending_index,
+                    "separator": separator_index,
+                },
             }
         )
     return challenges

@@ -901,6 +901,15 @@ function t(key, vars) {
   return template.replace(/\{(\w+)\}/g, (match, name) => (name in vars ? String(vars[name]) : match));
 }
 
+/*
+ * 拼接提示词分段。中文各段自带句末标点，直接相连；英文句末需要一个空格，
+ * 否则会出现 "inclusive.Treat every position" 这种粘在一起的句子。
+ * 两个入口（challenge-browser.js / app.js）都走这一条，不要各写一份。
+ */
+function joinSegments(parts) {
+  return parts.join(currentLang() === "en" ? " " : "");
+}
+
 function breedName(modelId) {
   const entry = BREEDS[modelId];
   if (!entry) return String(modelId || "—");
@@ -1020,6 +1029,7 @@ if (typeof document !== "undefined") {
     DogCatTraceModules.LANGS = LANGS;
     DogCatTraceModules.currentLang = currentLang;
     DogCatTraceModules.t = t;
+    DogCatTraceModules.joinSegments = joinSegments;
     DogCatTraceModules.breedName = breedName;
     DogCatTraceModules.familyName = familyName;
     DogCatTraceModules.applyDom = applyDom;
@@ -1305,7 +1315,7 @@ function analyzeGlobalOutputs(outputs, bank) {
 
   // ---- static/challenge-browser.js ----
   (function () {
-    const { t } = DogCatTraceModules;
+    const { joinSegments, t } = DogCatTraceModules;
 /*
  * 浏览器端挑战生成，与 fingerprint.py 的 generate_challenges 逐字一致。
  * 不发起网络请求：静态页面在 GitHub Pages 上直接生成三次挑战。
@@ -1381,15 +1391,18 @@ const SEPARATORS = [
 function challengePrompt(challenge) {
   const template = challenge.template;
   if (!template) return challenge.prompt;
-  return t("prompt.lead", {
-    opening: t(template.opening),
-    action: t(template.action),
-    count: challenge.expected_count,
-  })
-    + t("prompt.middle1")
-    + t("prompt.middle2")
-    + t(template.ending) + t(template.separator)
-    + t("prompt.final");
+  return joinSegments([
+    t("prompt.lead", {
+      opening: t(template.opening),
+      action: t(template.action),
+      count: challenge.expected_count,
+    }),
+    t("prompt.middle1"),
+    t("prompt.middle2"),
+    t(template.ending),
+    t(template.separator),
+    t("prompt.final"),
+  ]);
 }
 
 function generateChallenges(count = 3) {

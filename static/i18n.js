@@ -264,6 +264,15 @@ export function t(key, vars) {
   return template.replace(/\{(\w+)\}/g, (match, name) => (name in vars ? String(vars[name]) : match));
 }
 
+/*
+ * 拼接提示词分段。中文各段自带句末标点，直接相连；英文句末需要一个空格，
+ * 否则会出现 "inclusive.Treat every position" 这种粘在一起的句子。
+ * 两个入口（challenge-browser.js / app.js）都走这一条，不要各写一份。
+ */
+export function joinSegments(parts) {
+  return parts.join(currentLang() === "en" ? " " : "");
+}
+
 export function breedName(modelId) {
   const entry = BREEDS[modelId];
   if (!entry) return String(modelId || "—");

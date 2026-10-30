@@ -9,7 +9,7 @@
  * 不信 payload 里的 display_name / family_name（那是中文，来自指纹库与 fingerprint.py）。
  */
 
-import { breedName, familyName, mountToggle, onLangChange, t } from "./i18n.js";
+import { breedName, familyName, joinSegments, mountToggle, onLangChange, t } from "./i18n.js";
 
 const state = {
   challenges: [],
@@ -85,8 +85,32 @@ async function copyText(text, button) {
   window.setTimeout(() => { button.textContent = t("challenge.copy"); }, 1000);
 }
 
+/*
+ * 按当前语言渲染一条挑战的提示词。
+ *
+ * Flask 下发的 challenge.template 记的是四个模板片段在 fingerprint.py 对应列表里的下标（0 起），
+ * i18n 的 key 是 1 起编号，所以这里 +1 再拼 key；expected_count 与 id 不参与措辞，换语言不等于换题。
+ * 没有 template 的来源（旧服务端、缓存数据）退回服务端下发的成品中文 prompt。
+ */
+export function challengePrompt(challenge) {
+  const template = challenge.template;
+  if (!template) return challenge.prompt;
+  return joinSegments([
+    t("prompt.lead", {
+      opening: t(`prompt.opening.${template.opening + 1}`),
+      action: t(`prompt.action.${template.action + 1}`),
+      count: challenge.expected_count,
+    }),
+    t("prompt.middle1"),
+    t("prompt.middle2"),
+    t(`prompt.ending.${template.ending + 1}`),
+    t(`prompt.separator.${template.separator + 1}`),
+    t("prompt.final"),
+  ]);
+}
+
 function renderChallenges() {
-  // 提示词是服务端下发的成品文本（fingerprint.py 生成），只有一种语言，这里原样显示。
+  // 提示词按当前语言重拼（见 challengePrompt），zh 与 fingerprint.py 生成的 prompt 逐字相同。
   // 语言切换会重跑本函数，先把已粘贴的内容抓出来，重建后按位置回填
   const filled = state.challenges.map((challenge, index) => {
     const field = byId(`output-${index}`);
@@ -102,7 +126,7 @@ function renderChallenges() {
       </div>
       <details class="challenge-prompt">
         <summary>${escapeHtml(t("challenge.expand"))}</summary>
-        <pre class="challenge-prompt-text">${escapeHtml(challenge.prompt)}</pre>
+        <pre class="challenge-prompt-text">${escapeHtml(challengePrompt(challenge))}</pre>
       </details>
       <label class="challenge-label" for="output-${index}">${escapeHtml(t("challenge.paste"))}</label>
       <textarea class="challenge-input" id="output-${index}" spellcheck="false" placeholder="${escapeHtml(t("challenge.placeholder"))}"></textarea>
@@ -113,7 +137,8 @@ function renderChallenges() {
     if (field) field.value = filled[index] || "";
   });
   document.querySelectorAll("[data-copy]").forEach((button) => {
-    button.addEventListener("click", () => copyText(state.challenges[Number(button.dataset.copy)].prompt, button));
+    // 复制的必须是当前语言显示的那份，不是服务端下发的原文
+    button.addEventListener("click", () => copyText(challengePrompt(state.challenges[Number(button.dataset.copy)]), button));
   });
 }
 
