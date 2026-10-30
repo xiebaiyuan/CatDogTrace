@@ -1,0 +1,143 @@
+# 发布 dsh-catdogtrace 到 npm。
+#
+# 触发：
+#   - 推一个 `v*` 标签 → 完整校验后真发
+#   - 手动 `workflow_dispatch` → 默认 dry_run，跑完整闸门但不发；把 dry_run 关掉才真发
+#
+# 前置（一次性，由仓库所有者做）：
+#   1. npm 上创建 **Automation** 类型 token。不是 "Publish" 类型：Publish token 仍要一次性
+#      密码，CI 里没法交互，会直接 EOTP 失败。Automation token 跳过 2FA，这是唯一能在 CI
+#      里 publish 的那种。
+#   2. 存成仓库 secret，名字 `NPM_TOKEN`（Settings → Secrets and variables → Actions）。
+#
+# 发一个版本：
+#   1. 改 `dsh-plugin/package.json` 的 version，同步 `dsh-plugin/CHANGELOG.md`
+#   2. commit + push main，等 `plugin` workflow 绿
+#   3. `git tag v<version> && git push origin v<version>`
+#   4. 本 workflow 校验版本一致、跑完整闸门、发 npm、回读 registry 确认
+#
+# 版本号必须与标签严格一致：不一致直接失败，不猜、不自动改版本。
+
+name: publish-plugin
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: '只跑闸门不发包（默认开）。关闭后才会真的 npm publish。'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  # provenance：npm 上会显示这份产物由哪个 commit、哪个 workflow 构建
+  id-token: write
+
+concurrency:
+  group: publish-plugin
+  cancel-in-progress: false
+
+defaults:
+  run:
+    working-directory: dsh-plugin
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v4
+        with:
+          # provenance 要完整历史来定位构建来源
+          fetch-depth: 0
+
+      - name: 配置 pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12.14.0
+
+      - name: 配置 Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: dsh-plugin/pnpm-lock.yaml
+
+      # 写死在 userconfig 里，不依赖 setup-node 的 registry-url 把 .npmrc 落在哪一层：
+      # 本 workflow 的 cwd 是 dsh-plugin/，而 .npmrc 若落在仓库根就找不到。
+      - name: 配置 npm 认证
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${NODE_AUTH_TOKEN}" ]; then
+            echo "::error::缺少 NPM_TOKEN。按文件头部说明创建一个 Automation token 存进仓库 secret。"
+            exit 1
+          fi
+          {
+            echo "registry=https://registry.npmjs.org/"
+            echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}"
+          } > "$HOME/.npmrc"
+
+      - name: 校验标签与包版本一致
+        if: github.event_name == 'push'
+        run: |
+          set -euo pipefail
+          tag="${GITHUB_REF_NAME#v}"
+          pkg="$(node -p "require('./package.json').version")"
+          echo "标签版本 ${tag} / 包版本 ${pkg}"
+          if [ "${tag}" != "${pkg}" ]; then
+            echo "::error::标签 v${tag} 与 dsh-plugin/package.json 的 ${pkg} 不一致。改版本号再打标签。"
+            exit 1
+          fi
+
+      - name: 安装依赖
+        run: pnpm install --frozen-lockfile
+
+      - name: 类型检查
+        run: pnpm exec tsc --noEmit
+
+      - name: 构建
+        run: pnpm run build
+
+      - name: 测试
+        run: pnpm exec vitest run
+
+      - name: 检查该版本是否已发布
+        id: probe
+        run: |
+          set -euo pipefail
+          version="$(node -p "require('./package.json').version")"
+          if npm view "dsh-catdogtrace@${version}" version >/dev/null 2>&1; then
+            echo "::notice::dsh-catdogtrace@${version} 已在 registry 上，跳过发布。"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: 试发（dry_run）
+        if: steps.probe.outputs.skip == 'false' && github.event_name == 'workflow_dispatch' && inputs.dry_run
+        run: npm publish --access public --dry-run
+
+      - name: 发布到 npm
+        if: steps.probe.outputs.skip == 'false' && (github.event_name == 'push' || inputs.dry_run == false)
+        run: npm publish --access public --provenance
+
+      - name: 回读 registry 确认
+        if: steps.probe.outputs.skip == 'false' && (github.event_name == 'push' || inputs.dry_run == false)
+        run: |
+          set -euo pipefail
+          version="$(node -p "require('./package.json').version")"
+          for attempt in 1 2 3 4 5; do
+            if npm view "dsh-catdogtrace@${version}" version >/dev/null 2>&1; then
+              echo "registry 上确认到 dsh-catdogtrace@${version}"
+              exit 0
+            fi
+            echo "第 ${attempt} 次没查到，等 10 秒"
+            sleep 10
+          done
+          echo "::error::发布命令返回成功，但 registry 上查不到 dsh-catdogtrace@${version}。"
+          exit 1
